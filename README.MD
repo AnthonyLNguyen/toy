@@ -10,5 +10,5 @@ $ ./toy < test.t
 or
 
 ```bash
-$ ./run.sh <OUTPUTFILE>
+$ ./run.sh <INPUTFILE> <OUTPUTFILE>
 ```
