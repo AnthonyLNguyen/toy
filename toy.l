@@ -1,36 +1,66 @@
+%{
+#include "toy.h"
+%}
+
 %%
-(boolean|break|class|double|else|extends|for|if|implements|int|interface|new|newarray|null|println|readln|return|string|void|while) printf("_%s ", yytext);
-(0[Xx][A-Fa-f0-9]+|[0-9]+)			printf("_intconstant ");
-[0-9]+\.[0-9]*(E[\+-][0-9])?			printf("_doubleconstant ");
-[\"\”][^\n\"]*[\"\”]				printf("_stringconstant ");
-([Tt][Rr][Uu]|[Ff][Aa][Ll][Ss])[Ee]		printf("_booleanconstant ");
-[A-Za-z][A-Za-z0-9_]*				printf("_id ");
-[\n]						printf("\n");
-[ \t]						printf("");
-\+	printf("_plus ");
-\-	printf("_minus ");
-\*	printf("_multiplication ");
-\/	printf("_division ");
-\%	printf("_mod ");
-\<	printf("_less ");
-\<\=	printf("_lessequal ");
-\>	printf("_greater ");
-\>\=	printf("_greaterequal ");
-\=\=	printf("_equal ");
-\!\=	printf("_notequal ");
-\&\&	printf("_and ");
-\|\|	printf("_or ");
-\!	printf("_not ");
-\=	printf("_assignop ");
-\;	printf("_semicolon ");
-\,	printf("_comma ");
-\.	printf("_period ");
-\(	printf("_leftparen ");
-\)	printf("_rightparen ");
-\[	printf("_leftbracket ");
-\]	printf("_rightbracket ");
-\{	printf("_leftbrace ");
-\}	printf("_rightbrace ");
-\/\/.*\n		printf("");
-\/\*[^*]*\*\/\n 	printf("");
+"boolean"	return _boolean;
+"break"		return _break;
+"class"		return _class;
+"double"	return _double;
+"else"		return _else;
+"extends"	return _extends;
+"for"		return _for;
+"if"		return _if;
+"implements"	return _implements;
+"int"		return _int;
+"interface"	return _interface;
+"new"		return _new;
+"newarray"	return _newarray;
+"null"		return _null;
+"println"	return _println;
+"readln"	return _readln;
+"return"	return _return;
+"string"	return _string;
+"void"		return _void;
+"while"		return _while;
+"true"		return _booleanconstant;
+"false"		return _booleanconstant;
+(0[Xx][A-Fa-f0-9]+|[0-9]+)			return _intconstant;
+[0-9]+\.[0-9]*(E[\+-][0-9])?			return _doubleconstant;
+[\"\”][^\n\"]*[\"\”]				return _stringconstant;
+[A-Za-z][A-Za-z0-9_]*				return _id;
+\+	return _plus;
+\-	return _minus;
+\*	return _multiplication;
+\/	return _division;
+\%	return _mod;
+\<	return _less;
+\<\=	return _lessequal;
+\>	return _greater;
+\>\=	return _greaterequal;
+\=\=	return _equal;
+\!\=	return _notequal;
+\&\&	return _and;
+\|\|	return _or;
+\!	return _not;
+\=	return _assignop;
+\;	return _semicolon;
+\,	return _comma;
+\.	return _period;
+\(	return _leftparen;
+\)	return _rightparen;
+\[	return _leftbracket;
+\]	return _rightbracket;
+\{	return _leftbrace;
+\}	return _rightbrace;
+
+[ \t\n]			;
+\/\/.*\n		;
+\/\*[^*]*\*\/\n 	;
+.	printf("unexpected character\n");
 %%
+
+int yywrap(void)
+{
+	return 1;
+}
