@@ -1,0 +1,36 @@
+%%
+(boolean|break|class|double|else|extends|for|if|implements|int|interface|new|newarray|null|println|readln|return|string|void|while) printf("_%s ", yytext);
+(0[Xx][A-Fa-f0-9]+|[0-9]+)			printf("_intconstant ");
+[0-9]+\.[0-9]*(E[\+-][0-9])?			printf("_doubleconstant ");
+[\"\”][^\n\"]*[\"\”]				printf("_stringconstant ");
+([Tt][Rr][Uu]|[Ff][Aa][Ll][Ss])[Ee]		printf("_booleanconstant ");
+[A-Za-z][A-Za-z0-9_]*				printf("_id ");
+[\n]						printf("\n");
+[ \t]						printf("");
+\+	printf("_plus ");
+\-	printf("_minus ");
+\*	printf("_multiplication ");
+\/	printf("_division ");
+\%	printf("_mod ");
+\<	printf("_less ");
+\<\=	printf("_lessequal ");
+\>	printf("_greater ");
+\>\=	printf("_greaterequal ");
+\=\=	printf("_equal ");
+\!\=	printf("_notequal ");
+\&\&	printf("_and ");
+\|\|	printf("_or ");
+\!	printf("_not ");
+\=	printf("_assignop ");
+\;	printf("_semicolon ");
+\,	printf("_comma ");
+\.	printf("_period ");
+\(	printf("_leftparen ");
+\)	printf("_rightparen ");
+\[	printf("_leftbracket ");
+\]	printf("_rightbracket ");
+\{	printf("_leftbrace ");
+\}	printf("_rightbrace ");
+\/\/.*\n		printf("");
+\/\*[^*]*\*\/\n 	printf("");
+%%
