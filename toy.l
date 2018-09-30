@@ -27,7 +27,7 @@
 "false"		return _booleanconstant;
 (0[Xx][A-Fa-f0-9]+|[0-9]+)			return _intconstant;
 [0-9]+\.[0-9]*(E[\+-][0-9])?			return _doubleconstant;
-[\"\”][^\n\"\”]*[\"\”]				return _stringconstant;
+[\"\“][^\n\"\“\”]*[\"\”]			return _stringconstant;
 [A-Za-z][A-Za-z0-9_]*				return _id;
 \+	return _plus;
 \-	return _minus;
