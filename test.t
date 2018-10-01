@@ -8,10 +8,10 @@ void main () {
 A lexical analyzer */
 	int x;
 	int total;
-	println (“factorial of 10 is ”, fact (10), “ from the recursive function”);
+	println ("factorial of 10 is ", fact (10), " from the recursive function");
 	total = 1; x = 1;
 	for ( ; x<=10; ) { total = total * x; x = x + 1; }
-	println (“iterative result of 10! is ”, total);
+	println ("iterative result of 10! is ", total);
 	}
 class cs4110 {
 	int Funny;
@@ -22,7 +22,7 @@ class cs4110 {
 	flag = true;
 	Funny = 0X89aB;
 	funny = 123456E+7;
-	s = “hello world”;
-	while (x = (Funny/10) <0) println (s, “ have fun !”);
+	s = "hello world";
+	while (x = (Funny/10) <0) println (s, " have fun !");
 	a = newarray (20, int);
 }

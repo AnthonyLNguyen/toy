@@ -58,7 +58,7 @@
 [ \t]			;
 \/\/.*\n		;
 \/\*[^*]*\*\/\n 	;
-.	printf("unexpected character\n");
+.	printf("\nUNEXPECTED CHAR\n");
 %%
 
 int yywrap(void)
