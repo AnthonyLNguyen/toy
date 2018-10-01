@@ -10,15 +10,24 @@ char *names[] = {NULL, "_boolean", "_break", "_class", "_double", "_else", "_ext
 
 char *tokens[] = {NULL, "boolean", "break", "class", "double", "else", "extends", "for", "if", "implements", "int", "interface", "new", "newarray", "null", "println", "readln", "return", "string", "void", "while", "plus", "minus", "multiplication", "division", "mod", "less", "lessequal", "greater", "greaterequal", "equal", "notequal", "and", "or", "not", "assignop", "semicolon", "comma", "period", "leftparen", "rightparen", "leftbracket", "rightbracket", "leftbrace", "rightbrace", "intconstant", "doubleconstant", "stringconstant", "booleanconstant", "id" };
 
+int add_to_trie (char* string);
+
 int main(void)
 {
-	int ntoken, vtoken;
+	int ntoken;
 
 	ntoken = yylex();
 	while(ntoken) {
 		//printf("%d", ntoken);
 		printf("%s ",tokens[ntoken]);
 		ntoken = yylex();
+		if (ntoken == _id || ntoken < _while)
+			add_to_trie(yytext);
 	}
+	return 0;
+}
+
+int add_to_trie(char* string){
+	printf("");
 	return 0;
 }
