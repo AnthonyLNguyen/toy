@@ -122,9 +122,15 @@ int add_to_trie(char* input, int* switchArr, char* symbolArr, int* nextArr, int*
 					valueOfSymbol = getNextSymbol(input,&pos);
 					if( pos == strlen(input) )
 					{
+						if ( symbolArr[ptr+1] == endMarker){
+							exit = 1;
+							break;
+						}
 						int loop = 1;
 						while ( loop ){
 						if (nextArr[ptr] == 0){
+
+							
 							if ( symbolArr[ptr] == valueOfSymbol ) 
 								nextArr[ptr+1] = *cur;
 							else
