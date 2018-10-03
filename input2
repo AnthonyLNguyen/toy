@@ -1,0 +1,26 @@
+double method_Name2 ( double x ) {
+	//a pointless method
+	if ( x <= 12. && x > 0.12) return x;
+	else return 77.4E+5;
+	}
+
+void main () {
+/* This is a useless comment
+useless string {}}{}{())()21323ddd..
+this will not be seen*/
+	int test_variable = 2;
+	int test_var;
+	println ("this is a string", test_variable, " this is also a string");
+	if ( test_variable != 2 ){
+		println ( "thats weird" );
+	}
+	boolean bool_true = true;
+	boolean bool_false = false;
+	test_var = 1 + 2 - 3 * (4 / 5) % 6;
+	int [] a = newarray (20 , int);
+	int Test = 0x12ae;
+	int test = 3;
+	int tests = 4;
+}
+
+
