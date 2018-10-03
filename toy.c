@@ -23,7 +23,7 @@ int printTrie(int* switchArr, char* symbolArr, int* nextArr, int* cur);
 
 int main(void)
 {
-	int CHARS = 63;
+	int CHARS = 52;
 	int MAXTRANSITION = 4096;
 	int cur;
 	cur = 0;
@@ -192,13 +192,13 @@ int printTrie(int* switchArr, char* symbolArr, int* nextArr, int* cur){
 	for( int i = 'o'; i <= 'z'; i++ ){
 		printf("%*c",space,i);
 	}
-	for( int i = '0'; i <= '7'; i++ ){
+	/*for( int i = '0'; i <= '7'; i++ ){
 		printf("%*c",space,i);
-	}
+	}*/
 	printf("\nswitch:\t");
-	for( int i = 40; i < 60; i++ ){
+	for( int i = 40; i < 52; i++ ){
 		printf("%*d",space,switchArr[i]);
-	}
+	}/*
 	printf("\n\n\t");
 	for( int i = '8'; i <= '9'; i++ ){
 		printf("%*c",space,i);
@@ -207,7 +207,7 @@ int printTrie(int* switchArr, char* symbolArr, int* nextArr, int* cur){
 	printf("\nswitch\t");
 	for( int i = 60; i < 63; i++ ){
 		printf("%*d",space,switchArr[i]);
-	}
+	}*/
 	printf("\n\n");
 
 
