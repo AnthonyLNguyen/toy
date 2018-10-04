@@ -3,7 +3,7 @@ By Anthony Nguyen, Jarod Nakamoto, Jeffrey Nguyen
 
 # How to use
 This program requires the use of four files: `toy.h`, `toy.l`, `toy.c`, and an input file.
-It also requires 
+It also requires lex or flex. 
 
 ## Compilation instructions
 ```bash
