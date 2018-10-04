@@ -9,14 +9,19 @@ extern char* yytext;
 
 char *tokens[] = {NULL, "boolean", "break", "class", "double", "else", "extends", "for", "if", "implements", "int", "interface", "new", "newarray", "null", "println", "readln", "return", "string", "void", "while", "plus", "minus", "multiplication", "division", "mod", "less", "lessequal", "greater", "greaterequal", "equal", "notequal", "and", "or", "not", "assignop", "semicolon", "comma", "period", "leftparen", "rightparen", "leftbracket", "rightbracket", "leftbrace", "rightbrace", "intconstant", "doubleconstant", "stringconstant", "booleanconstant", "id" };
 
+// adds string to trie structure
 int add_to_trie (char*, int*, char*, int*, int*);
 
+// gets next char of the string
 char getNextSymbol(char*,int*);
 
+// add new string to trie structure
 int create(char,int*, char*, char*, int*, int*);
 
+// return switch position of character
 int symPos(char);
 
+// function to print out trie table
 int printTrie(int* switchArr, char* symbolArr, int* nextArr, int* cur);
 
 int main(void)
@@ -53,13 +58,7 @@ int symPos(char x){
 	if ( x >= 65 && x <= 90 )
 	       	return x-65;
 	else 
-	if ( x >= 97 && x <= 122)
 		return x-97+26;
-	else
-	if ( x >= 48 && x <= 57)
-		return x-48+52;
-	else
-		return 62;
 }
 
 char getNextSymbol(char* input, int* pos){
