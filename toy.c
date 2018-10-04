@@ -106,6 +106,8 @@ int add_to_trie(char* input, int* switchArr, char* symbolArr, int* nextArr, int*
 		int exit = 0;
 		while ( !exit )
 		{
+			if ( strlen(input) == 2 && valueOfSymbol == symbolArr[ptr])
+				return 0;
 			if (symbolArr[ptr] == valueOfSymbol)
 				if(valueOfSymbol != endMarker)
 				{
