@@ -11,7 +11,7 @@ this will not be seen*/
 	int test_variable = 2;
 	int test_var;
 	println ("this is a string", test_variable, " this is also a string");
-	if ( test_variable != 2 ){
+	if ( test_variable != 2 && test_variable == 3 || test_variable < 4){
 		println ( "thats weird" );
 	}
 	boolean bool_true = true;
