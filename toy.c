@@ -121,13 +121,10 @@ int add_to_trie(char* input, int* switchArr, char* symbolArr, int* nextArr, int*
 						int loop = 1;
 						while ( loop ){
 						if (nextArr[ptr] == 0){
-
-							
 							if ( symbolArr[ptr] == valueOfSymbol ) 
 								nextArr[ptr+1] = *cur;
 							else
 								nextArr[ptr] = *cur;
-							
 							loop = 0;
 						}
 						else
@@ -218,8 +215,7 @@ int printTrie(int* switchArr, char* symbolArr, int* nextArr, int* cur){
 	printf("\n");
 	}
 
-
-	printf("SIZE:%d\n",*cur);
+	//printf("SIZE:%d\n",*cur);
 	return 0;
 }
 
