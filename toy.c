@@ -7,8 +7,6 @@ extern int yylex();
 extern int yylineno;
 extern char* yytext;
 
-char *names[] = {NULL, "_boolean", "_break", "_class", "_double", "_else", "_extends", "_for", "_if", "_implements", "_int", "_interface", "_new", "_newarray", "_null", "_println", "_readln", "_return", "_string", "_void", "_while", "_plus", "_minus", "_multiplication", "_division", "_mod", "_less", "_lessequal", "_greater", "_greaterequal", "_equal", "_notequal", "_and", "_or", "_not", "_assignop", "_semicolon", "_comma", "_period", "_leftparen", "_rightparen", "_leftbracket", "_rightbracket", "_leftbrace", "_rightbrace", "_intconstant", "_doubleconstant", "_stringconstant", "_booleanconstant", "_id" };
-
 char *tokens[] = {NULL, "boolean", "break", "class", "double", "else", "extends", "for", "if", "implements", "int", "interface", "new", "newarray", "null", "println", "readln", "return", "string", "void", "while", "plus", "minus", "multiplication", "division", "mod", "less", "lessequal", "greater", "greaterequal", "equal", "notequal", "and", "or", "not", "assignop", "semicolon", "comma", "period", "leftparen", "rightparen", "leftbracket", "rightbracket", "leftbrace", "rightbrace", "intconstant", "doubleconstant", "stringconstant", "booleanconstant", "id" };
 
 int add_to_trie (char*, int*, char*, int*, int*);
@@ -38,18 +36,13 @@ int main(void)
 
 	ntoken = yylex();
 	while(ntoken) {
-		//printf("%d", ntoken);
 		printf("%s ",tokens[ntoken]);
 		char input[strlen(yytext)]; 
 		strcpy(input,yytext);
-		//char* x = tokens[ntoken];
 		if (ntoken == _id || ntoken <= _while || ntoken == _booleanconstant){
-			//printf("**%s**", input);
 			add_to_trie(input, switchArr, symbolArr, nextArr, &cur);
 		}
 		ntoken = yylex();
-		//else if (ntoken <= _while)
-		//	add_to_trie(x, switchArr, symbolArr, nextArr, &cur);
 
 	}
 	printTrie(switchArr,symbolArr,nextArr,&cur);
@@ -101,8 +94,6 @@ int add_to_trie(char* input, int* switchArr, char* symbolArr, int* nextArr, int*
 	
 	char valueOfSymbol = getNextSymbol(input,&pos);
 	valueOfSymbol = input[0];
-	//printf(input);
-	//printf("%c",valueOfSymbol);
 	int ptr = switchArr[symPos(valueOfSymbol)];
 	if (ptr == -1){
 		switchArr[symPos(valueOfSymbol)] = *cur;
@@ -120,7 +111,6 @@ int add_to_trie(char* input, int* switchArr, char* symbolArr, int* nextArr, int*
 				if(valueOfSymbol != endMarker)
 				{
 					ptr = ptr + 1;
-					//*cur = *cur + 1;
 					valueOfSymbol = getNextSymbol(input,&pos);
 					if( pos == strlen(input) )
 					{
@@ -194,22 +184,10 @@ int printTrie(int* switchArr, char* symbolArr, int* nextArr, int* cur){
 	for( int i = 'o'; i <= 'z'; i++ ){
 		printf("%*c",space,i);
 	}
-	/*for( int i = '0'; i <= '7'; i++ ){
-		printf("%*c",space,i);
-	}*/
 	printf("\nswitch:\t");
 	for( int i = 40; i < 52; i++ ){
 		printf("%*d",space,switchArr[i]);
-	}/*
-	printf("\n\n\t");
-	for( int i = '8'; i <= '9'; i++ ){
-		printf("%*c",space,i);
 	}
-	printf("%*c",space,'_');
-	printf("\nswitch\t");
-	for( int i = 60; i < 63; i++ ){
-		printf("%*d",space,switchArr[i]);
-	}*/
 	printf("\n\n");
 
 
