@@ -1,0 +1,2952 @@
+Terminals unused in grammar
+
+   _new
+   _newarray
+   _readln
+   _plus
+   _minus
+   _multiplication
+   _division
+   _mod
+   _less
+   _lessequal
+   _greater
+   _greaterequal
+   _equal
+   _notequal
+   _and
+   _or
+   _not
+   _assignop
+   _semicolon
+   _comma
+   _period
+   _leftparen
+   _rightparen
+   _leftbracket
+   _rightbracket
+   _leftbrace
+   _rightbrace
+
+
+State 67 conflicts: 1 shift/reduce
+State 72 conflicts: 1 shift/reduce
+State 82 conflicts: 9 shift/reduce
+State 88 conflicts: 2 shift/reduce
+State 106 conflicts: 1 shift/reduce
+State 108 conflicts: 1 shift/reduce
+State 112 conflicts: 1 shift/reduce
+State 159 conflicts: 1 shift/reduce
+State 161 conflicts: 1 shift/reduce
+State 163 conflicts: 5 reduce/reduce
+State 164 conflicts: 5 reduce/reduce
+State 165 conflicts: 5 reduce/reduce
+State 166 conflicts: 5 reduce/reduce
+State 167 conflicts: 5 reduce/reduce
+State 179 conflicts: 1 shift/reduce
+State 182 conflicts: 1 shift/reduce
+State 183 conflicts: 1 shift/reduce
+State 186 conflicts: 1 shift/reduce
+
+
+Grammar
+
+    0 $accept: Program $end
+
+    1 Program: DeclPlus
+
+    2 DeclPlus: Decl DeclPlus
+    3         | Decl
+
+    4 Decl: VariableDecl
+    5     | FunctionDecl
+    6     | ClassDecl
+    7     | InterfaceDecl
+
+    8 VariableDecl: Variable ';'
+
+    9 Variable: Type _id
+
+   10 Type: _int
+   11     | _double
+   12     | _boolean
+   13     | _string
+   14     | Type '[' ']'
+   15     | _id
+
+   16 FunctionDecl: Type _id '(' Formals ')' StmtBlock
+   17             | _void _id '(' Formals ')' StmtBlock
+
+   18 Formals: VariablePlusComma
+   19        | %empty
+
+   20 VariablePlusComma: Variable ',' VariablePlusComma
+   21                  | Variable
+
+   22 ClassDecl: _class _id ClassDeclOptional '{' FieldStar '}'
+
+   23 ClassDeclOptional: _extends _id
+   24                  | _implements IdPlusComma
+   25                  | _extends _id _implements IdPlusComma
+   26                  | %empty
+
+   27 IdPlusComma: _id ',' IdPlusComma
+   28            | _id
+
+   29 FieldStar: Field FieldStar
+   30          | %empty
+
+   31 Field: VariableDecl
+   32      | FunctionDecl
+
+   33 InterfaceDecl: _interface _id '{' PrototypeStar '}'
+
+   34 PrototypeStar: Prototype PrototypeStar
+   35              | %empty
+
+   36 Prototype: Type _id '(' Formals ')' ';'
+   37          | _void _id '(' Formals ')' ';'
+
+   38 StmtBlock: '{' VariableDeclStar StmtStar '}'
+
+   39 VariableDeclStar: VariableDecl VariableDeclStar
+   40                 | %empty
+
+   41 StmtStar: Stmt StmtStar
+   42         | %empty
+
+   43 Stmt: ExprOptional ';'
+   44     | IfStmt
+   45     | WhileStmt
+   46     | ForStmt
+   47     | BreakStmt
+   48     | ReturnStmt
+   49     | PrintStmt
+   50     | StmtBlock
+
+   51 ExprOptional: Expr
+   52             | %empty
+
+   53 IfStmt: _if '(' Expr ')' Stmt IfStmtOptional
+
+   54 IfStmtOptional: _else Stmt
+   55               | %empty
+
+   56 WhileStmt: _while '(' Expr ')' Stmt
+
+   57 ForStmt: _for '(' ExprOptional ';' Expr ';' ExprOptional ')' Stmt
+
+   58 BreakStmt: _break
+
+   59 ReturnStmt: _return ExprOptional
+
+   60 PrintStmt: _println '(' ExprPlusComma ')'
+
+   61 ExprPlusComma: Expr ',' ExprPlusComma
+   62              | Expr
+
+   63 Expr: ExprA
+
+   64 ExprA: ExprB
+   65      | Lvalue '=' ExprB
+
+   66 ExprB: ExprC
+   67      | ExprB '|' '|' ExprC
+
+   68 ExprC: ExprD
+   69      | ExprC '&' '&' ExprD
+
+   70 ExprD: ExprE
+   71      | ExprD '=' '=' ExprE
+   72      | ExprD '!' '=' ExprE
+
+   73 ExprE: ExprF
+   74      | ExprE '<' ExprF
+   75      | ExprE '<' '=' ExprF
+   76      | ExprE '>' ExprF
+   77      | ExprE '>' '=' ExprF
+
+   78 ExprF: ExprG
+   79      | ExprF '+' ExprG
+   80      | ExprF '-' ExprG
+
+   81 ExprG: ExprH
+   82      | ExprF '*' ExprG
+   83      | ExprF '/' ExprG
+   84      | ExprF '%' ExprG
+
+   85 ExprH: ExprI
+   86      | '!' ExprH
+   87      | '-' ExprH
+
+   88 ExprI: Lvalue
+   89      | Constant
+   90      | Call
+   91      | '(' Expr ')'
+
+   92 Lvalue: _id
+   93       | Lvalue '[' Expr ']'
+   94       | Lvalue '.' _id
+
+   95 Call: _id '(' Actuals ')'
+   96     | _id '.' _id '(' Actuals ')'
+
+   97 Actuals: ExprPlusComma
+   98        | %empty
+
+   99 Constant: _intconstant
+  100         | _doubleconstant
+  101         | _stringconstant
+  102         | _booleanconstant
+  103         | _null
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+'!' (33) 72 86
+'%' (37) 84
+'&' (38) 69
+'(' (40) 16 17 36 37 53 56 57 60 91 95 96
+')' (41) 16 17 36 37 53 56 57 60 91 95 96
+'*' (42) 82
+'+' (43) 79
+',' (44) 20 27 61
+'-' (45) 80 87
+'.' (46) 94 96
+'/' (47) 83
+';' (59) 8 36 37 43 57
+'<' (60) 74 75
+'=' (61) 65 71 72 75 77
+'>' (62) 76 77
+'[' (91) 14 93
+']' (93) 14 93
+'{' (123) 22 33 38
+'|' (124) 67
+'}' (125) 22 33 38
+error (256)
+_boolean (258) 12
+_break (259) 58
+_class (260) 22
+_double (261) 11
+_else (262) 54
+_extends (263) 23 25
+_for (264) 57
+_if (265) 53
+_implements (266) 24 25
+_int (267) 10
+_interface (268) 33
+_new (269)
+_newarray (270)
+_null (271) 103
+_println (272) 60
+_readln (273)
+_return (274) 59
+_string (275) 13
+_void (276) 17 37
+_while (277) 56
+_plus (278)
+_minus (279)
+_multiplication (280)
+_division (281)
+_mod (282)
+_less (283)
+_lessequal (284)
+_greater (285)
+_greaterequal (286)
+_equal (287)
+_notequal (288)
+_and (289)
+_or (290)
+_not (291)
+_assignop (292)
+_semicolon (293)
+_comma (294)
+_period (295)
+_leftparen (296)
+_rightparen (297)
+_leftbracket (298)
+_rightbracket (299)
+_leftbrace (300)
+_rightbrace (301)
+_intconstant (302) 99
+_doubleconstant (303) 100
+_stringconstant (304) 101
+_booleanconstant (305) 102
+_id (306) 9 15 16 17 22 23 25 27 28 33 36 37 92 94 95 96
+
+
+Nonterminals, with rules where they appear
+
+$accept (72)
+    on left: 0
+Program (73)
+    on left: 1, on right: 0
+DeclPlus (74)
+    on left: 2 3, on right: 1 2
+Decl (75)
+    on left: 4 5 6 7, on right: 2 3
+VariableDecl (76)
+    on left: 8, on right: 4 31 39
+Variable (77)
+    on left: 9, on right: 8 20 21
+Type (78)
+    on left: 10 11 12 13 14 15, on right: 9 14 16 36
+FunctionDecl (79)
+    on left: 16 17, on right: 5 32
+Formals (80)
+    on left: 18 19, on right: 16 17 36 37
+VariablePlusComma (81)
+    on left: 20 21, on right: 18 20
+ClassDecl (82)
+    on left: 22, on right: 6
+ClassDeclOptional (83)
+    on left: 23 24 25 26, on right: 22
+IdPlusComma (84)
+    on left: 27 28, on right: 24 25 27
+FieldStar (85)
+    on left: 29 30, on right: 22 29
+Field (86)
+    on left: 31 32, on right: 29
+InterfaceDecl (87)
+    on left: 33, on right: 7
+PrototypeStar (88)
+    on left: 34 35, on right: 33 34
+Prototype (89)
+    on left: 36 37, on right: 34
+StmtBlock (90)
+    on left: 38, on right: 16 17 50
+VariableDeclStar (91)
+    on left: 39 40, on right: 38 39
+StmtStar (92)
+    on left: 41 42, on right: 38 41
+Stmt (93)
+    on left: 43 44 45 46 47 48 49 50, on right: 41 53 54 56 57
+ExprOptional (94)
+    on left: 51 52, on right: 43 57 59
+IfStmt (95)
+    on left: 53, on right: 44
+IfStmtOptional (96)
+    on left: 54 55, on right: 53
+WhileStmt (97)
+    on left: 56, on right: 45
+ForStmt (98)
+    on left: 57, on right: 46
+BreakStmt (99)
+    on left: 58, on right: 47
+ReturnStmt (100)
+    on left: 59, on right: 48
+PrintStmt (101)
+    on left: 60, on right: 49
+ExprPlusComma (102)
+    on left: 61 62, on right: 60 61 97
+Expr (103)
+    on left: 63, on right: 51 53 56 57 61 62 91 93
+ExprA (104)
+    on left: 64 65, on right: 63
+ExprB (105)
+    on left: 66 67, on right: 64 65 67
+ExprC (106)
+    on left: 68 69, on right: 66 67 69
+ExprD (107)
+    on left: 70 71 72, on right: 68 69 71 72
+ExprE (108)
+    on left: 73 74 75 76 77, on right: 70 71 72 74 75 76 77
+ExprF (109)
+    on left: 78 79 80, on right: 73 74 75 76 77 79 80 82 83 84
+ExprG (110)
+    on left: 81 82 83 84, on right: 78 79 80 82 83 84
+ExprH (111)
+    on left: 85 86 87, on right: 81 86 87
+ExprI (112)
+    on left: 88 89 90 91, on right: 85
+Lvalue (113)
+    on left: 92 93 94, on right: 65 88 93 94
+Call (114)
+    on left: 95 96, on right: 90
+Actuals (115)
+    on left: 97 98, on right: 95 96
+Constant (116)
+    on left: 99 100 101 102 103, on right: 89
+
+
+State 0
+
+    0 $accept: . Program $end
+
+    _boolean    shift, and go to state 1
+    _class      shift, and go to state 2
+    _double     shift, and go to state 3
+    _int        shift, and go to state 4
+    _interface  shift, and go to state 5
+    _string     shift, and go to state 6
+    _void       shift, and go to state 7
+    _id         shift, and go to state 8
+
+    Program        go to state 9
+    DeclPlus       go to state 10
+    Decl           go to state 11
+    VariableDecl   go to state 12
+    Variable       go to state 13
+    Type           go to state 14
+    FunctionDecl   go to state 15
+    ClassDecl      go to state 16
+    InterfaceDecl  go to state 17
+
+
+State 1
+
+   12 Type: _boolean .
+
+    $default  reduce using rule 12 (Type)
+
+
+State 2
+
+   22 ClassDecl: _class . _id ClassDeclOptional '{' FieldStar '}'
+
+    _id  shift, and go to state 18
+
+
+State 3
+
+   11 Type: _double .
+
+    $default  reduce using rule 11 (Type)
+
+
+State 4
+
+   10 Type: _int .
+
+    $default  reduce using rule 10 (Type)
+
+
+State 5
+
+   33 InterfaceDecl: _interface . _id '{' PrototypeStar '}'
+
+    _id  shift, and go to state 19
+
+
+State 6
+
+   13 Type: _string .
+
+    $default  reduce using rule 13 (Type)
+
+
+State 7
+
+   17 FunctionDecl: _void . _id '(' Formals ')' StmtBlock
+
+    _id  shift, and go to state 20
+
+
+State 8
+
+   15 Type: _id .
+
+    $default  reduce using rule 15 (Type)
+
+
+State 9
+
+    0 $accept: Program . $end
+
+    $end  shift, and go to state 21
+
+
+State 10
+
+    1 Program: DeclPlus .
+
+    $default  reduce using rule 1 (Program)
+
+
+State 11
+
+    2 DeclPlus: Decl . DeclPlus
+    3         | Decl .
+
+    _boolean    shift, and go to state 1
+    _class      shift, and go to state 2
+    _double     shift, and go to state 3
+    _int        shift, and go to state 4
+    _interface  shift, and go to state 5
+    _string     shift, and go to state 6
+    _void       shift, and go to state 7
+    _id         shift, and go to state 8
+
+    $default  reduce using rule 3 (DeclPlus)
+
+    DeclPlus       go to state 22
+    Decl           go to state 11
+    VariableDecl   go to state 12
+    Variable       go to state 13
+    Type           go to state 14
+    FunctionDecl   go to state 15
+    ClassDecl      go to state 16
+    InterfaceDecl  go to state 17
+
+
+State 12
+
+    4 Decl: VariableDecl .
+
+    $default  reduce using rule 4 (Decl)
+
+
+State 13
+
+    8 VariableDecl: Variable . ';'
+
+    ';'  shift, and go to state 23
+
+
+State 14
+
+    9 Variable: Type . _id
+   14 Type: Type . '[' ']'
+   16 FunctionDecl: Type . _id '(' Formals ')' StmtBlock
+
+    _id  shift, and go to state 24
+    '['  shift, and go to state 25
+
+
+State 15
+
+    5 Decl: FunctionDecl .
+
+    $default  reduce using rule 5 (Decl)
+
+
+State 16
+
+    6 Decl: ClassDecl .
+
+    $default  reduce using rule 6 (Decl)
+
+
+State 17
+
+    7 Decl: InterfaceDecl .
+
+    $default  reduce using rule 7 (Decl)
+
+
+State 18
+
+   22 ClassDecl: _class _id . ClassDeclOptional '{' FieldStar '}'
+
+    _extends     shift, and go to state 26
+    _implements  shift, and go to state 27
+
+    $default  reduce using rule 26 (ClassDeclOptional)
+
+    ClassDeclOptional  go to state 28
+
+
+State 19
+
+   33 InterfaceDecl: _interface _id . '{' PrototypeStar '}'
+
+    '{'  shift, and go to state 29
+
+
+State 20
+
+   17 FunctionDecl: _void _id . '(' Formals ')' StmtBlock
+
+    '('  shift, and go to state 30
+
+
+State 21
+
+    0 $accept: Program $end .
+
+    $default  accept
+
+
+State 22
+
+    2 DeclPlus: Decl DeclPlus .
+
+    $default  reduce using rule 2 (DeclPlus)
+
+
+State 23
+
+    8 VariableDecl: Variable ';' .
+
+    $default  reduce using rule 8 (VariableDecl)
+
+
+State 24
+
+    9 Variable: Type _id .
+   16 FunctionDecl: Type _id . '(' Formals ')' StmtBlock
+
+    '('  shift, and go to state 31
+
+    $default  reduce using rule 9 (Variable)
+
+
+State 25
+
+   14 Type: Type '[' . ']'
+
+    ']'  shift, and go to state 32
+
+
+State 26
+
+   23 ClassDeclOptional: _extends . _id
+   25                  | _extends . _id _implements IdPlusComma
+
+    _id  shift, and go to state 33
+
+
+State 27
+
+   24 ClassDeclOptional: _implements . IdPlusComma
+
+    _id  shift, and go to state 34
+
+    IdPlusComma  go to state 35
+
+
+State 28
+
+   22 ClassDecl: _class _id ClassDeclOptional . '{' FieldStar '}'
+
+    '{'  shift, and go to state 36
+
+
+State 29
+
+   33 InterfaceDecl: _interface _id '{' . PrototypeStar '}'
+
+    _boolean  shift, and go to state 1
+    _double   shift, and go to state 3
+    _int      shift, and go to state 4
+    _string   shift, and go to state 6
+    _void     shift, and go to state 37
+    _id       shift, and go to state 8
+
+    $default  reduce using rule 35 (PrototypeStar)
+
+    Type           go to state 38
+    PrototypeStar  go to state 39
+    Prototype      go to state 40
+
+
+State 30
+
+   17 FunctionDecl: _void _id '(' . Formals ')' StmtBlock
+
+    _boolean  shift, and go to state 1
+    _double   shift, and go to state 3
+    _int      shift, and go to state 4
+    _string   shift, and go to state 6
+    _id       shift, and go to state 8
+
+    $default  reduce using rule 19 (Formals)
+
+    Variable           go to state 41
+    Type               go to state 42
+    Formals            go to state 43
+    VariablePlusComma  go to state 44
+
+
+State 31
+
+   16 FunctionDecl: Type _id '(' . Formals ')' StmtBlock
+
+    _boolean  shift, and go to state 1
+    _double   shift, and go to state 3
+    _int      shift, and go to state 4
+    _string   shift, and go to state 6
+    _id       shift, and go to state 8
+
+    $default  reduce using rule 19 (Formals)
+
+    Variable           go to state 41
+    Type               go to state 42
+    Formals            go to state 45
+    VariablePlusComma  go to state 44
+
+
+State 32
+
+   14 Type: Type '[' ']' .
+
+    $default  reduce using rule 14 (Type)
+
+
+State 33
+
+   23 ClassDeclOptional: _extends _id .
+   25                  | _extends _id . _implements IdPlusComma
+
+    _implements  shift, and go to state 46
+
+    $default  reduce using rule 23 (ClassDeclOptional)
+
+
+State 34
+
+   27 IdPlusComma: _id . ',' IdPlusComma
+   28            | _id .
+
+    ','  shift, and go to state 47
+
+    $default  reduce using rule 28 (IdPlusComma)
+
+
+State 35
+
+   24 ClassDeclOptional: _implements IdPlusComma .
+
+    $default  reduce using rule 24 (ClassDeclOptional)
+
+
+State 36
+
+   22 ClassDecl: _class _id ClassDeclOptional '{' . FieldStar '}'
+
+    _boolean  shift, and go to state 1
+    _double   shift, and go to state 3
+    _int      shift, and go to state 4
+    _string   shift, and go to state 6
+    _void     shift, and go to state 7
+    _id       shift, and go to state 8
+
+    $default  reduce using rule 30 (FieldStar)
+
+    VariableDecl  go to state 48
+    Variable      go to state 13
+    Type          go to state 14
+    FunctionDecl  go to state 49
+    FieldStar     go to state 50
+    Field         go to state 51
+
+
+State 37
+
+   37 Prototype: _void . _id '(' Formals ')' ';'
+
+    _id  shift, and go to state 52
+
+
+State 38
+
+   14 Type: Type . '[' ']'
+   36 Prototype: Type . _id '(' Formals ')' ';'
+
+    _id  shift, and go to state 53
+    '['  shift, and go to state 25
+
+
+State 39
+
+   33 InterfaceDecl: _interface _id '{' PrototypeStar . '}'
+
+    '}'  shift, and go to state 54
+
+
+State 40
+
+   34 PrototypeStar: Prototype . PrototypeStar
+
+    _boolean  shift, and go to state 1
+    _double   shift, and go to state 3
+    _int      shift, and go to state 4
+    _string   shift, and go to state 6
+    _void     shift, and go to state 37
+    _id       shift, and go to state 8
+
+    $default  reduce using rule 35 (PrototypeStar)
+
+    Type           go to state 38
+    PrototypeStar  go to state 55
+    Prototype      go to state 40
+
+
+State 41
+
+   20 VariablePlusComma: Variable . ',' VariablePlusComma
+   21                  | Variable .
+
+    ','  shift, and go to state 56
+
+    $default  reduce using rule 21 (VariablePlusComma)
+
+
+State 42
+
+    9 Variable: Type . _id
+   14 Type: Type . '[' ']'
+
+    _id  shift, and go to state 57
+    '['  shift, and go to state 25
+
+
+State 43
+
+   17 FunctionDecl: _void _id '(' Formals . ')' StmtBlock
+
+    ')'  shift, and go to state 58
+
+
+State 44
+
+   18 Formals: VariablePlusComma .
+
+    $default  reduce using rule 18 (Formals)
+
+
+State 45
+
+   16 FunctionDecl: Type _id '(' Formals . ')' StmtBlock
+
+    ')'  shift, and go to state 59
+
+
+State 46
+
+   25 ClassDeclOptional: _extends _id _implements . IdPlusComma
+
+    _id  shift, and go to state 34
+
+    IdPlusComma  go to state 60
+
+
+State 47
+
+   27 IdPlusComma: _id ',' . IdPlusComma
+
+    _id  shift, and go to state 34
+
+    IdPlusComma  go to state 61
+
+
+State 48
+
+   31 Field: VariableDecl .
+
+    $default  reduce using rule 31 (Field)
+
+
+State 49
+
+   32 Field: FunctionDecl .
+
+    $default  reduce using rule 32 (Field)
+
+
+State 50
+
+   22 ClassDecl: _class _id ClassDeclOptional '{' FieldStar . '}'
+
+    '}'  shift, and go to state 62
+
+
+State 51
+
+   29 FieldStar: Field . FieldStar
+
+    _boolean  shift, and go to state 1
+    _double   shift, and go to state 3
+    _int      shift, and go to state 4
+    _string   shift, and go to state 6
+    _void     shift, and go to state 7
+    _id       shift, and go to state 8
+
+    $default  reduce using rule 30 (FieldStar)
+
+    VariableDecl  go to state 48
+    Variable      go to state 13
+    Type          go to state 14
+    FunctionDecl  go to state 49
+    FieldStar     go to state 63
+    Field         go to state 51
+
+
+State 52
+
+   37 Prototype: _void _id . '(' Formals ')' ';'
+
+    '('  shift, and go to state 64
+
+
+State 53
+
+   36 Prototype: Type _id . '(' Formals ')' ';'
+
+    '('  shift, and go to state 65
+
+
+State 54
+
+   33 InterfaceDecl: _interface _id '{' PrototypeStar '}' .
+
+    $default  reduce using rule 33 (InterfaceDecl)
+
+
+State 55
+
+   34 PrototypeStar: Prototype PrototypeStar .
+
+    $default  reduce using rule 34 (PrototypeStar)
+
+
+State 56
+
+   20 VariablePlusComma: Variable ',' . VariablePlusComma
+
+    _boolean  shift, and go to state 1
+    _double   shift, and go to state 3
+    _int      shift, and go to state 4
+    _string   shift, and go to state 6
+    _id       shift, and go to state 8
+
+    Variable           go to state 41
+    Type               go to state 42
+    VariablePlusComma  go to state 66
+
+
+State 57
+
+    9 Variable: Type _id .
+
+    $default  reduce using rule 9 (Variable)
+
+
+State 58
+
+   17 FunctionDecl: _void _id '(' Formals ')' . StmtBlock
+
+    '{'  shift, and go to state 67
+
+    StmtBlock  go to state 68
+
+
+State 59
+
+   16 FunctionDecl: Type _id '(' Formals ')' . StmtBlock
+
+    '{'  shift, and go to state 67
+
+    StmtBlock  go to state 69
+
+
+State 60
+
+   25 ClassDeclOptional: _extends _id _implements IdPlusComma .
+
+    $default  reduce using rule 25 (ClassDeclOptional)
+
+
+State 61
+
+   27 IdPlusComma: _id ',' IdPlusComma .
+
+    $default  reduce using rule 27 (IdPlusComma)
+
+
+State 62
+
+   22 ClassDecl: _class _id ClassDeclOptional '{' FieldStar '}' .
+
+    $default  reduce using rule 22 (ClassDecl)
+
+
+State 63
+
+   29 FieldStar: Field FieldStar .
+
+    $default  reduce using rule 29 (FieldStar)
+
+
+State 64
+
+   37 Prototype: _void _id '(' . Formals ')' ';'
+
+    _boolean  shift, and go to state 1
+    _double   shift, and go to state 3
+    _int      shift, and go to state 4
+    _string   shift, and go to state 6
+    _id       shift, and go to state 8
+
+    $default  reduce using rule 19 (Formals)
+
+    Variable           go to state 41
+    Type               go to state 42
+    Formals            go to state 70
+    VariablePlusComma  go to state 44
+
+
+State 65
+
+   36 Prototype: Type _id '(' . Formals ')' ';'
+
+    _boolean  shift, and go to state 1
+    _double   shift, and go to state 3
+    _int      shift, and go to state 4
+    _string   shift, and go to state 6
+    _id       shift, and go to state 8
+
+    $default  reduce using rule 19 (Formals)
+
+    Variable           go to state 41
+    Type               go to state 42
+    Formals            go to state 71
+    VariablePlusComma  go to state 44
+
+
+State 66
+
+   20 VariablePlusComma: Variable ',' VariablePlusComma .
+
+    $default  reduce using rule 20 (VariablePlusComma)
+
+
+State 67
+
+   38 StmtBlock: '{' . VariableDeclStar StmtStar '}'
+
+    _boolean  shift, and go to state 1
+    _double   shift, and go to state 3
+    _int      shift, and go to state 4
+    _string   shift, and go to state 6
+    _id       shift, and go to state 8
+
+    _id       [reduce using rule 40 (VariableDeclStar)]
+    $default  reduce using rule 40 (VariableDeclStar)
+
+    VariableDecl      go to state 72
+    Variable          go to state 13
+    Type              go to state 42
+    VariableDeclStar  go to state 73
+
+
+State 68
+
+   17 FunctionDecl: _void _id '(' Formals ')' StmtBlock .
+
+    $default  reduce using rule 17 (FunctionDecl)
+
+
+State 69
+
+   16 FunctionDecl: Type _id '(' Formals ')' StmtBlock .
+
+    $default  reduce using rule 16 (FunctionDecl)
+
+
+State 70
+
+   37 Prototype: _void _id '(' Formals . ')' ';'
+
+    ')'  shift, and go to state 74
+
+
+State 71
+
+   36 Prototype: Type _id '(' Formals . ')' ';'
+
+    ')'  shift, and go to state 75
+
+
+State 72
+
+   39 VariableDeclStar: VariableDecl . VariableDeclStar
+
+    _boolean  shift, and go to state 1
+    _double   shift, and go to state 3
+    _int      shift, and go to state 4
+    _string   shift, and go to state 6
+    _id       shift, and go to state 8
+
+    _id       [reduce using rule 40 (VariableDeclStar)]
+    $default  reduce using rule 40 (VariableDeclStar)
+
+    VariableDecl      go to state 72
+    Variable          go to state 13
+    Type              go to state 42
+    VariableDeclStar  go to state 76
+
+
+State 73
+
+   38 StmtBlock: '{' VariableDeclStar . StmtStar '}'
+
+    _break            shift, and go to state 77
+    _for              shift, and go to state 78
+    _if               shift, and go to state 79
+    _null             shift, and go to state 80
+    _println          shift, and go to state 81
+    _return           shift, and go to state 82
+    _while            shift, and go to state 83
+    _intconstant      shift, and go to state 84
+    _doubleconstant   shift, and go to state 85
+    _stringconstant   shift, and go to state 86
+    _booleanconstant  shift, and go to state 87
+    _id               shift, and go to state 88
+    '('               shift, and go to state 89
+    '{'               shift, and go to state 67
+    '!'               shift, and go to state 90
+    '-'               shift, and go to state 91
+
+    ';'       reduce using rule 52 (ExprOptional)
+    $default  reduce using rule 42 (StmtStar)
+
+    StmtBlock     go to state 92
+    StmtStar      go to state 93
+    Stmt          go to state 94
+    ExprOptional  go to state 95
+    IfStmt        go to state 96
+    WhileStmt     go to state 97
+    ForStmt       go to state 98
+    BreakStmt     go to state 99
+    ReturnStmt    go to state 100
+    PrintStmt     go to state 101
+    Expr          go to state 102
+    ExprA         go to state 103
+    ExprB         go to state 104
+    ExprC         go to state 105
+    ExprD         go to state 106
+    ExprE         go to state 107
+    ExprF         go to state 108
+    ExprG         go to state 109
+    ExprH         go to state 110
+    ExprI         go to state 111
+    Lvalue        go to state 112
+    Call          go to state 113
+    Constant      go to state 114
+
+
+State 74
+
+   37 Prototype: _void _id '(' Formals ')' . ';'
+
+    ';'  shift, and go to state 115
+
+
+State 75
+
+   36 Prototype: Type _id '(' Formals ')' . ';'
+
+    ';'  shift, and go to state 116
+
+
+State 76
+
+   39 VariableDeclStar: VariableDecl VariableDeclStar .
+
+    $default  reduce using rule 39 (VariableDeclStar)
+
+
+State 77
+
+   58 BreakStmt: _break .
+
+    $default  reduce using rule 58 (BreakStmt)
+
+
+State 78
+
+   57 ForStmt: _for . '(' ExprOptional ';' Expr ';' ExprOptional ')' Stmt
+
+    '('  shift, and go to state 117
+
+
+State 79
+
+   53 IfStmt: _if . '(' Expr ')' Stmt IfStmtOptional
+
+    '('  shift, and go to state 118
+
+
+State 80
+
+  103 Constant: _null .
+
+    $default  reduce using rule 103 (Constant)
+
+
+State 81
+
+   60 PrintStmt: _println . '(' ExprPlusComma ')'
+
+    '('  shift, and go to state 119
+
+
+State 82
+
+   59 ReturnStmt: _return . ExprOptional
+
+    _null             shift, and go to state 80
+    _intconstant      shift, and go to state 84
+    _doubleconstant   shift, and go to state 85
+    _stringconstant   shift, and go to state 86
+    _booleanconstant  shift, and go to state 87
+    _id               shift, and go to state 88
+    '('               shift, and go to state 89
+    '!'               shift, and go to state 90
+    '-'               shift, and go to state 91
+
+    _null             [reduce using rule 52 (ExprOptional)]
+    _intconstant      [reduce using rule 52 (ExprOptional)]
+    _doubleconstant   [reduce using rule 52 (ExprOptional)]
+    _stringconstant   [reduce using rule 52 (ExprOptional)]
+    _booleanconstant  [reduce using rule 52 (ExprOptional)]
+    _id               [reduce using rule 52 (ExprOptional)]
+    '('               [reduce using rule 52 (ExprOptional)]
+    '!'               [reduce using rule 52 (ExprOptional)]
+    '-'               [reduce using rule 52 (ExprOptional)]
+    $default          reduce using rule 52 (ExprOptional)
+
+    ExprOptional  go to state 120
+    Expr          go to state 102
+    ExprA         go to state 103
+    ExprB         go to state 104
+    ExprC         go to state 105
+    ExprD         go to state 106
+    ExprE         go to state 107
+    ExprF         go to state 108
+    ExprG         go to state 109
+    ExprH         go to state 110
+    ExprI         go to state 111
+    Lvalue        go to state 112
+    Call          go to state 113
+    Constant      go to state 114
+
+
+State 83
+
+   56 WhileStmt: _while . '(' Expr ')' Stmt
+
+    '('  shift, and go to state 121
+
+
+State 84
+
+   99 Constant: _intconstant .
+
+    $default  reduce using rule 99 (Constant)
+
+
+State 85
+
+  100 Constant: _doubleconstant .
+
+    $default  reduce using rule 100 (Constant)
+
+
+State 86
+
+  101 Constant: _stringconstant .
+
+    $default  reduce using rule 101 (Constant)
+
+
+State 87
+
+  102 Constant: _booleanconstant .
+
+    $default  reduce using rule 102 (Constant)
+
+
+State 88
+
+   92 Lvalue: _id .
+   95 Call: _id . '(' Actuals ')'
+   96     | _id . '.' _id '(' Actuals ')'
+
+    '('  shift, and go to state 122
+    '.'  shift, and go to state 123
+
+    '('       [reduce using rule 92 (Lvalue)]
+    '.'       [reduce using rule 92 (Lvalue)]
+    $default  reduce using rule 92 (Lvalue)
+
+
+State 89
+
+   91 ExprI: '(' . Expr ')'
+
+    _null             shift, and go to state 80
+    _intconstant      shift, and go to state 84
+    _doubleconstant   shift, and go to state 85
+    _stringconstant   shift, and go to state 86
+    _booleanconstant  shift, and go to state 87
+    _id               shift, and go to state 88
+    '('               shift, and go to state 89
+    '!'               shift, and go to state 90
+    '-'               shift, and go to state 91
+
+    Expr      go to state 124
+    ExprA     go to state 103
+    ExprB     go to state 104
+    ExprC     go to state 105
+    ExprD     go to state 106
+    ExprE     go to state 107
+    ExprF     go to state 108
+    ExprG     go to state 109
+    ExprH     go to state 110
+    ExprI     go to state 111
+    Lvalue    go to state 112
+    Call      go to state 113
+    Constant  go to state 114
+
+
+State 90
+
+   86 ExprH: '!' . ExprH
+
+    _null             shift, and go to state 80
+    _intconstant      shift, and go to state 84
+    _doubleconstant   shift, and go to state 85
+    _stringconstant   shift, and go to state 86
+    _booleanconstant  shift, and go to state 87
+    _id               shift, and go to state 88
+    '('               shift, and go to state 89
+    '!'               shift, and go to state 90
+    '-'               shift, and go to state 91
+
+    ExprH     go to state 125
+    ExprI     go to state 111
+    Lvalue    go to state 126
+    Call      go to state 113
+    Constant  go to state 114
+
+
+State 91
+
+   87 ExprH: '-' . ExprH
+
+    _null             shift, and go to state 80
+    _intconstant      shift, and go to state 84
+    _doubleconstant   shift, and go to state 85
+    _stringconstant   shift, and go to state 86
+    _booleanconstant  shift, and go to state 87
+    _id               shift, and go to state 88
+    '('               shift, and go to state 89
+    '!'               shift, and go to state 90
+    '-'               shift, and go to state 91
+
+    ExprH     go to state 127
+    ExprI     go to state 111
+    Lvalue    go to state 126
+    Call      go to state 113
+    Constant  go to state 114
+
+
+State 92
+
+   50 Stmt: StmtBlock .
+
+    $default  reduce using rule 50 (Stmt)
+
+
+State 93
+
+   38 StmtBlock: '{' VariableDeclStar StmtStar . '}'
+
+    '}'  shift, and go to state 128
+
+
+State 94
+
+   41 StmtStar: Stmt . StmtStar
+
+    _break            shift, and go to state 77
+    _for              shift, and go to state 78
+    _if               shift, and go to state 79
+    _null             shift, and go to state 80
+    _println          shift, and go to state 81
+    _return           shift, and go to state 82
+    _while            shift, and go to state 83
+    _intconstant      shift, and go to state 84
+    _doubleconstant   shift, and go to state 85
+    _stringconstant   shift, and go to state 86
+    _booleanconstant  shift, and go to state 87
+    _id               shift, and go to state 88
+    '('               shift, and go to state 89
+    '{'               shift, and go to state 67
+    '!'               shift, and go to state 90
+    '-'               shift, and go to state 91
+
+    ';'       reduce using rule 52 (ExprOptional)
+    $default  reduce using rule 42 (StmtStar)
+
+    StmtBlock     go to state 92
+    StmtStar      go to state 129
+    Stmt          go to state 94
+    ExprOptional  go to state 95
+    IfStmt        go to state 96
+    WhileStmt     go to state 97
+    ForStmt       go to state 98
+    BreakStmt     go to state 99
+    ReturnStmt    go to state 100
+    PrintStmt     go to state 101
+    Expr          go to state 102
+    ExprA         go to state 103
+    ExprB         go to state 104
+    ExprC         go to state 105
+    ExprD         go to state 106
+    ExprE         go to state 107
+    ExprF         go to state 108
+    ExprG         go to state 109
+    ExprH         go to state 110
+    ExprI         go to state 111
+    Lvalue        go to state 112
+    Call          go to state 113
+    Constant      go to state 114
+
+
+State 95
+
+   43 Stmt: ExprOptional . ';'
+
+    ';'  shift, and go to state 130
+
+
+State 96
+
+   44 Stmt: IfStmt .
+
+    $default  reduce using rule 44 (Stmt)
+
+
+State 97
+
+   45 Stmt: WhileStmt .
+
+    $default  reduce using rule 45 (Stmt)
+
+
+State 98
+
+   46 Stmt: ForStmt .
+
+    $default  reduce using rule 46 (Stmt)
+
+
+State 99
+
+   47 Stmt: BreakStmt .
+
+    $default  reduce using rule 47 (Stmt)
+
+
+State 100
+
+   48 Stmt: ReturnStmt .
+
+    $default  reduce using rule 48 (Stmt)
+
+
+State 101
+
+   49 Stmt: PrintStmt .
+
+    $default  reduce using rule 49 (Stmt)
+
+
+State 102
+
+   51 ExprOptional: Expr .
+
+    $default  reduce using rule 51 (ExprOptional)
+
+
+State 103
+
+   63 Expr: ExprA .
+
+    $default  reduce using rule 63 (Expr)
+
+
+State 104
+
+   64 ExprA: ExprB .
+   67 ExprB: ExprB . '|' '|' ExprC
+
+    '|'  shift, and go to state 131
+
+    $default  reduce using rule 64 (ExprA)
+
+
+State 105
+
+   66 ExprB: ExprC .
+   69 ExprC: ExprC . '&' '&' ExprD
+
+    '&'  shift, and go to state 132
+
+    $default  reduce using rule 66 (ExprB)
+
+
+State 106
+
+   68 ExprC: ExprD .
+   71 ExprD: ExprD . '=' '=' ExprE
+   72      | ExprD . '!' '=' ExprE
+
+    '='  shift, and go to state 133
+    '!'  shift, and go to state 134
+
+    '!'       [reduce using rule 68 (ExprC)]
+    $default  reduce using rule 68 (ExprC)
+
+
+State 107
+
+   70 ExprD: ExprE .
+   74 ExprE: ExprE . '<' ExprF
+   75      | ExprE . '<' '=' ExprF
+   76      | ExprE . '>' ExprF
+   77      | ExprE . '>' '=' ExprF
+
+    '<'  shift, and go to state 135
+    '>'  shift, and go to state 136
+
+    $default  reduce using rule 70 (ExprD)
+
+
+State 108
+
+   73 ExprE: ExprF .
+   79 ExprF: ExprF . '+' ExprG
+   80      | ExprF . '-' ExprG
+   82 ExprG: ExprF . '*' ExprG
+   83      | ExprF . '/' ExprG
+   84      | ExprF . '%' ExprG
+
+    '+'  shift, and go to state 137
+    '-'  shift, and go to state 138
+    '*'  shift, and go to state 139
+    '/'  shift, and go to state 140
+    '%'  shift, and go to state 141
+
+    '-'       [reduce using rule 73 (ExprE)]
+    $default  reduce using rule 73 (ExprE)
+
+
+State 109
+
+   78 ExprF: ExprG .
+
+    $default  reduce using rule 78 (ExprF)
+
+
+State 110
+
+   81 ExprG: ExprH .
+
+    $default  reduce using rule 81 (ExprG)
+
+
+State 111
+
+   85 ExprH: ExprI .
+
+    $default  reduce using rule 85 (ExprH)
+
+
+State 112
+
+   65 ExprA: Lvalue . '=' ExprB
+   88 ExprI: Lvalue .
+   93 Lvalue: Lvalue . '[' Expr ']'
+   94       | Lvalue . '.' _id
+
+    '['  shift, and go to state 142
+    '='  shift, and go to state 143
+    '.'  shift, and go to state 144
+
+    '='       [reduce using rule 88 (ExprI)]
+    $default  reduce using rule 88 (ExprI)
+
+
+State 113
+
+   90 ExprI: Call .
+
+    $default  reduce using rule 90 (ExprI)
+
+
+State 114
+
+   89 ExprI: Constant .
+
+    $default  reduce using rule 89 (ExprI)
+
+
+State 115
+
+   37 Prototype: _void _id '(' Formals ')' ';' .
+
+    $default  reduce using rule 37 (Prototype)
+
+
+State 116
+
+   36 Prototype: Type _id '(' Formals ')' ';' .
+
+    $default  reduce using rule 36 (Prototype)
+
+
+State 117
+
+   57 ForStmt: _for '(' . ExprOptional ';' Expr ';' ExprOptional ')' Stmt
+
+    _null             shift, and go to state 80
+    _intconstant      shift, and go to state 84
+    _doubleconstant   shift, and go to state 85
+    _stringconstant   shift, and go to state 86
+    _booleanconstant  shift, and go to state 87
+    _id               shift, and go to state 88
+    '('               shift, and go to state 89
+    '!'               shift, and go to state 90
+    '-'               shift, and go to state 91
+
+    $default  reduce using rule 52 (ExprOptional)
+
+    ExprOptional  go to state 145
+    Expr          go to state 102
+    ExprA         go to state 103
+    ExprB         go to state 104
+    ExprC         go to state 105
+    ExprD         go to state 106
+    ExprE         go to state 107
+    ExprF         go to state 108
+    ExprG         go to state 109
+    ExprH         go to state 110
+    ExprI         go to state 111
+    Lvalue        go to state 112
+    Call          go to state 113
+    Constant      go to state 114
+
+
+State 118
+
+   53 IfStmt: _if '(' . Expr ')' Stmt IfStmtOptional
+
+    _null             shift, and go to state 80
+    _intconstant      shift, and go to state 84
+    _doubleconstant   shift, and go to state 85
+    _stringconstant   shift, and go to state 86
+    _booleanconstant  shift, and go to state 87
+    _id               shift, and go to state 88
+    '('               shift, and go to state 89
+    '!'               shift, and go to state 90
+    '-'               shift, and go to state 91
+
+    Expr      go to state 146
+    ExprA     go to state 103
+    ExprB     go to state 104
+    ExprC     go to state 105
+    ExprD     go to state 106
+    ExprE     go to state 107
+    ExprF     go to state 108
+    ExprG     go to state 109
+    ExprH     go to state 110
+    ExprI     go to state 111
+    Lvalue    go to state 112
+    Call      go to state 113
+    Constant  go to state 114
+
+
+State 119
+
+   60 PrintStmt: _println '(' . ExprPlusComma ')'
+
+    _null             shift, and go to state 80
+    _intconstant      shift, and go to state 84
+    _doubleconstant   shift, and go to state 85
+    _stringconstant   shift, and go to state 86
+    _booleanconstant  shift, and go to state 87
+    _id               shift, and go to state 88
+    '('               shift, and go to state 89
+    '!'               shift, and go to state 90
+    '-'               shift, and go to state 91
+
+    ExprPlusComma  go to state 147
+    Expr           go to state 148
+    ExprA          go to state 103
+    ExprB          go to state 104
+    ExprC          go to state 105
+    ExprD          go to state 106
+    ExprE          go to state 107
+    ExprF          go to state 108
+    ExprG          go to state 109
+    ExprH          go to state 110
+    ExprI          go to state 111
+    Lvalue         go to state 112
+    Call           go to state 113
+    Constant       go to state 114
+
+
+State 120
+
+   59 ReturnStmt: _return ExprOptional .
+
+    $default  reduce using rule 59 (ReturnStmt)
+
+
+State 121
+
+   56 WhileStmt: _while '(' . Expr ')' Stmt
+
+    _null             shift, and go to state 80
+    _intconstant      shift, and go to state 84
+    _doubleconstant   shift, and go to state 85
+    _stringconstant   shift, and go to state 86
+    _booleanconstant  shift, and go to state 87
+    _id               shift, and go to state 88
+    '('               shift, and go to state 89
+    '!'               shift, and go to state 90
+    '-'               shift, and go to state 91
+
+    Expr      go to state 149
+    ExprA     go to state 103
+    ExprB     go to state 104
+    ExprC     go to state 105
+    ExprD     go to state 106
+    ExprE     go to state 107
+    ExprF     go to state 108
+    ExprG     go to state 109
+    ExprH     go to state 110
+    ExprI     go to state 111
+    Lvalue    go to state 112
+    Call      go to state 113
+    Constant  go to state 114
+
+
+State 122
+
+   95 Call: _id '(' . Actuals ')'
+
+    _null             shift, and go to state 80
+    _intconstant      shift, and go to state 84
+    _doubleconstant   shift, and go to state 85
+    _stringconstant   shift, and go to state 86
+    _booleanconstant  shift, and go to state 87
+    _id               shift, and go to state 88
+    '('               shift, and go to state 89
+    '!'               shift, and go to state 90
+    '-'               shift, and go to state 91
+
+    $default  reduce using rule 98 (Actuals)
+
+    ExprPlusComma  go to state 150
+    Expr           go to state 148
+    ExprA          go to state 103
+    ExprB          go to state 104
+    ExprC          go to state 105
+    ExprD          go to state 106
+    ExprE          go to state 107
+    ExprF          go to state 108
+    ExprG          go to state 109
+    ExprH          go to state 110
+    ExprI          go to state 111
+    Lvalue         go to state 112
+    Call           go to state 113
+    Actuals        go to state 151
+    Constant       go to state 114
+
+
+State 123
+
+   96 Call: _id '.' . _id '(' Actuals ')'
+
+    _id  shift, and go to state 152
+
+
+State 124
+
+   91 ExprI: '(' Expr . ')'
+
+    ')'  shift, and go to state 153
+
+
+State 125
+
+   86 ExprH: '!' ExprH .
+
+    $default  reduce using rule 86 (ExprH)
+
+
+State 126
+
+   88 ExprI: Lvalue .
+   93 Lvalue: Lvalue . '[' Expr ']'
+   94       | Lvalue . '.' _id
+
+    '['  shift, and go to state 142
+    '.'  shift, and go to state 144
+
+    $default  reduce using rule 88 (ExprI)
+
+
+State 127
+
+   87 ExprH: '-' ExprH .
+
+    $default  reduce using rule 87 (ExprH)
+
+
+State 128
+
+   38 StmtBlock: '{' VariableDeclStar StmtStar '}' .
+
+    $default  reduce using rule 38 (StmtBlock)
+
+
+State 129
+
+   41 StmtStar: Stmt StmtStar .
+
+    $default  reduce using rule 41 (StmtStar)
+
+
+State 130
+
+   43 Stmt: ExprOptional ';' .
+
+    $default  reduce using rule 43 (Stmt)
+
+
+State 131
+
+   67 ExprB: ExprB '|' . '|' ExprC
+
+    '|'  shift, and go to state 154
+
+
+State 132
+
+   69 ExprC: ExprC '&' . '&' ExprD
+
+    '&'  shift, and go to state 155
+
+
+State 133
+
+   71 ExprD: ExprD '=' . '=' ExprE
+
+    '='  shift, and go to state 156
+
+
+State 134
+
+   72 ExprD: ExprD '!' . '=' ExprE
+
+    '='  shift, and go to state 157
+
+
+State 135
+
+   74 ExprE: ExprE '<' . ExprF
+   75      | ExprE '<' . '=' ExprF
+
+    _null             shift, and go to state 80
+    _intconstant      shift, and go to state 84
+    _doubleconstant   shift, and go to state 85
+    _stringconstant   shift, and go to state 86
+    _booleanconstant  shift, and go to state 87
+    _id               shift, and go to state 88
+    '('               shift, and go to state 89
+    '='               shift, and go to state 158
+    '!'               shift, and go to state 90
+    '-'               shift, and go to state 91
+
+    ExprF     go to state 159
+    ExprG     go to state 109
+    ExprH     go to state 110
+    ExprI     go to state 111
+    Lvalue    go to state 126
+    Call      go to state 113
+    Constant  go to state 114
+
+
+State 136
+
+   76 ExprE: ExprE '>' . ExprF
+   77      | ExprE '>' . '=' ExprF
+
+    _null             shift, and go to state 80
+    _intconstant      shift, and go to state 84
+    _doubleconstant   shift, and go to state 85
+    _stringconstant   shift, and go to state 86
+    _booleanconstant  shift, and go to state 87
+    _id               shift, and go to state 88
+    '('               shift, and go to state 89
+    '='               shift, and go to state 160
+    '!'               shift, and go to state 90
+    '-'               shift, and go to state 91
+
+    ExprF     go to state 161
+    ExprG     go to state 109
+    ExprH     go to state 110
+    ExprI     go to state 111
+    Lvalue    go to state 126
+    Call      go to state 113
+    Constant  go to state 114
+
+
+State 137
+
+   79 ExprF: ExprF '+' . ExprG
+
+    _null             shift, and go to state 80
+    _intconstant      shift, and go to state 84
+    _doubleconstant   shift, and go to state 85
+    _stringconstant   shift, and go to state 86
+    _booleanconstant  shift, and go to state 87
+    _id               shift, and go to state 88
+    '('               shift, and go to state 89
+    '!'               shift, and go to state 90
+    '-'               shift, and go to state 91
+
+    ExprF     go to state 162
+    ExprG     go to state 163
+    ExprH     go to state 110
+    ExprI     go to state 111
+    Lvalue    go to state 126
+    Call      go to state 113
+    Constant  go to state 114
+
+
+State 138
+
+   80 ExprF: ExprF '-' . ExprG
+
+    _null             shift, and go to state 80
+    _intconstant      shift, and go to state 84
+    _doubleconstant   shift, and go to state 85
+    _stringconstant   shift, and go to state 86
+    _booleanconstant  shift, and go to state 87
+    _id               shift, and go to state 88
+    '('               shift, and go to state 89
+    '!'               shift, and go to state 90
+    '-'               shift, and go to state 91
+
+    ExprF     go to state 162
+    ExprG     go to state 164
+    ExprH     go to state 110
+    ExprI     go to state 111
+    Lvalue    go to state 126
+    Call      go to state 113
+    Constant  go to state 114
+
+
+State 139
+
+   82 ExprG: ExprF '*' . ExprG
+
+    _null             shift, and go to state 80
+    _intconstant      shift, and go to state 84
+    _doubleconstant   shift, and go to state 85
+    _stringconstant   shift, and go to state 86
+    _booleanconstant  shift, and go to state 87
+    _id               shift, and go to state 88
+    '('               shift, and go to state 89
+    '!'               shift, and go to state 90
+    '-'               shift, and go to state 91
+
+    ExprF     go to state 162
+    ExprG     go to state 165
+    ExprH     go to state 110
+    ExprI     go to state 111
+    Lvalue    go to state 126
+    Call      go to state 113
+    Constant  go to state 114
+
+
+State 140
+
+   83 ExprG: ExprF '/' . ExprG
+
+    _null             shift, and go to state 80
+    _intconstant      shift, and go to state 84
+    _doubleconstant   shift, and go to state 85
+    _stringconstant   shift, and go to state 86
+    _booleanconstant  shift, and go to state 87
+    _id               shift, and go to state 88
+    '('               shift, and go to state 89
+    '!'               shift, and go to state 90
+    '-'               shift, and go to state 91
+
+    ExprF     go to state 162
+    ExprG     go to state 166
+    ExprH     go to state 110
+    ExprI     go to state 111
+    Lvalue    go to state 126
+    Call      go to state 113
+    Constant  go to state 114
+
+
+State 141
+
+   84 ExprG: ExprF '%' . ExprG
+
+    _null             shift, and go to state 80
+    _intconstant      shift, and go to state 84
+    _doubleconstant   shift, and go to state 85
+    _stringconstant   shift, and go to state 86
+    _booleanconstant  shift, and go to state 87
+    _id               shift, and go to state 88
+    '('               shift, and go to state 89
+    '!'               shift, and go to state 90
+    '-'               shift, and go to state 91
+
+    ExprF     go to state 162
+    ExprG     go to state 167
+    ExprH     go to state 110
+    ExprI     go to state 111
+    Lvalue    go to state 126
+    Call      go to state 113
+    Constant  go to state 114
+
+
+State 142
+
+   93 Lvalue: Lvalue '[' . Expr ']'
+
+    _null             shift, and go to state 80
+    _intconstant      shift, and go to state 84
+    _doubleconstant   shift, and go to state 85
+    _stringconstant   shift, and go to state 86
+    _booleanconstant  shift, and go to state 87
+    _id               shift, and go to state 88
+    '('               shift, and go to state 89
+    '!'               shift, and go to state 90
+    '-'               shift, and go to state 91
+
+    Expr      go to state 168
+    ExprA     go to state 103
+    ExprB     go to state 104
+    ExprC     go to state 105
+    ExprD     go to state 106
+    ExprE     go to state 107
+    ExprF     go to state 108
+    ExprG     go to state 109
+    ExprH     go to state 110
+    ExprI     go to state 111
+    Lvalue    go to state 112
+    Call      go to state 113
+    Constant  go to state 114
+
+
+State 143
+
+   65 ExprA: Lvalue '=' . ExprB
+
+    _null             shift, and go to state 80
+    _intconstant      shift, and go to state 84
+    _doubleconstant   shift, and go to state 85
+    _stringconstant   shift, and go to state 86
+    _booleanconstant  shift, and go to state 87
+    _id               shift, and go to state 88
+    '('               shift, and go to state 89
+    '!'               shift, and go to state 90
+    '-'               shift, and go to state 91
+
+    ExprB     go to state 169
+    ExprC     go to state 105
+    ExprD     go to state 106
+    ExprE     go to state 107
+    ExprF     go to state 108
+    ExprG     go to state 109
+    ExprH     go to state 110
+    ExprI     go to state 111
+    Lvalue    go to state 126
+    Call      go to state 113
+    Constant  go to state 114
+
+
+State 144
+
+   94 Lvalue: Lvalue '.' . _id
+
+    _id  shift, and go to state 170
+
+
+State 145
+
+   57 ForStmt: _for '(' ExprOptional . ';' Expr ';' ExprOptional ')' Stmt
+
+    ';'  shift, and go to state 171
+
+
+State 146
+
+   53 IfStmt: _if '(' Expr . ')' Stmt IfStmtOptional
+
+    ')'  shift, and go to state 172
+
+
+State 147
+
+   60 PrintStmt: _println '(' ExprPlusComma . ')'
+
+    ')'  shift, and go to state 173
+
+
+State 148
+
+   61 ExprPlusComma: Expr . ',' ExprPlusComma
+   62              | Expr .
+
+    ','  shift, and go to state 174
+
+    $default  reduce using rule 62 (ExprPlusComma)
+
+
+State 149
+
+   56 WhileStmt: _while '(' Expr . ')' Stmt
+
+    ')'  shift, and go to state 175
+
+
+State 150
+
+   97 Actuals: ExprPlusComma .
+
+    $default  reduce using rule 97 (Actuals)
+
+
+State 151
+
+   95 Call: _id '(' Actuals . ')'
+
+    ')'  shift, and go to state 176
+
+
+State 152
+
+   96 Call: _id '.' _id . '(' Actuals ')'
+
+    '('  shift, and go to state 177
+
+
+State 153
+
+   91 ExprI: '(' Expr ')' .
+
+    $default  reduce using rule 91 (ExprI)
+
+
+State 154
+
+   67 ExprB: ExprB '|' '|' . ExprC
+
+    _null             shift, and go to state 80
+    _intconstant      shift, and go to state 84
+    _doubleconstant   shift, and go to state 85
+    _stringconstant   shift, and go to state 86
+    _booleanconstant  shift, and go to state 87
+    _id               shift, and go to state 88
+    '('               shift, and go to state 89
+    '!'               shift, and go to state 90
+    '-'               shift, and go to state 91
+
+    ExprC     go to state 178
+    ExprD     go to state 106
+    ExprE     go to state 107
+    ExprF     go to state 108
+    ExprG     go to state 109
+    ExprH     go to state 110
+    ExprI     go to state 111
+    Lvalue    go to state 126
+    Call      go to state 113
+    Constant  go to state 114
+
+
+State 155
+
+   69 ExprC: ExprC '&' '&' . ExprD
+
+    _null             shift, and go to state 80
+    _intconstant      shift, and go to state 84
+    _doubleconstant   shift, and go to state 85
+    _stringconstant   shift, and go to state 86
+    _booleanconstant  shift, and go to state 87
+    _id               shift, and go to state 88
+    '('               shift, and go to state 89
+    '!'               shift, and go to state 90
+    '-'               shift, and go to state 91
+
+    ExprD     go to state 179
+    ExprE     go to state 107
+    ExprF     go to state 108
+    ExprG     go to state 109
+    ExprH     go to state 110
+    ExprI     go to state 111
+    Lvalue    go to state 126
+    Call      go to state 113
+    Constant  go to state 114
+
+
+State 156
+
+   71 ExprD: ExprD '=' '=' . ExprE
+
+    _null             shift, and go to state 80
+    _intconstant      shift, and go to state 84
+    _doubleconstant   shift, and go to state 85
+    _stringconstant   shift, and go to state 86
+    _booleanconstant  shift, and go to state 87
+    _id               shift, and go to state 88
+    '('               shift, and go to state 89
+    '!'               shift, and go to state 90
+    '-'               shift, and go to state 91
+
+    ExprE     go to state 180
+    ExprF     go to state 108
+    ExprG     go to state 109
+    ExprH     go to state 110
+    ExprI     go to state 111
+    Lvalue    go to state 126
+    Call      go to state 113
+    Constant  go to state 114
+
+
+State 157
+
+   72 ExprD: ExprD '!' '=' . ExprE
+
+    _null             shift, and go to state 80
+    _intconstant      shift, and go to state 84
+    _doubleconstant   shift, and go to state 85
+    _stringconstant   shift, and go to state 86
+    _booleanconstant  shift, and go to state 87
+    _id               shift, and go to state 88
+    '('               shift, and go to state 89
+    '!'               shift, and go to state 90
+    '-'               shift, and go to state 91
+
+    ExprE     go to state 181
+    ExprF     go to state 108
+    ExprG     go to state 109
+    ExprH     go to state 110
+    ExprI     go to state 111
+    Lvalue    go to state 126
+    Call      go to state 113
+    Constant  go to state 114
+
+
+State 158
+
+   75 ExprE: ExprE '<' '=' . ExprF
+
+    _null             shift, and go to state 80
+    _intconstant      shift, and go to state 84
+    _doubleconstant   shift, and go to state 85
+    _stringconstant   shift, and go to state 86
+    _booleanconstant  shift, and go to state 87
+    _id               shift, and go to state 88
+    '('               shift, and go to state 89
+    '!'               shift, and go to state 90
+    '-'               shift, and go to state 91
+
+    ExprF     go to state 182
+    ExprG     go to state 109
+    ExprH     go to state 110
+    ExprI     go to state 111
+    Lvalue    go to state 126
+    Call      go to state 113
+    Constant  go to state 114
+
+
+State 159
+
+   74 ExprE: ExprE '<' ExprF .
+   79 ExprF: ExprF . '+' ExprG
+   80      | ExprF . '-' ExprG
+   82 ExprG: ExprF . '*' ExprG
+   83      | ExprF . '/' ExprG
+   84      | ExprF . '%' ExprG
+
+    '+'  shift, and go to state 137
+    '-'  shift, and go to state 138
+    '*'  shift, and go to state 139
+    '/'  shift, and go to state 140
+    '%'  shift, and go to state 141
+
+    '-'       [reduce using rule 74 (ExprE)]
+    $default  reduce using rule 74 (ExprE)
+
+
+State 160
+
+   77 ExprE: ExprE '>' '=' . ExprF
+
+    _null             shift, and go to state 80
+    _intconstant      shift, and go to state 84
+    _doubleconstant   shift, and go to state 85
+    _stringconstant   shift, and go to state 86
+    _booleanconstant  shift, and go to state 87
+    _id               shift, and go to state 88
+    '('               shift, and go to state 89
+    '!'               shift, and go to state 90
+    '-'               shift, and go to state 91
+
+    ExprF     go to state 183
+    ExprG     go to state 109
+    ExprH     go to state 110
+    ExprI     go to state 111
+    Lvalue    go to state 126
+    Call      go to state 113
+    Constant  go to state 114
+
+
+State 161
+
+   76 ExprE: ExprE '>' ExprF .
+   79 ExprF: ExprF . '+' ExprG
+   80      | ExprF . '-' ExprG
+   82 ExprG: ExprF . '*' ExprG
+   83      | ExprF . '/' ExprG
+   84      | ExprF . '%' ExprG
+
+    '+'  shift, and go to state 137
+    '-'  shift, and go to state 138
+    '*'  shift, and go to state 139
+    '/'  shift, and go to state 140
+    '%'  shift, and go to state 141
+
+    '-'       [reduce using rule 76 (ExprE)]
+    $default  reduce using rule 76 (ExprE)
+
+
+State 162
+
+   79 ExprF: ExprF . '+' ExprG
+   80      | ExprF . '-' ExprG
+   82 ExprG: ExprF . '*' ExprG
+   83      | ExprF . '/' ExprG
+   84      | ExprF . '%' ExprG
+
+    '+'  shift, and go to state 137
+    '-'  shift, and go to state 138
+    '*'  shift, and go to state 139
+    '/'  shift, and go to state 140
+    '%'  shift, and go to state 141
+
+
+State 163
+
+   78 ExprF: ExprG .
+   79      | ExprF '+' ExprG .
+
+    '+'       reduce using rule 78 (ExprF)
+    '+'       [reduce using rule 79 (ExprF)]
+    '-'       reduce using rule 78 (ExprF)
+    '-'       [reduce using rule 79 (ExprF)]
+    '*'       reduce using rule 78 (ExprF)
+    '*'       [reduce using rule 79 (ExprF)]
+    '/'       reduce using rule 78 (ExprF)
+    '/'       [reduce using rule 79 (ExprF)]
+    '%'       reduce using rule 78 (ExprF)
+    '%'       [reduce using rule 79 (ExprF)]
+    $default  reduce using rule 79 (ExprF)
+
+
+State 164
+
+   78 ExprF: ExprG .
+   80      | ExprF '-' ExprG .
+
+    '+'       reduce using rule 78 (ExprF)
+    '+'       [reduce using rule 80 (ExprF)]
+    '-'       reduce using rule 78 (ExprF)
+    '-'       [reduce using rule 80 (ExprF)]
+    '*'       reduce using rule 78 (ExprF)
+    '*'       [reduce using rule 80 (ExprF)]
+    '/'       reduce using rule 78 (ExprF)
+    '/'       [reduce using rule 80 (ExprF)]
+    '%'       reduce using rule 78 (ExprF)
+    '%'       [reduce using rule 80 (ExprF)]
+    $default  reduce using rule 80 (ExprF)
+
+
+State 165
+
+   78 ExprF: ExprG .
+   82 ExprG: ExprF '*' ExprG .
+
+    '+'       reduce using rule 78 (ExprF)
+    '+'       [reduce using rule 82 (ExprG)]
+    '-'       reduce using rule 78 (ExprF)
+    '-'       [reduce using rule 82 (ExprG)]
+    '*'       reduce using rule 78 (ExprF)
+    '*'       [reduce using rule 82 (ExprG)]
+    '/'       reduce using rule 78 (ExprF)
+    '/'       [reduce using rule 82 (ExprG)]
+    '%'       reduce using rule 78 (ExprF)
+    '%'       [reduce using rule 82 (ExprG)]
+    $default  reduce using rule 82 (ExprG)
+
+
+State 166
+
+   78 ExprF: ExprG .
+   83 ExprG: ExprF '/' ExprG .
+
+    '+'       reduce using rule 78 (ExprF)
+    '+'       [reduce using rule 83 (ExprG)]
+    '-'       reduce using rule 78 (ExprF)
+    '-'       [reduce using rule 83 (ExprG)]
+    '*'       reduce using rule 78 (ExprF)
+    '*'       [reduce using rule 83 (ExprG)]
+    '/'       reduce using rule 78 (ExprF)
+    '/'       [reduce using rule 83 (ExprG)]
+    '%'       reduce using rule 78 (ExprF)
+    '%'       [reduce using rule 83 (ExprG)]
+    $default  reduce using rule 83 (ExprG)
+
+
+State 167
+
+   78 ExprF: ExprG .
+   84 ExprG: ExprF '%' ExprG .
+
+    '+'       reduce using rule 78 (ExprF)
+    '+'       [reduce using rule 84 (ExprG)]
+    '-'       reduce using rule 78 (ExprF)
+    '-'       [reduce using rule 84 (ExprG)]
+    '*'       reduce using rule 78 (ExprF)
+    '*'       [reduce using rule 84 (ExprG)]
+    '/'       reduce using rule 78 (ExprF)
+    '/'       [reduce using rule 84 (ExprG)]
+    '%'       reduce using rule 78 (ExprF)
+    '%'       [reduce using rule 84 (ExprG)]
+    $default  reduce using rule 84 (ExprG)
+
+
+State 168
+
+   93 Lvalue: Lvalue '[' Expr . ']'
+
+    ']'  shift, and go to state 184
+
+
+State 169
+
+   65 ExprA: Lvalue '=' ExprB .
+   67 ExprB: ExprB . '|' '|' ExprC
+
+    '|'  shift, and go to state 131
+
+    $default  reduce using rule 65 (ExprA)
+
+
+State 170
+
+   94 Lvalue: Lvalue '.' _id .
+
+    $default  reduce using rule 94 (Lvalue)
+
+
+State 171
+
+   57 ForStmt: _for '(' ExprOptional ';' . Expr ';' ExprOptional ')' Stmt
+
+    _null             shift, and go to state 80
+    _intconstant      shift, and go to state 84
+    _doubleconstant   shift, and go to state 85
+    _stringconstant   shift, and go to state 86
+    _booleanconstant  shift, and go to state 87
+    _id               shift, and go to state 88
+    '('               shift, and go to state 89
+    '!'               shift, and go to state 90
+    '-'               shift, and go to state 91
+
+    Expr      go to state 185
+    ExprA     go to state 103
+    ExprB     go to state 104
+    ExprC     go to state 105
+    ExprD     go to state 106
+    ExprE     go to state 107
+    ExprF     go to state 108
+    ExprG     go to state 109
+    ExprH     go to state 110
+    ExprI     go to state 111
+    Lvalue    go to state 112
+    Call      go to state 113
+    Constant  go to state 114
+
+
+State 172
+
+   53 IfStmt: _if '(' Expr ')' . Stmt IfStmtOptional
+
+    _break            shift, and go to state 77
+    _for              shift, and go to state 78
+    _if               shift, and go to state 79
+    _null             shift, and go to state 80
+    _println          shift, and go to state 81
+    _return           shift, and go to state 82
+    _while            shift, and go to state 83
+    _intconstant      shift, and go to state 84
+    _doubleconstant   shift, and go to state 85
+    _stringconstant   shift, and go to state 86
+    _booleanconstant  shift, and go to state 87
+    _id               shift, and go to state 88
+    '('               shift, and go to state 89
+    '{'               shift, and go to state 67
+    '!'               shift, and go to state 90
+    '-'               shift, and go to state 91
+
+    $default  reduce using rule 52 (ExprOptional)
+
+    StmtBlock     go to state 92
+    Stmt          go to state 186
+    ExprOptional  go to state 95
+    IfStmt        go to state 96
+    WhileStmt     go to state 97
+    ForStmt       go to state 98
+    BreakStmt     go to state 99
+    ReturnStmt    go to state 100
+    PrintStmt     go to state 101
+    Expr          go to state 102
+    ExprA         go to state 103
+    ExprB         go to state 104
+    ExprC         go to state 105
+    ExprD         go to state 106
+    ExprE         go to state 107
+    ExprF         go to state 108
+    ExprG         go to state 109
+    ExprH         go to state 110
+    ExprI         go to state 111
+    Lvalue        go to state 112
+    Call          go to state 113
+    Constant      go to state 114
+
+
+State 173
+
+   60 PrintStmt: _println '(' ExprPlusComma ')' .
+
+    $default  reduce using rule 60 (PrintStmt)
+
+
+State 174
+
+   61 ExprPlusComma: Expr ',' . ExprPlusComma
+
+    _null             shift, and go to state 80
+    _intconstant      shift, and go to state 84
+    _doubleconstant   shift, and go to state 85
+    _stringconstant   shift, and go to state 86
+    _booleanconstant  shift, and go to state 87
+    _id               shift, and go to state 88
+    '('               shift, and go to state 89
+    '!'               shift, and go to state 90
+    '-'               shift, and go to state 91
+
+    ExprPlusComma  go to state 187
+    Expr           go to state 148
+    ExprA          go to state 103
+    ExprB          go to state 104
+    ExprC          go to state 105
+    ExprD          go to state 106
+    ExprE          go to state 107
+    ExprF          go to state 108
+    ExprG          go to state 109
+    ExprH          go to state 110
+    ExprI          go to state 111
+    Lvalue         go to state 112
+    Call           go to state 113
+    Constant       go to state 114
+
+
+State 175
+
+   56 WhileStmt: _while '(' Expr ')' . Stmt
+
+    _break            shift, and go to state 77
+    _for              shift, and go to state 78
+    _if               shift, and go to state 79
+    _null             shift, and go to state 80
+    _println          shift, and go to state 81
+    _return           shift, and go to state 82
+    _while            shift, and go to state 83
+    _intconstant      shift, and go to state 84
+    _doubleconstant   shift, and go to state 85
+    _stringconstant   shift, and go to state 86
+    _booleanconstant  shift, and go to state 87
+    _id               shift, and go to state 88
+    '('               shift, and go to state 89
+    '{'               shift, and go to state 67
+    '!'               shift, and go to state 90
+    '-'               shift, and go to state 91
+
+    $default  reduce using rule 52 (ExprOptional)
+
+    StmtBlock     go to state 92
+    Stmt          go to state 188
+    ExprOptional  go to state 95
+    IfStmt        go to state 96
+    WhileStmt     go to state 97
+    ForStmt       go to state 98
+    BreakStmt     go to state 99
+    ReturnStmt    go to state 100
+    PrintStmt     go to state 101
+    Expr          go to state 102
+    ExprA         go to state 103
+    ExprB         go to state 104
+    ExprC         go to state 105
+    ExprD         go to state 106
+    ExprE         go to state 107
+    ExprF         go to state 108
+    ExprG         go to state 109
+    ExprH         go to state 110
+    ExprI         go to state 111
+    Lvalue        go to state 112
+    Call          go to state 113
+    Constant      go to state 114
+
+
+State 176
+
+   95 Call: _id '(' Actuals ')' .
+
+    $default  reduce using rule 95 (Call)
+
+
+State 177
+
+   96 Call: _id '.' _id '(' . Actuals ')'
+
+    _null             shift, and go to state 80
+    _intconstant      shift, and go to state 84
+    _doubleconstant   shift, and go to state 85
+    _stringconstant   shift, and go to state 86
+    _booleanconstant  shift, and go to state 87
+    _id               shift, and go to state 88
+    '('               shift, and go to state 89
+    '!'               shift, and go to state 90
+    '-'               shift, and go to state 91
+
+    $default  reduce using rule 98 (Actuals)
+
+    ExprPlusComma  go to state 150
+    Expr           go to state 148
+    ExprA          go to state 103
+    ExprB          go to state 104
+    ExprC          go to state 105
+    ExprD          go to state 106
+    ExprE          go to state 107
+    ExprF          go to state 108
+    ExprG          go to state 109
+    ExprH          go to state 110
+    ExprI          go to state 111
+    Lvalue         go to state 112
+    Call           go to state 113
+    Actuals        go to state 189
+    Constant       go to state 114
+
+
+State 178
+
+   67 ExprB: ExprB '|' '|' ExprC .
+   69 ExprC: ExprC . '&' '&' ExprD
+
+    '&'  shift, and go to state 132
+
+    $default  reduce using rule 67 (ExprB)
+
+
+State 179
+
+   69 ExprC: ExprC '&' '&' ExprD .
+   71 ExprD: ExprD . '=' '=' ExprE
+   72      | ExprD . '!' '=' ExprE
+
+    '='  shift, and go to state 133
+    '!'  shift, and go to state 134
+
+    '!'       [reduce using rule 69 (ExprC)]
+    $default  reduce using rule 69 (ExprC)
+
+
+State 180
+
+   71 ExprD: ExprD '=' '=' ExprE .
+   74 ExprE: ExprE . '<' ExprF
+   75      | ExprE . '<' '=' ExprF
+   76      | ExprE . '>' ExprF
+   77      | ExprE . '>' '=' ExprF
+
+    '<'  shift, and go to state 135
+    '>'  shift, and go to state 136
+
+    $default  reduce using rule 71 (ExprD)
+
+
+State 181
+
+   72 ExprD: ExprD '!' '=' ExprE .
+   74 ExprE: ExprE . '<' ExprF
+   75      | ExprE . '<' '=' ExprF
+   76      | ExprE . '>' ExprF
+   77      | ExprE . '>' '=' ExprF
+
+    '<'  shift, and go to state 135
+    '>'  shift, and go to state 136
+
+    $default  reduce using rule 72 (ExprD)
+
+
+State 182
+
+   75 ExprE: ExprE '<' '=' ExprF .
+   79 ExprF: ExprF . '+' ExprG
+   80      | ExprF . '-' ExprG
+   82 ExprG: ExprF . '*' ExprG
+   83      | ExprF . '/' ExprG
+   84      | ExprF . '%' ExprG
+
+    '+'  shift, and go to state 137
+    '-'  shift, and go to state 138
+    '*'  shift, and go to state 139
+    '/'  shift, and go to state 140
+    '%'  shift, and go to state 141
+
+    '-'       [reduce using rule 75 (ExprE)]
+    $default  reduce using rule 75 (ExprE)
+
+
+State 183
+
+   77 ExprE: ExprE '>' '=' ExprF .
+   79 ExprF: ExprF . '+' ExprG
+   80      | ExprF . '-' ExprG
+   82 ExprG: ExprF . '*' ExprG
+   83      | ExprF . '/' ExprG
+   84      | ExprF . '%' ExprG
+
+    '+'  shift, and go to state 137
+    '-'  shift, and go to state 138
+    '*'  shift, and go to state 139
+    '/'  shift, and go to state 140
+    '%'  shift, and go to state 141
+
+    '-'       [reduce using rule 77 (ExprE)]
+    $default  reduce using rule 77 (ExprE)
+
+
+State 184
+
+   93 Lvalue: Lvalue '[' Expr ']' .
+
+    $default  reduce using rule 93 (Lvalue)
+
+
+State 185
+
+   57 ForStmt: _for '(' ExprOptional ';' Expr . ';' ExprOptional ')' Stmt
+
+    ';'  shift, and go to state 190
+
+
+State 186
+
+   53 IfStmt: _if '(' Expr ')' Stmt . IfStmtOptional
+
+    _else  shift, and go to state 191
+
+    _else     [reduce using rule 55 (IfStmtOptional)]
+    $default  reduce using rule 55 (IfStmtOptional)
+
+    IfStmtOptional  go to state 192
+
+
+State 187
+
+   61 ExprPlusComma: Expr ',' ExprPlusComma .
+
+    $default  reduce using rule 61 (ExprPlusComma)
+
+
+State 188
+
+   56 WhileStmt: _while '(' Expr ')' Stmt .
+
+    $default  reduce using rule 56 (WhileStmt)
+
+
+State 189
+
+   96 Call: _id '.' _id '(' Actuals . ')'
+
+    ')'  shift, and go to state 193
+
+
+State 190
+
+   57 ForStmt: _for '(' ExprOptional ';' Expr ';' . ExprOptional ')' Stmt
+
+    _null             shift, and go to state 80
+    _intconstant      shift, and go to state 84
+    _doubleconstant   shift, and go to state 85
+    _stringconstant   shift, and go to state 86
+    _booleanconstant  shift, and go to state 87
+    _id               shift, and go to state 88
+    '('               shift, and go to state 89
+    '!'               shift, and go to state 90
+    '-'               shift, and go to state 91
+
+    $default  reduce using rule 52 (ExprOptional)
+
+    ExprOptional  go to state 194
+    Expr          go to state 102
+    ExprA         go to state 103
+    ExprB         go to state 104
+    ExprC         go to state 105
+    ExprD         go to state 106
+    ExprE         go to state 107
+    ExprF         go to state 108
+    ExprG         go to state 109
+    ExprH         go to state 110
+    ExprI         go to state 111
+    Lvalue        go to state 112
+    Call          go to state 113
+    Constant      go to state 114
+
+
+State 191
+
+   54 IfStmtOptional: _else . Stmt
+
+    _break            shift, and go to state 77
+    _for              shift, and go to state 78
+    _if               shift, and go to state 79
+    _null             shift, and go to state 80
+    _println          shift, and go to state 81
+    _return           shift, and go to state 82
+    _while            shift, and go to state 83
+    _intconstant      shift, and go to state 84
+    _doubleconstant   shift, and go to state 85
+    _stringconstant   shift, and go to state 86
+    _booleanconstant  shift, and go to state 87
+    _id               shift, and go to state 88
+    '('               shift, and go to state 89
+    '{'               shift, and go to state 67
+    '!'               shift, and go to state 90
+    '-'               shift, and go to state 91
+
+    $default  reduce using rule 52 (ExprOptional)
+
+    StmtBlock     go to state 92
+    Stmt          go to state 195
+    ExprOptional  go to state 95
+    IfStmt        go to state 96
+    WhileStmt     go to state 97
+    ForStmt       go to state 98
+    BreakStmt     go to state 99
+    ReturnStmt    go to state 100
+    PrintStmt     go to state 101
+    Expr          go to state 102
+    ExprA         go to state 103
+    ExprB         go to state 104
+    ExprC         go to state 105
+    ExprD         go to state 106
+    ExprE         go to state 107
+    ExprF         go to state 108
+    ExprG         go to state 109
+    ExprH         go to state 110
+    ExprI         go to state 111
+    Lvalue        go to state 112
+    Call          go to state 113
+    Constant      go to state 114
+
+
+State 192
+
+   53 IfStmt: _if '(' Expr ')' Stmt IfStmtOptional .
+
+    $default  reduce using rule 53 (IfStmt)
+
+
+State 193
+
+   96 Call: _id '.' _id '(' Actuals ')' .
+
+    $default  reduce using rule 96 (Call)
+
+
+State 194
+
+   57 ForStmt: _for '(' ExprOptional ';' Expr ';' ExprOptional . ')' Stmt
+
+    ')'  shift, and go to state 196
+
+
+State 195
+
+   54 IfStmtOptional: _else Stmt .
+
+    $default  reduce using rule 54 (IfStmtOptional)
+
+
+State 196
+
+   57 ForStmt: _for '(' ExprOptional ';' Expr ';' ExprOptional ')' . Stmt
+
+    _break            shift, and go to state 77
+    _for              shift, and go to state 78
+    _if               shift, and go to state 79
+    _null             shift, and go to state 80
+    _println          shift, and go to state 81
+    _return           shift, and go to state 82
+    _while            shift, and go to state 83
+    _intconstant      shift, and go to state 84
+    _doubleconstant   shift, and go to state 85
+    _stringconstant   shift, and go to state 86
+    _booleanconstant  shift, and go to state 87
+    _id               shift, and go to state 88
+    '('               shift, and go to state 89
+    '{'               shift, and go to state 67
+    '!'               shift, and go to state 90
+    '-'               shift, and go to state 91
+
+    $default  reduce using rule 52 (ExprOptional)
+
+    StmtBlock     go to state 92
+    Stmt          go to state 197
+    ExprOptional  go to state 95
+    IfStmt        go to state 96
+    WhileStmt     go to state 97
+    ForStmt       go to state 98
+    BreakStmt     go to state 99
+    ReturnStmt    go to state 100
+    PrintStmt     go to state 101
+    Expr          go to state 102
+    ExprA         go to state 103
+    ExprB         go to state 104
+    ExprC         go to state 105
+    ExprD         go to state 106
+    ExprE         go to state 107
+    ExprF         go to state 108
+    ExprG         go to state 109
+    ExprH         go to state 110
+    ExprI         go to state 111
+    Lvalue        go to state 112
+    Call          go to state 113
+    Constant      go to state 114
+
+
+State 197
+
+   57 ForStmt: _for '(' ExprOptional ';' Expr ';' ExprOptional ')' Stmt .
+
+    $default  reduce using rule 57 (ForStmt)
