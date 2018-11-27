@@ -100,8 +100,19 @@ int add_to_trie(char* input, int* switchArr, char* symbolArr, int* nextArr, int*
 	}
 	else
 	{
-		if ( strlen(input) == 1)
+		if ( strlen(input) == 1){
+			while (nextArr[ptr] > 0){
+				ptr = nextArr[ptr];
+			}
+			if (symbolArr[ptr] == endMarker)
+					return 0;
+			if(symbolArr[*cur] != endMarker){
+				nextArr[ptr] = *cur;
+				symbolArr[*cur] = endMarker;
+				*cur = *cur + 1;
+			}
 			return 0;
+		}
 		valueOfSymbol = getNextSymbol(input,&pos);
 		int exit = 0;
 		while ( !exit )
@@ -135,7 +146,7 @@ int add_to_trie(char* input, int* switchArr, char* symbolArr, int* nextArr, int*
 						symbolArr[*cur] = valueOfSymbol;
 						*cur = *cur + 1;
 						}
-						symbolArr[*cur] = '*';
+						symbolArr[*cur] = endMarker;
 						*cur = *cur + 1;
 						exit = 1;
 					}
