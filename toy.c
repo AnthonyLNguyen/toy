@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "toy.h"
+#include "y.tab.h"
 
 extern int yylex();
 extern int yylineno;
@@ -34,6 +34,7 @@ int main(void)
 	char symbolArr[MAXTRANSITION];
 	int nextArr[MAXTRANSITION];
 	int ntoken;
+	int offset = _boolean-1;
 
 	for(int i = 0; i < CHARS ; i++ ){
 		switchArr[i] = -1;
@@ -41,14 +42,13 @@ int main(void)
 
 	ntoken = yylex();
 	while(ntoken) {
-		printf("%s ",tokens[ntoken]);
+		printf("%s ",tokens[ntoken-offset]);
 		char input[strlen(yytext)]; 
 		strcpy(input,yytext);
 		if (ntoken == _id || ntoken <= _while || ntoken == _booleanconstant){
 			add_to_trie(input, switchArr, symbolArr, nextArr, &cur);
 		}
 		ntoken = yylex();
-
 	}
 	printTrie(switchArr,symbolArr,nextArr,&cur);
 	return 0;

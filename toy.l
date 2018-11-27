@@ -1,5 +1,7 @@
 %{
-#include "toy.h"
+#include <stdlib.h>
+#include "y.tab.h"
+extern int yylval;
 %}
 
 %%
@@ -60,8 +62,7 @@
 \/\*[^*]*\*\/\n 	;
 .	printf("\nUNEXPECTED CHAR\n");
 %%
-
 int yywrap(void)
 {
-	return 1;
+ return 1;
 }
