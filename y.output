@@ -3,50 +3,12 @@ Terminals unused in grammar
    _new
    _newarray
    _readln
-   _plus
-   _minus
-   _multiplication
-   _division
-   _mod
-   _less
-   _lessequal
-   _greater
-   _greaterequal
-   _equal
-   _notequal
-   _and
-   _or
-   _not
-   _assignop
-   _semicolon
-   _comma
-   _period
-   _leftparen
-   _rightparen
-   _leftbracket
-   _rightbracket
-   _leftbrace
-   _rightbrace
 
 
 State 67 conflicts: 1 shift/reduce
 State 72 conflicts: 1 shift/reduce
-State 82 conflicts: 9 shift/reduce
-State 88 conflicts: 2 shift/reduce
-State 106 conflicts: 1 shift/reduce
-State 108 conflicts: 1 shift/reduce
-State 112 conflicts: 1 shift/reduce
-State 159 conflicts: 1 shift/reduce
-State 161 conflicts: 1 shift/reduce
-State 163 conflicts: 5 reduce/reduce
-State 164 conflicts: 5 reduce/reduce
-State 165 conflicts: 5 reduce/reduce
-State 166 conflicts: 5 reduce/reduce
-State 167 conflicts: 5 reduce/reduce
-State 179 conflicts: 1 shift/reduce
-State 182 conflicts: 1 shift/reduce
-State 183 conflicts: 1 shift/reduce
-State 186 conflicts: 1 shift/reduce
+State 91 conflicts: 1 shift/reduce
+State 173 conflicts: 1 shift/reduce
 
 
 Grammar
@@ -63,7 +25,7 @@ Grammar
     6     | ClassDecl
     7     | InterfaceDecl
 
-    8 VariableDecl: Variable ';'
+    8 VariableDecl: Variable _semicolon
 
     9 Variable: Type _id
 
@@ -71,26 +33,26 @@ Grammar
    11     | _double
    12     | _boolean
    13     | _string
-   14     | Type '[' ']'
+   14     | Type _leftbracket _rightbracket
    15     | _id
 
-   16 FunctionDecl: Type _id '(' Formals ')' StmtBlock
-   17             | _void _id '(' Formals ')' StmtBlock
+   16 FunctionDecl: Type _id _leftparen Formals _rightparen StmtBlock
+   17             | _void _id _leftparen Formals _rightparen StmtBlock
 
    18 Formals: VariablePlusComma
    19        | %empty
 
-   20 VariablePlusComma: Variable ',' VariablePlusComma
+   20 VariablePlusComma: Variable _comma VariablePlusComma
    21                  | Variable
 
-   22 ClassDecl: _class _id ClassDeclOptional '{' FieldStar '}'
+   22 ClassDecl: _class _id ClassDeclOptional _leftbrace FieldStar _rightbrace
 
    23 ClassDeclOptional: _extends _id
    24                  | _implements IdPlusComma
    25                  | _extends _id _implements IdPlusComma
    26                  | %empty
 
-   27 IdPlusComma: _id ',' IdPlusComma
+   27 IdPlusComma: _id _comma IdPlusComma
    28            | _id
 
    29 FieldStar: Field FieldStar
@@ -99,15 +61,15 @@ Grammar
    31 Field: VariableDecl
    32      | FunctionDecl
 
-   33 InterfaceDecl: _interface _id '{' PrototypeStar '}'
+   33 InterfaceDecl: _interface _id _leftbrace PrototypeStar _rightbrace
 
    34 PrototypeStar: Prototype PrototypeStar
    35              | %empty
 
-   36 Prototype: Type _id '(' Formals ')' ';'
-   37          | _void _id '(' Formals ')' ';'
+   36 Prototype: Type _id _leftparen Formals _rightparen _semicolon
+   37          | _void _id _leftparen Formals _rightparen _semicolon
 
-   38 StmtBlock: '{' VariableDeclStar StmtStar '}'
+   38 StmtBlock: _leftbrace VariableDeclStar StmtStar _rightbrace
 
    39 VariableDeclStar: VariableDecl VariableDeclStar
    40                 | %empty
@@ -115,7 +77,7 @@ Grammar
    41 StmtStar: Stmt StmtStar
    42         | %empty
 
-   43 Stmt: ExprOptional ';'
+   43 Stmt: ExprOptional _semicolon
    44     | IfStmt
    45     | WhileStmt
    46     | ForStmt
@@ -127,103 +89,65 @@ Grammar
    51 ExprOptional: Expr
    52             | %empty
 
-   53 IfStmt: _if '(' Expr ')' Stmt IfStmtOptional
+   53 IfStmt: _if _leftparen Expr _rightparen Stmt IfStmtOptional
 
    54 IfStmtOptional: _else Stmt
    55               | %empty
 
-   56 WhileStmt: _while '(' Expr ')' Stmt
+   56 WhileStmt: _while _leftparen Expr _rightparen Stmt
 
-   57 ForStmt: _for '(' ExprOptional ';' Expr ';' ExprOptional ')' Stmt
+   57 ForStmt: _for _leftparen ExprOptional _semicolon Expr _semicolon ExprOptional _rightparen Stmt
 
-   58 BreakStmt: _break
+   58 BreakStmt: _break _semicolon
 
-   59 ReturnStmt: _return ExprOptional
+   59 ReturnStmt: _return ExprOptional _semicolon
 
-   60 PrintStmt: _println '(' ExprPlusComma ')'
+   60 PrintStmt: _println _leftparen ExprPlusComma _rightparen
 
-   61 ExprPlusComma: Expr ',' ExprPlusComma
+   61 ExprPlusComma: Expr _comma ExprPlusComma
    62              | Expr
 
-   63 Expr: ExprA
+   63 Expr: Lvalue _assignop Expr
+   64     | Constant
+   65     | Lvalue
+   66     | Call
+   67     | _leftparen Expr _rightparen
+   68     | Expr _plus Expr
+   69     | Expr _minus Expr
+   70     | Expr _multiplication Expr
+   71     | Expr _division Expr
+   72     | Expr _mod Expr
+   73     | _minus Expr
+   74     | Expr _less Expr
+   75     | Expr _lessequal Expr
+   76     | Expr _greater Expr
+   77     | Expr _greaterequal Expr
+   78     | Expr _equal Expr
+   79     | Expr _notequal Expr
+   80     | Expr _and Expr
+   81     | Expr _or Expr
+   82     | _not Expr
 
-   64 ExprA: ExprB
-   65      | Lvalue '=' ExprB
+   83 Lvalue: _id
+   84       | Lvalue _leftbracket Expr _rightbracket
+   85       | Lvalue _period _id
 
-   66 ExprB: ExprC
-   67      | ExprB '|' '|' ExprC
+   86 Call: _id _leftparen Actuals _rightparen
+   87     | _id _period _id _leftparen Actuals _rightparen
 
-   68 ExprC: ExprD
-   69      | ExprC '&' '&' ExprD
+   88 Actuals: ExprPlusComma
+   89        | %empty
 
-   70 ExprD: ExprE
-   71      | ExprD '=' '=' ExprE
-   72      | ExprD '!' '=' ExprE
-
-   73 ExprE: ExprF
-   74      | ExprE '<' ExprF
-   75      | ExprE '<' '=' ExprF
-   76      | ExprE '>' ExprF
-   77      | ExprE '>' '=' ExprF
-
-   78 ExprF: ExprG
-   79      | ExprF '+' ExprG
-   80      | ExprF '-' ExprG
-
-   81 ExprG: ExprH
-   82      | ExprF '*' ExprG
-   83      | ExprF '/' ExprG
-   84      | ExprF '%' ExprG
-
-   85 ExprH: ExprI
-   86      | '!' ExprH
-   87      | '-' ExprH
-
-   88 ExprI: Lvalue
-   89      | Constant
-   90      | Call
-   91      | '(' Expr ')'
-
-   92 Lvalue: _id
-   93       | Lvalue '[' Expr ']'
-   94       | Lvalue '.' _id
-
-   95 Call: _id '(' Actuals ')'
-   96     | _id '.' _id '(' Actuals ')'
-
-   97 Actuals: ExprPlusComma
-   98        | %empty
-
-   99 Constant: _intconstant
-  100         | _doubleconstant
-  101         | _stringconstant
-  102         | _booleanconstant
-  103         | _null
+   90 Constant: _intconstant
+   91         | _doubleconstant
+   92         | _stringconstant
+   93         | _booleanconstant
+   94         | _null
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
-'!' (33) 72 86
-'%' (37) 84
-'&' (38) 69
-'(' (40) 16 17 36 37 53 56 57 60 91 95 96
-')' (41) 16 17 36 37 53 56 57 60 91 95 96
-'*' (42) 82
-'+' (43) 79
-',' (44) 20 27 61
-'-' (45) 80 87
-'.' (46) 94 96
-'/' (47) 83
-';' (59) 8 36 37 43 57
-'<' (60) 74 75
-'=' (61) 65 71 72 75 77
-'>' (62) 76 77
-'[' (91) 14 93
-']' (93) 14 93
-'{' (123) 22 33 38
-'|' (124) 67
-'}' (125) 22 33 38
 error (256)
 _boolean (258) 12
 _break (259) 58
@@ -238,136 +162,121 @@ _int (267) 10
 _interface (268) 33
 _new (269)
 _newarray (270)
-_null (271) 103
+_null (271) 94
 _println (272) 60
 _readln (273)
 _return (274) 59
 _string (275) 13
 _void (276) 17 37
 _while (277) 56
-_plus (278)
-_minus (279)
-_multiplication (280)
-_division (281)
-_mod (282)
-_less (283)
-_lessequal (284)
-_greater (285)
-_greaterequal (286)
-_equal (287)
-_notequal (288)
-_and (289)
-_or (290)
-_not (291)
-_assignop (292)
-_semicolon (293)
-_comma (294)
-_period (295)
-_leftparen (296)
-_rightparen (297)
-_leftbracket (298)
-_rightbracket (299)
-_leftbrace (300)
-_rightbrace (301)
-_intconstant (302) 99
-_doubleconstant (303) 100
-_stringconstant (304) 101
-_booleanconstant (305) 102
-_id (306) 9 15 16 17 22 23 25 27 28 33 36 37 92 94 95 96
+_plus (278) 68
+_minus (279) 69 73
+_multiplication (280) 70
+_division (281) 71
+_mod (282) 72
+_less (283) 74
+_lessequal (284) 75
+_greater (285) 76
+_greaterequal (286) 77
+_equal (287) 78
+_notequal (288) 79
+_and (289) 80
+_or (290) 81
+_not (291) 82
+_assignop (292) 63
+_semicolon (293) 8 36 37 43 57 58 59
+_comma (294) 20 27 61
+_period (295) 85 87
+_leftparen (296) 16 17 36 37 53 56 57 60 67 86 87
+_rightparen (297) 16 17 36 37 53 56 57 60 67 86 87
+_leftbracket (298) 14 84
+_rightbracket (299) 14 84
+_leftbrace (300) 22 33 38
+_rightbrace (301) 22 33 38
+_intconstant (302) 90
+_doubleconstant (303) 91
+_stringconstant (304) 92
+_booleanconstant (305) 93
+_id (306) 9 15 16 17 22 23 25 27 28 33 36 37 83 85 86 87
+_uminus (307)
 
 
 Nonterminals, with rules where they appear
 
-$accept (72)
+$accept (53)
     on left: 0
-Program (73)
+Program (54)
     on left: 1, on right: 0
-DeclPlus (74)
+DeclPlus (55)
     on left: 2 3, on right: 1 2
-Decl (75)
+Decl (56)
     on left: 4 5 6 7, on right: 2 3
-VariableDecl (76)
+VariableDecl (57)
     on left: 8, on right: 4 31 39
-Variable (77)
+Variable (58)
     on left: 9, on right: 8 20 21
-Type (78)
+Type (59)
     on left: 10 11 12 13 14 15, on right: 9 14 16 36
-FunctionDecl (79)
+FunctionDecl (60)
     on left: 16 17, on right: 5 32
-Formals (80)
+Formals (61)
     on left: 18 19, on right: 16 17 36 37
-VariablePlusComma (81)
+VariablePlusComma (62)
     on left: 20 21, on right: 18 20
-ClassDecl (82)
+ClassDecl (63)
     on left: 22, on right: 6
-ClassDeclOptional (83)
+ClassDeclOptional (64)
     on left: 23 24 25 26, on right: 22
-IdPlusComma (84)
+IdPlusComma (65)
     on left: 27 28, on right: 24 25 27
-FieldStar (85)
+FieldStar (66)
     on left: 29 30, on right: 22 29
-Field (86)
+Field (67)
     on left: 31 32, on right: 29
-InterfaceDecl (87)
+InterfaceDecl (68)
     on left: 33, on right: 7
-PrototypeStar (88)
+PrototypeStar (69)
     on left: 34 35, on right: 33 34
-Prototype (89)
+Prototype (70)
     on left: 36 37, on right: 34
-StmtBlock (90)
+StmtBlock (71)
     on left: 38, on right: 16 17 50
-VariableDeclStar (91)
+VariableDeclStar (72)
     on left: 39 40, on right: 38 39
-StmtStar (92)
+StmtStar (73)
     on left: 41 42, on right: 38 41
-Stmt (93)
+Stmt (74)
     on left: 43 44 45 46 47 48 49 50, on right: 41 53 54 56 57
-ExprOptional (94)
+ExprOptional (75)
     on left: 51 52, on right: 43 57 59
-IfStmt (95)
+IfStmt (76)
     on left: 53, on right: 44
-IfStmtOptional (96)
+IfStmtOptional (77)
     on left: 54 55, on right: 53
-WhileStmt (97)
+WhileStmt (78)
     on left: 56, on right: 45
-ForStmt (98)
+ForStmt (79)
     on left: 57, on right: 46
-BreakStmt (99)
+BreakStmt (80)
     on left: 58, on right: 47
-ReturnStmt (100)
+ReturnStmt (81)
     on left: 59, on right: 48
-PrintStmt (101)
+PrintStmt (82)
     on left: 60, on right: 49
-ExprPlusComma (102)
-    on left: 61 62, on right: 60 61 97
-Expr (103)
-    on left: 63, on right: 51 53 56 57 61 62 91 93
-ExprA (104)
-    on left: 64 65, on right: 63
-ExprB (105)
-    on left: 66 67, on right: 64 65 67
-ExprC (106)
-    on left: 68 69, on right: 66 67 69
-ExprD (107)
-    on left: 70 71 72, on right: 68 69 71 72
-ExprE (108)
-    on left: 73 74 75 76 77, on right: 70 71 72 74 75 76 77
-ExprF (109)
-    on left: 78 79 80, on right: 73 74 75 76 77 79 80 82 83 84
-ExprG (110)
-    on left: 81 82 83 84, on right: 78 79 80 82 83 84
-ExprH (111)
-    on left: 85 86 87, on right: 81 86 87
-ExprI (112)
-    on left: 88 89 90 91, on right: 85
-Lvalue (113)
-    on left: 92 93 94, on right: 65 88 93 94
-Call (114)
-    on left: 95 96, on right: 90
-Actuals (115)
-    on left: 97 98, on right: 95 96
-Constant (116)
-    on left: 99 100 101 102 103, on right: 89
+ExprPlusComma (83)
+    on left: 61 62, on right: 60 61 88
+Expr (84)
+    on left: 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80
+    81 82, on right: 51 53 56 57 61 62 63 67 68 69 70 71 72 73 74 75
+    76 77 78 79 80 81 82 84
+Lvalue (85)
+    on left: 83 84 85, on right: 63 65 84 85
+Call (86)
+    on left: 86 87, on right: 66
+Actuals (87)
+    on left: 88 89, on right: 86 87
+Constant (88)
+    on left: 90 91 92 93 94, on right: 64
 
 
 State 0
@@ -403,7 +312,7 @@ State 1
 
 State 2
 
-   22 ClassDecl: _class . _id ClassDeclOptional '{' FieldStar '}'
+   22 ClassDecl: _class . _id ClassDeclOptional _leftbrace FieldStar _rightbrace
 
     _id  shift, and go to state 18
 
@@ -424,7 +333,7 @@ State 4
 
 State 5
 
-   33 InterfaceDecl: _interface . _id '{' PrototypeStar '}'
+   33 InterfaceDecl: _interface . _id _leftbrace PrototypeStar _rightbrace
 
     _id  shift, and go to state 19
 
@@ -438,7 +347,7 @@ State 6
 
 State 7
 
-   17 FunctionDecl: _void . _id '(' Formals ')' StmtBlock
+   17 FunctionDecl: _void . _id _leftparen Formals _rightparen StmtBlock
 
     _id  shift, and go to state 20
 
@@ -499,19 +408,19 @@ State 12
 
 State 13
 
-    8 VariableDecl: Variable . ';'
+    8 VariableDecl: Variable . _semicolon
 
-    ';'  shift, and go to state 23
+    _semicolon  shift, and go to state 23
 
 
 State 14
 
     9 Variable: Type . _id
-   14 Type: Type . '[' ']'
-   16 FunctionDecl: Type . _id '(' Formals ')' StmtBlock
+   14 Type: Type . _leftbracket _rightbracket
+   16 FunctionDecl: Type . _id _leftparen Formals _rightparen StmtBlock
 
-    _id  shift, and go to state 24
-    '['  shift, and go to state 25
+    _leftbracket  shift, and go to state 24
+    _id           shift, and go to state 25
 
 
 State 15
@@ -537,7 +446,7 @@ State 17
 
 State 18
 
-   22 ClassDecl: _class _id . ClassDeclOptional '{' FieldStar '}'
+   22 ClassDecl: _class _id . ClassDeclOptional _leftbrace FieldStar _rightbrace
 
     _extends     shift, and go to state 26
     _implements  shift, and go to state 27
@@ -549,16 +458,16 @@ State 18
 
 State 19
 
-   33 InterfaceDecl: _interface _id . '{' PrototypeStar '}'
+   33 InterfaceDecl: _interface _id . _leftbrace PrototypeStar _rightbrace
 
-    '{'  shift, and go to state 29
+    _leftbrace  shift, and go to state 29
 
 
 State 20
 
-   17 FunctionDecl: _void _id . '(' Formals ')' StmtBlock
+   17 FunctionDecl: _void _id . _leftparen Formals _rightparen StmtBlock
 
-    '('  shift, and go to state 30
+    _leftparen  shift, and go to state 30
 
 
 State 21
@@ -577,26 +486,26 @@ State 22
 
 State 23
 
-    8 VariableDecl: Variable ';' .
+    8 VariableDecl: Variable _semicolon .
 
     $default  reduce using rule 8 (VariableDecl)
 
 
 State 24
 
-    9 Variable: Type _id .
-   16 FunctionDecl: Type _id . '(' Formals ')' StmtBlock
+   14 Type: Type _leftbracket . _rightbracket
 
-    '('  shift, and go to state 31
-
-    $default  reduce using rule 9 (Variable)
+    _rightbracket  shift, and go to state 31
 
 
 State 25
 
-   14 Type: Type '[' . ']'
+    9 Variable: Type _id .
+   16 FunctionDecl: Type _id . _leftparen Formals _rightparen StmtBlock
 
-    ']'  shift, and go to state 32
+    _leftparen  shift, and go to state 32
+
+    $default  reduce using rule 9 (Variable)
 
 
 State 26
@@ -618,14 +527,14 @@ State 27
 
 State 28
 
-   22 ClassDecl: _class _id ClassDeclOptional . '{' FieldStar '}'
+   22 ClassDecl: _class _id ClassDeclOptional . _leftbrace FieldStar _rightbrace
 
-    '{'  shift, and go to state 36
+    _leftbrace  shift, and go to state 36
 
 
 State 29
 
-   33 InterfaceDecl: _interface _id '{' . PrototypeStar '}'
+   33 InterfaceDecl: _interface _id _leftbrace . PrototypeStar _rightbrace
 
     _boolean  shift, and go to state 1
     _double   shift, and go to state 3
@@ -643,7 +552,7 @@ State 29
 
 State 30
 
-   17 FunctionDecl: _void _id '(' . Formals ')' StmtBlock
+   17 FunctionDecl: _void _id _leftparen . Formals _rightparen StmtBlock
 
     _boolean  shift, and go to state 1
     _double   shift, and go to state 3
@@ -661,7 +570,14 @@ State 30
 
 State 31
 
-   16 FunctionDecl: Type _id '(' . Formals ')' StmtBlock
+   14 Type: Type _leftbracket _rightbracket .
+
+    $default  reduce using rule 14 (Type)
+
+
+State 32
+
+   16 FunctionDecl: Type _id _leftparen . Formals _rightparen StmtBlock
 
     _boolean  shift, and go to state 1
     _double   shift, and go to state 3
@@ -677,13 +593,6 @@ State 31
     VariablePlusComma  go to state 44
 
 
-State 32
-
-   14 Type: Type '[' ']' .
-
-    $default  reduce using rule 14 (Type)
-
-
 State 33
 
    23 ClassDeclOptional: _extends _id .
@@ -696,10 +605,10 @@ State 33
 
 State 34
 
-   27 IdPlusComma: _id . ',' IdPlusComma
+   27 IdPlusComma: _id . _comma IdPlusComma
    28            | _id .
 
-    ','  shift, and go to state 47
+    _comma  shift, and go to state 47
 
     $default  reduce using rule 28 (IdPlusComma)
 
@@ -713,7 +622,7 @@ State 35
 
 State 36
 
-   22 ClassDecl: _class _id ClassDeclOptional '{' . FieldStar '}'
+   22 ClassDecl: _class _id ClassDeclOptional _leftbrace . FieldStar _rightbrace
 
     _boolean  shift, and go to state 1
     _double   shift, and go to state 3
@@ -734,25 +643,25 @@ State 36
 
 State 37
 
-   37 Prototype: _void . _id '(' Formals ')' ';'
+   37 Prototype: _void . _id _leftparen Formals _rightparen _semicolon
 
     _id  shift, and go to state 52
 
 
 State 38
 
-   14 Type: Type . '[' ']'
-   36 Prototype: Type . _id '(' Formals ')' ';'
+   14 Type: Type . _leftbracket _rightbracket
+   36 Prototype: Type . _id _leftparen Formals _rightparen _semicolon
 
-    _id  shift, and go to state 53
-    '['  shift, and go to state 25
+    _leftbracket  shift, and go to state 24
+    _id           shift, and go to state 53
 
 
 State 39
 
-   33 InterfaceDecl: _interface _id '{' PrototypeStar . '}'
+   33 InterfaceDecl: _interface _id _leftbrace PrototypeStar . _rightbrace
 
-    '}'  shift, and go to state 54
+    _rightbrace  shift, and go to state 54
 
 
 State 40
@@ -775,10 +684,10 @@ State 40
 
 State 41
 
-   20 VariablePlusComma: Variable . ',' VariablePlusComma
+   20 VariablePlusComma: Variable . _comma VariablePlusComma
    21                  | Variable .
 
-    ','  shift, and go to state 56
+    _comma  shift, and go to state 56
 
     $default  reduce using rule 21 (VariablePlusComma)
 
@@ -786,17 +695,17 @@ State 41
 State 42
 
     9 Variable: Type . _id
-   14 Type: Type . '[' ']'
+   14 Type: Type . _leftbracket _rightbracket
 
-    _id  shift, and go to state 57
-    '['  shift, and go to state 25
+    _leftbracket  shift, and go to state 24
+    _id           shift, and go to state 57
 
 
 State 43
 
-   17 FunctionDecl: _void _id '(' Formals . ')' StmtBlock
+   17 FunctionDecl: _void _id _leftparen Formals . _rightparen StmtBlock
 
-    ')'  shift, and go to state 58
+    _rightparen  shift, and go to state 58
 
 
 State 44
@@ -808,9 +717,9 @@ State 44
 
 State 45
 
-   16 FunctionDecl: Type _id '(' Formals . ')' StmtBlock
+   16 FunctionDecl: Type _id _leftparen Formals . _rightparen StmtBlock
 
-    ')'  shift, and go to state 59
+    _rightparen  shift, and go to state 59
 
 
 State 46
@@ -824,7 +733,7 @@ State 46
 
 State 47
 
-   27 IdPlusComma: _id ',' . IdPlusComma
+   27 IdPlusComma: _id _comma . IdPlusComma
 
     _id  shift, and go to state 34
 
@@ -847,9 +756,9 @@ State 49
 
 State 50
 
-   22 ClassDecl: _class _id ClassDeclOptional '{' FieldStar . '}'
+   22 ClassDecl: _class _id ClassDeclOptional _leftbrace FieldStar . _rightbrace
 
-    '}'  shift, and go to state 62
+    _rightbrace  shift, and go to state 62
 
 
 State 51
@@ -875,21 +784,21 @@ State 51
 
 State 52
 
-   37 Prototype: _void _id . '(' Formals ')' ';'
+   37 Prototype: _void _id . _leftparen Formals _rightparen _semicolon
 
-    '('  shift, and go to state 64
+    _leftparen  shift, and go to state 64
 
 
 State 53
 
-   36 Prototype: Type _id . '(' Formals ')' ';'
+   36 Prototype: Type _id . _leftparen Formals _rightparen _semicolon
 
-    '('  shift, and go to state 65
+    _leftparen  shift, and go to state 65
 
 
 State 54
 
-   33 InterfaceDecl: _interface _id '{' PrototypeStar '}' .
+   33 InterfaceDecl: _interface _id _leftbrace PrototypeStar _rightbrace .
 
     $default  reduce using rule 33 (InterfaceDecl)
 
@@ -903,7 +812,7 @@ State 55
 
 State 56
 
-   20 VariablePlusComma: Variable ',' . VariablePlusComma
+   20 VariablePlusComma: Variable _comma . VariablePlusComma
 
     _boolean  shift, and go to state 1
     _double   shift, and go to state 3
@@ -925,18 +834,18 @@ State 57
 
 State 58
 
-   17 FunctionDecl: _void _id '(' Formals ')' . StmtBlock
+   17 FunctionDecl: _void _id _leftparen Formals _rightparen . StmtBlock
 
-    '{'  shift, and go to state 67
+    _leftbrace  shift, and go to state 67
 
     StmtBlock  go to state 68
 
 
 State 59
 
-   16 FunctionDecl: Type _id '(' Formals ')' . StmtBlock
+   16 FunctionDecl: Type _id _leftparen Formals _rightparen . StmtBlock
 
-    '{'  shift, and go to state 67
+    _leftbrace  shift, and go to state 67
 
     StmtBlock  go to state 69
 
@@ -950,14 +859,14 @@ State 60
 
 State 61
 
-   27 IdPlusComma: _id ',' IdPlusComma .
+   27 IdPlusComma: _id _comma IdPlusComma .
 
     $default  reduce using rule 27 (IdPlusComma)
 
 
 State 62
 
-   22 ClassDecl: _class _id ClassDeclOptional '{' FieldStar '}' .
+   22 ClassDecl: _class _id ClassDeclOptional _leftbrace FieldStar _rightbrace .
 
     $default  reduce using rule 22 (ClassDecl)
 
@@ -971,7 +880,7 @@ State 63
 
 State 64
 
-   37 Prototype: _void _id '(' . Formals ')' ';'
+   37 Prototype: _void _id _leftparen . Formals _rightparen _semicolon
 
     _boolean  shift, and go to state 1
     _double   shift, and go to state 3
@@ -989,7 +898,7 @@ State 64
 
 State 65
 
-   36 Prototype: Type _id '(' . Formals ')' ';'
+   36 Prototype: Type _id _leftparen . Formals _rightparen _semicolon
 
     _boolean  shift, and go to state 1
     _double   shift, and go to state 3
@@ -1007,14 +916,14 @@ State 65
 
 State 66
 
-   20 VariablePlusComma: Variable ',' VariablePlusComma .
+   20 VariablePlusComma: Variable _comma VariablePlusComma .
 
     $default  reduce using rule 20 (VariablePlusComma)
 
 
 State 67
 
-   38 StmtBlock: '{' . VariableDeclStar StmtStar '}'
+   38 StmtBlock: _leftbrace . VariableDeclStar StmtStar _rightbrace
 
     _boolean  shift, and go to state 1
     _double   shift, and go to state 3
@@ -1033,30 +942,30 @@ State 67
 
 State 68
 
-   17 FunctionDecl: _void _id '(' Formals ')' StmtBlock .
+   17 FunctionDecl: _void _id _leftparen Formals _rightparen StmtBlock .
 
     $default  reduce using rule 17 (FunctionDecl)
 
 
 State 69
 
-   16 FunctionDecl: Type _id '(' Formals ')' StmtBlock .
+   16 FunctionDecl: Type _id _leftparen Formals _rightparen StmtBlock .
 
     $default  reduce using rule 16 (FunctionDecl)
 
 
 State 70
 
-   37 Prototype: _void _id '(' Formals . ')' ';'
+   37 Prototype: _void _id _leftparen Formals . _rightparen _semicolon
 
-    ')'  shift, and go to state 74
+    _rightparen  shift, and go to state 74
 
 
 State 71
 
-   36 Prototype: Type _id '(' Formals . ')' ';'
+   36 Prototype: Type _id _leftparen Formals . _rightparen _semicolon
 
-    ')'  shift, and go to state 75
+    _rightparen  shift, and go to state 75
 
 
 State 72
@@ -1080,7 +989,7 @@ State 72
 
 State 73
 
-   38 StmtBlock: '{' VariableDeclStar . StmtStar '}'
+   38 StmtBlock: _leftbrace VariableDeclStar . StmtStar _rightbrace
 
     _break            shift, and go to state 77
     _for              shift, and go to state 78
@@ -1089,18 +998,18 @@ State 73
     _println          shift, and go to state 81
     _return           shift, and go to state 82
     _while            shift, and go to state 83
-    _intconstant      shift, and go to state 84
-    _doubleconstant   shift, and go to state 85
-    _stringconstant   shift, and go to state 86
-    _booleanconstant  shift, and go to state 87
-    _id               shift, and go to state 88
-    '('               shift, and go to state 89
-    '{'               shift, and go to state 67
-    '!'               shift, and go to state 90
-    '-'               shift, and go to state 91
+    _minus            shift, and go to state 84
+    _not              shift, and go to state 85
+    _leftparen        shift, and go to state 86
+    _leftbrace        shift, and go to state 67
+    _intconstant      shift, and go to state 87
+    _doubleconstant   shift, and go to state 88
+    _stringconstant   shift, and go to state 89
+    _booleanconstant  shift, and go to state 90
+    _id               shift, and go to state 91
 
-    ';'       reduce using rule 52 (ExprOptional)
-    $default  reduce using rule 42 (StmtStar)
+    _semicolon  reduce using rule 52 (ExprOptional)
+    $default    reduce using rule 42 (StmtStar)
 
     StmtBlock     go to state 92
     StmtStar      go to state 93
@@ -1113,32 +1022,23 @@ State 73
     ReturnStmt    go to state 100
     PrintStmt     go to state 101
     Expr          go to state 102
-    ExprA         go to state 103
-    ExprB         go to state 104
-    ExprC         go to state 105
-    ExprD         go to state 106
-    ExprE         go to state 107
-    ExprF         go to state 108
-    ExprG         go to state 109
-    ExprH         go to state 110
-    ExprI         go to state 111
-    Lvalue        go to state 112
-    Call          go to state 113
-    Constant      go to state 114
+    Lvalue        go to state 103
+    Call          go to state 104
+    Constant      go to state 105
 
 
 State 74
 
-   37 Prototype: _void _id '(' Formals ')' . ';'
+   37 Prototype: _void _id _leftparen Formals _rightparen . _semicolon
 
-    ';'  shift, and go to state 115
+    _semicolon  shift, and go to state 106
 
 
 State 75
 
-   36 Prototype: Type _id '(' Formals ')' . ';'
+   36 Prototype: Type _id _leftparen Formals _rightparen . _semicolon
 
-    ';'  shift, and go to state 116
+    _semicolon  shift, and go to state 107
 
 
 State 76
@@ -1150,198 +1050,168 @@ State 76
 
 State 77
 
-   58 BreakStmt: _break .
+   58 BreakStmt: _break . _semicolon
 
-    $default  reduce using rule 58 (BreakStmt)
+    _semicolon  shift, and go to state 108
 
 
 State 78
 
-   57 ForStmt: _for . '(' ExprOptional ';' Expr ';' ExprOptional ')' Stmt
+   57 ForStmt: _for . _leftparen ExprOptional _semicolon Expr _semicolon ExprOptional _rightparen Stmt
 
-    '('  shift, and go to state 117
+    _leftparen  shift, and go to state 109
 
 
 State 79
 
-   53 IfStmt: _if . '(' Expr ')' Stmt IfStmtOptional
+   53 IfStmt: _if . _leftparen Expr _rightparen Stmt IfStmtOptional
 
-    '('  shift, and go to state 118
+    _leftparen  shift, and go to state 110
 
 
 State 80
 
-  103 Constant: _null .
+   94 Constant: _null .
 
-    $default  reduce using rule 103 (Constant)
+    $default  reduce using rule 94 (Constant)
 
 
 State 81
 
-   60 PrintStmt: _println . '(' ExprPlusComma ')'
+   60 PrintStmt: _println . _leftparen ExprPlusComma _rightparen
 
-    '('  shift, and go to state 119
+    _leftparen  shift, and go to state 111
 
 
 State 82
 
-   59 ReturnStmt: _return . ExprOptional
+   59 ReturnStmt: _return . ExprOptional _semicolon
 
     _null             shift, and go to state 80
-    _intconstant      shift, and go to state 84
-    _doubleconstant   shift, and go to state 85
-    _stringconstant   shift, and go to state 86
-    _booleanconstant  shift, and go to state 87
-    _id               shift, and go to state 88
-    '('               shift, and go to state 89
-    '!'               shift, and go to state 90
-    '-'               shift, and go to state 91
+    _minus            shift, and go to state 84
+    _not              shift, and go to state 85
+    _leftparen        shift, and go to state 86
+    _intconstant      shift, and go to state 87
+    _doubleconstant   shift, and go to state 88
+    _stringconstant   shift, and go to state 89
+    _booleanconstant  shift, and go to state 90
+    _id               shift, and go to state 91
 
-    _null             [reduce using rule 52 (ExprOptional)]
-    _intconstant      [reduce using rule 52 (ExprOptional)]
-    _doubleconstant   [reduce using rule 52 (ExprOptional)]
-    _stringconstant   [reduce using rule 52 (ExprOptional)]
-    _booleanconstant  [reduce using rule 52 (ExprOptional)]
-    _id               [reduce using rule 52 (ExprOptional)]
-    '('               [reduce using rule 52 (ExprOptional)]
-    '!'               [reduce using rule 52 (ExprOptional)]
-    '-'               [reduce using rule 52 (ExprOptional)]
-    $default          reduce using rule 52 (ExprOptional)
+    $default  reduce using rule 52 (ExprOptional)
 
-    ExprOptional  go to state 120
+    ExprOptional  go to state 112
     Expr          go to state 102
-    ExprA         go to state 103
-    ExprB         go to state 104
-    ExprC         go to state 105
-    ExprD         go to state 106
-    ExprE         go to state 107
-    ExprF         go to state 108
-    ExprG         go to state 109
-    ExprH         go to state 110
-    ExprI         go to state 111
-    Lvalue        go to state 112
-    Call          go to state 113
-    Constant      go to state 114
+    Lvalue        go to state 103
+    Call          go to state 104
+    Constant      go to state 105
 
 
 State 83
 
-   56 WhileStmt: _while . '(' Expr ')' Stmt
+   56 WhileStmt: _while . _leftparen Expr _rightparen Stmt
 
-    '('  shift, and go to state 121
+    _leftparen  shift, and go to state 113
 
 
 State 84
 
-   99 Constant: _intconstant .
+   73 Expr: _minus . Expr
 
-    $default  reduce using rule 99 (Constant)
+    _null             shift, and go to state 80
+    _minus            shift, and go to state 84
+    _not              shift, and go to state 85
+    _leftparen        shift, and go to state 86
+    _intconstant      shift, and go to state 87
+    _doubleconstant   shift, and go to state 88
+    _stringconstant   shift, and go to state 89
+    _booleanconstant  shift, and go to state 90
+    _id               shift, and go to state 91
+
+    Expr      go to state 114
+    Lvalue    go to state 103
+    Call      go to state 104
+    Constant  go to state 105
 
 
 State 85
 
-  100 Constant: _doubleconstant .
+   82 Expr: _not . Expr
 
-    $default  reduce using rule 100 (Constant)
+    _null             shift, and go to state 80
+    _minus            shift, and go to state 84
+    _not              shift, and go to state 85
+    _leftparen        shift, and go to state 86
+    _intconstant      shift, and go to state 87
+    _doubleconstant   shift, and go to state 88
+    _stringconstant   shift, and go to state 89
+    _booleanconstant  shift, and go to state 90
+    _id               shift, and go to state 91
+
+    Expr      go to state 115
+    Lvalue    go to state 103
+    Call      go to state 104
+    Constant  go to state 105
 
 
 State 86
 
-  101 Constant: _stringconstant .
+   67 Expr: _leftparen . Expr _rightparen
 
-    $default  reduce using rule 101 (Constant)
+    _null             shift, and go to state 80
+    _minus            shift, and go to state 84
+    _not              shift, and go to state 85
+    _leftparen        shift, and go to state 86
+    _intconstant      shift, and go to state 87
+    _doubleconstant   shift, and go to state 88
+    _stringconstant   shift, and go to state 89
+    _booleanconstant  shift, and go to state 90
+    _id               shift, and go to state 91
+
+    Expr      go to state 116
+    Lvalue    go to state 103
+    Call      go to state 104
+    Constant  go to state 105
 
 
 State 87
 
-  102 Constant: _booleanconstant .
+   90 Constant: _intconstant .
 
-    $default  reduce using rule 102 (Constant)
+    $default  reduce using rule 90 (Constant)
 
 
 State 88
 
-   92 Lvalue: _id .
-   95 Call: _id . '(' Actuals ')'
-   96     | _id . '.' _id '(' Actuals ')'
+   91 Constant: _doubleconstant .
 
-    '('  shift, and go to state 122
-    '.'  shift, and go to state 123
-
-    '('       [reduce using rule 92 (Lvalue)]
-    '.'       [reduce using rule 92 (Lvalue)]
-    $default  reduce using rule 92 (Lvalue)
+    $default  reduce using rule 91 (Constant)
 
 
 State 89
 
-   91 ExprI: '(' . Expr ')'
+   92 Constant: _stringconstant .
 
-    _null             shift, and go to state 80
-    _intconstant      shift, and go to state 84
-    _doubleconstant   shift, and go to state 85
-    _stringconstant   shift, and go to state 86
-    _booleanconstant  shift, and go to state 87
-    _id               shift, and go to state 88
-    '('               shift, and go to state 89
-    '!'               shift, and go to state 90
-    '-'               shift, and go to state 91
-
-    Expr      go to state 124
-    ExprA     go to state 103
-    ExprB     go to state 104
-    ExprC     go to state 105
-    ExprD     go to state 106
-    ExprE     go to state 107
-    ExprF     go to state 108
-    ExprG     go to state 109
-    ExprH     go to state 110
-    ExprI     go to state 111
-    Lvalue    go to state 112
-    Call      go to state 113
-    Constant  go to state 114
+    $default  reduce using rule 92 (Constant)
 
 
 State 90
 
-   86 ExprH: '!' . ExprH
+   93 Constant: _booleanconstant .
 
-    _null             shift, and go to state 80
-    _intconstant      shift, and go to state 84
-    _doubleconstant   shift, and go to state 85
-    _stringconstant   shift, and go to state 86
-    _booleanconstant  shift, and go to state 87
-    _id               shift, and go to state 88
-    '('               shift, and go to state 89
-    '!'               shift, and go to state 90
-    '-'               shift, and go to state 91
-
-    ExprH     go to state 125
-    ExprI     go to state 111
-    Lvalue    go to state 126
-    Call      go to state 113
-    Constant  go to state 114
+    $default  reduce using rule 93 (Constant)
 
 
 State 91
 
-   87 ExprH: '-' . ExprH
+   83 Lvalue: _id .
+   86 Call: _id . _leftparen Actuals _rightparen
+   87     | _id . _period _id _leftparen Actuals _rightparen
 
-    _null             shift, and go to state 80
-    _intconstant      shift, and go to state 84
-    _doubleconstant   shift, and go to state 85
-    _stringconstant   shift, and go to state 86
-    _booleanconstant  shift, and go to state 87
-    _id               shift, and go to state 88
-    '('               shift, and go to state 89
-    '!'               shift, and go to state 90
-    '-'               shift, and go to state 91
+    _period     shift, and go to state 117
+    _leftparen  shift, and go to state 118
 
-    ExprH     go to state 127
-    ExprI     go to state 111
-    Lvalue    go to state 126
-    Call      go to state 113
-    Constant  go to state 114
+    _period   [reduce using rule 83 (Lvalue)]
+    $default  reduce using rule 83 (Lvalue)
 
 
 State 92
@@ -1353,9 +1223,9 @@ State 92
 
 State 93
 
-   38 StmtBlock: '{' VariableDeclStar StmtStar . '}'
+   38 StmtBlock: _leftbrace VariableDeclStar StmtStar . _rightbrace
 
-    '}'  shift, and go to state 128
+    _rightbrace  shift, and go to state 119
 
 
 State 94
@@ -1369,21 +1239,21 @@ State 94
     _println          shift, and go to state 81
     _return           shift, and go to state 82
     _while            shift, and go to state 83
-    _intconstant      shift, and go to state 84
-    _doubleconstant   shift, and go to state 85
-    _stringconstant   shift, and go to state 86
-    _booleanconstant  shift, and go to state 87
-    _id               shift, and go to state 88
-    '('               shift, and go to state 89
-    '{'               shift, and go to state 67
-    '!'               shift, and go to state 90
-    '-'               shift, and go to state 91
+    _minus            shift, and go to state 84
+    _not              shift, and go to state 85
+    _leftparen        shift, and go to state 86
+    _leftbrace        shift, and go to state 67
+    _intconstant      shift, and go to state 87
+    _doubleconstant   shift, and go to state 88
+    _stringconstant   shift, and go to state 89
+    _booleanconstant  shift, and go to state 90
+    _id               shift, and go to state 91
 
-    ';'       reduce using rule 52 (ExprOptional)
-    $default  reduce using rule 42 (StmtStar)
+    _semicolon  reduce using rule 52 (ExprOptional)
+    $default    reduce using rule 42 (StmtStar)
 
     StmtBlock     go to state 92
-    StmtStar      go to state 129
+    StmtStar      go to state 120
     Stmt          go to state 94
     ExprOptional  go to state 95
     IfStmt        go to state 96
@@ -1393,25 +1263,16 @@ State 94
     ReturnStmt    go to state 100
     PrintStmt     go to state 101
     Expr          go to state 102
-    ExprA         go to state 103
-    ExprB         go to state 104
-    ExprC         go to state 105
-    ExprD         go to state 106
-    ExprE         go to state 107
-    ExprF         go to state 108
-    ExprG         go to state 109
-    ExprH         go to state 110
-    ExprI         go to state 111
-    Lvalue        go to state 112
-    Call          go to state 113
-    Constant      go to state 114
+    Lvalue        go to state 103
+    Call          go to state 104
+    Constant      go to state 105
 
 
 State 95
 
-   43 Stmt: ExprOptional . ';'
+   43 Stmt: ExprOptional . _semicolon
 
-    ';'  shift, and go to state 130
+    _semicolon  shift, and go to state 121
 
 
 State 96
@@ -1459,1118 +1320,1260 @@ State 101
 State 102
 
    51 ExprOptional: Expr .
+   68 Expr: Expr . _plus Expr
+   69     | Expr . _minus Expr
+   70     | Expr . _multiplication Expr
+   71     | Expr . _division Expr
+   72     | Expr . _mod Expr
+   74     | Expr . _less Expr
+   75     | Expr . _lessequal Expr
+   76     | Expr . _greater Expr
+   77     | Expr . _greaterequal Expr
+   78     | Expr . _equal Expr
+   79     | Expr . _notequal Expr
+   80     | Expr . _and Expr
+   81     | Expr . _or Expr
+
+    _plus            shift, and go to state 122
+    _minus           shift, and go to state 123
+    _multiplication  shift, and go to state 124
+    _division        shift, and go to state 125
+    _mod             shift, and go to state 126
+    _less            shift, and go to state 127
+    _lessequal       shift, and go to state 128
+    _greater         shift, and go to state 129
+    _greaterequal    shift, and go to state 130
+    _equal           shift, and go to state 131
+    _notequal        shift, and go to state 132
+    _and             shift, and go to state 133
+    _or              shift, and go to state 134
 
     $default  reduce using rule 51 (ExprOptional)
 
 
 State 103
 
-   63 Expr: ExprA .
+   63 Expr: Lvalue . _assignop Expr
+   65     | Lvalue .
+   84 Lvalue: Lvalue . _leftbracket Expr _rightbracket
+   85       | Lvalue . _period _id
 
-    $default  reduce using rule 63 (Expr)
+    _assignop     shift, and go to state 135
+    _period       shift, and go to state 136
+    _leftbracket  shift, and go to state 137
+
+    $default  reduce using rule 65 (Expr)
 
 
 State 104
 
-   64 ExprA: ExprB .
-   67 ExprB: ExprB . '|' '|' ExprC
+   66 Expr: Call .
 
-    '|'  shift, and go to state 131
-
-    $default  reduce using rule 64 (ExprA)
+    $default  reduce using rule 66 (Expr)
 
 
 State 105
 
-   66 ExprB: ExprC .
-   69 ExprC: ExprC . '&' '&' ExprD
+   64 Expr: Constant .
 
-    '&'  shift, and go to state 132
-
-    $default  reduce using rule 66 (ExprB)
+    $default  reduce using rule 64 (Expr)
 
 
 State 106
 
-   68 ExprC: ExprD .
-   71 ExprD: ExprD . '=' '=' ExprE
-   72      | ExprD . '!' '=' ExprE
-
-    '='  shift, and go to state 133
-    '!'  shift, and go to state 134
-
-    '!'       [reduce using rule 68 (ExprC)]
-    $default  reduce using rule 68 (ExprC)
-
-
-State 107
-
-   70 ExprD: ExprE .
-   74 ExprE: ExprE . '<' ExprF
-   75      | ExprE . '<' '=' ExprF
-   76      | ExprE . '>' ExprF
-   77      | ExprE . '>' '=' ExprF
-
-    '<'  shift, and go to state 135
-    '>'  shift, and go to state 136
-
-    $default  reduce using rule 70 (ExprD)
-
-
-State 108
-
-   73 ExprE: ExprF .
-   79 ExprF: ExprF . '+' ExprG
-   80      | ExprF . '-' ExprG
-   82 ExprG: ExprF . '*' ExprG
-   83      | ExprF . '/' ExprG
-   84      | ExprF . '%' ExprG
-
-    '+'  shift, and go to state 137
-    '-'  shift, and go to state 138
-    '*'  shift, and go to state 139
-    '/'  shift, and go to state 140
-    '%'  shift, and go to state 141
-
-    '-'       [reduce using rule 73 (ExprE)]
-    $default  reduce using rule 73 (ExprE)
-
-
-State 109
-
-   78 ExprF: ExprG .
-
-    $default  reduce using rule 78 (ExprF)
-
-
-State 110
-
-   81 ExprG: ExprH .
-
-    $default  reduce using rule 81 (ExprG)
-
-
-State 111
-
-   85 ExprH: ExprI .
-
-    $default  reduce using rule 85 (ExprH)
-
-
-State 112
-
-   65 ExprA: Lvalue . '=' ExprB
-   88 ExprI: Lvalue .
-   93 Lvalue: Lvalue . '[' Expr ']'
-   94       | Lvalue . '.' _id
-
-    '['  shift, and go to state 142
-    '='  shift, and go to state 143
-    '.'  shift, and go to state 144
-
-    '='       [reduce using rule 88 (ExprI)]
-    $default  reduce using rule 88 (ExprI)
-
-
-State 113
-
-   90 ExprI: Call .
-
-    $default  reduce using rule 90 (ExprI)
-
-
-State 114
-
-   89 ExprI: Constant .
-
-    $default  reduce using rule 89 (ExprI)
-
-
-State 115
-
-   37 Prototype: _void _id '(' Formals ')' ';' .
+   37 Prototype: _void _id _leftparen Formals _rightparen _semicolon .
 
     $default  reduce using rule 37 (Prototype)
 
 
-State 116
+State 107
 
-   36 Prototype: Type _id '(' Formals ')' ';' .
+   36 Prototype: Type _id _leftparen Formals _rightparen _semicolon .
 
     $default  reduce using rule 36 (Prototype)
 
 
-State 117
+State 108
 
-   57 ForStmt: _for '(' . ExprOptional ';' Expr ';' ExprOptional ')' Stmt
+   58 BreakStmt: _break _semicolon .
+
+    $default  reduce using rule 58 (BreakStmt)
+
+
+State 109
+
+   57 ForStmt: _for _leftparen . ExprOptional _semicolon Expr _semicolon ExprOptional _rightparen Stmt
 
     _null             shift, and go to state 80
-    _intconstant      shift, and go to state 84
-    _doubleconstant   shift, and go to state 85
-    _stringconstant   shift, and go to state 86
-    _booleanconstant  shift, and go to state 87
-    _id               shift, and go to state 88
-    '('               shift, and go to state 89
-    '!'               shift, and go to state 90
-    '-'               shift, and go to state 91
+    _minus            shift, and go to state 84
+    _not              shift, and go to state 85
+    _leftparen        shift, and go to state 86
+    _intconstant      shift, and go to state 87
+    _doubleconstant   shift, and go to state 88
+    _stringconstant   shift, and go to state 89
+    _booleanconstant  shift, and go to state 90
+    _id               shift, and go to state 91
 
     $default  reduce using rule 52 (ExprOptional)
 
-    ExprOptional  go to state 145
+    ExprOptional  go to state 138
     Expr          go to state 102
-    ExprA         go to state 103
-    ExprB         go to state 104
-    ExprC         go to state 105
-    ExprD         go to state 106
-    ExprE         go to state 107
-    ExprF         go to state 108
-    ExprG         go to state 109
-    ExprH         go to state 110
-    ExprI         go to state 111
-    Lvalue        go to state 112
-    Call          go to state 113
-    Constant      go to state 114
+    Lvalue        go to state 103
+    Call          go to state 104
+    Constant      go to state 105
+
+
+State 110
+
+   53 IfStmt: _if _leftparen . Expr _rightparen Stmt IfStmtOptional
+
+    _null             shift, and go to state 80
+    _minus            shift, and go to state 84
+    _not              shift, and go to state 85
+    _leftparen        shift, and go to state 86
+    _intconstant      shift, and go to state 87
+    _doubleconstant   shift, and go to state 88
+    _stringconstant   shift, and go to state 89
+    _booleanconstant  shift, and go to state 90
+    _id               shift, and go to state 91
+
+    Expr      go to state 139
+    Lvalue    go to state 103
+    Call      go to state 104
+    Constant  go to state 105
+
+
+State 111
+
+   60 PrintStmt: _println _leftparen . ExprPlusComma _rightparen
+
+    _null             shift, and go to state 80
+    _minus            shift, and go to state 84
+    _not              shift, and go to state 85
+    _leftparen        shift, and go to state 86
+    _intconstant      shift, and go to state 87
+    _doubleconstant   shift, and go to state 88
+    _stringconstant   shift, and go to state 89
+    _booleanconstant  shift, and go to state 90
+    _id               shift, and go to state 91
+
+    ExprPlusComma  go to state 140
+    Expr           go to state 141
+    Lvalue         go to state 103
+    Call           go to state 104
+    Constant       go to state 105
+
+
+State 112
+
+   59 ReturnStmt: _return ExprOptional . _semicolon
+
+    _semicolon  shift, and go to state 142
+
+
+State 113
+
+   56 WhileStmt: _while _leftparen . Expr _rightparen Stmt
+
+    _null             shift, and go to state 80
+    _minus            shift, and go to state 84
+    _not              shift, and go to state 85
+    _leftparen        shift, and go to state 86
+    _intconstant      shift, and go to state 87
+    _doubleconstant   shift, and go to state 88
+    _stringconstant   shift, and go to state 89
+    _booleanconstant  shift, and go to state 90
+    _id               shift, and go to state 91
+
+    Expr      go to state 143
+    Lvalue    go to state 103
+    Call      go to state 104
+    Constant  go to state 105
+
+
+State 114
+
+   68 Expr: Expr . _plus Expr
+   69     | Expr . _minus Expr
+   70     | Expr . _multiplication Expr
+   71     | Expr . _division Expr
+   72     | Expr . _mod Expr
+   73     | _minus Expr .
+   74     | Expr . _less Expr
+   75     | Expr . _lessequal Expr
+   76     | Expr . _greater Expr
+   77     | Expr . _greaterequal Expr
+   78     | Expr . _equal Expr
+   79     | Expr . _notequal Expr
+   80     | Expr . _and Expr
+   81     | Expr . _or Expr
+
+    $default  reduce using rule 73 (Expr)
+
+
+State 115
+
+   68 Expr: Expr . _plus Expr
+   69     | Expr . _minus Expr
+   70     | Expr . _multiplication Expr
+   71     | Expr . _division Expr
+   72     | Expr . _mod Expr
+   74     | Expr . _less Expr
+   75     | Expr . _lessequal Expr
+   76     | Expr . _greater Expr
+   77     | Expr . _greaterequal Expr
+   78     | Expr . _equal Expr
+   79     | Expr . _notequal Expr
+   80     | Expr . _and Expr
+   81     | Expr . _or Expr
+   82     | _not Expr .
+
+    $default  reduce using rule 82 (Expr)
+
+
+State 116
+
+   67 Expr: _leftparen Expr . _rightparen
+   68     | Expr . _plus Expr
+   69     | Expr . _minus Expr
+   70     | Expr . _multiplication Expr
+   71     | Expr . _division Expr
+   72     | Expr . _mod Expr
+   74     | Expr . _less Expr
+   75     | Expr . _lessequal Expr
+   76     | Expr . _greater Expr
+   77     | Expr . _greaterequal Expr
+   78     | Expr . _equal Expr
+   79     | Expr . _notequal Expr
+   80     | Expr . _and Expr
+   81     | Expr . _or Expr
+
+    _plus            shift, and go to state 122
+    _minus           shift, and go to state 123
+    _multiplication  shift, and go to state 124
+    _division        shift, and go to state 125
+    _mod             shift, and go to state 126
+    _less            shift, and go to state 127
+    _lessequal       shift, and go to state 128
+    _greater         shift, and go to state 129
+    _greaterequal    shift, and go to state 130
+    _equal           shift, and go to state 131
+    _notequal        shift, and go to state 132
+    _and             shift, and go to state 133
+    _or              shift, and go to state 134
+    _rightparen      shift, and go to state 144
+
+
+State 117
+
+   87 Call: _id _period . _id _leftparen Actuals _rightparen
+
+    _id  shift, and go to state 145
 
 
 State 118
 
-   53 IfStmt: _if '(' . Expr ')' Stmt IfStmtOptional
+   86 Call: _id _leftparen . Actuals _rightparen
 
     _null             shift, and go to state 80
-    _intconstant      shift, and go to state 84
-    _doubleconstant   shift, and go to state 85
-    _stringconstant   shift, and go to state 86
-    _booleanconstant  shift, and go to state 87
-    _id               shift, and go to state 88
-    '('               shift, and go to state 89
-    '!'               shift, and go to state 90
-    '-'               shift, and go to state 91
+    _minus            shift, and go to state 84
+    _not              shift, and go to state 85
+    _leftparen        shift, and go to state 86
+    _intconstant      shift, and go to state 87
+    _doubleconstant   shift, and go to state 88
+    _stringconstant   shift, and go to state 89
+    _booleanconstant  shift, and go to state 90
+    _id               shift, and go to state 91
 
-    Expr      go to state 146
-    ExprA     go to state 103
-    ExprB     go to state 104
-    ExprC     go to state 105
-    ExprD     go to state 106
-    ExprE     go to state 107
-    ExprF     go to state 108
-    ExprG     go to state 109
-    ExprH     go to state 110
-    ExprI     go to state 111
-    Lvalue    go to state 112
-    Call      go to state 113
-    Constant  go to state 114
+    $default  reduce using rule 89 (Actuals)
+
+    ExprPlusComma  go to state 146
+    Expr           go to state 141
+    Lvalue         go to state 103
+    Call           go to state 104
+    Actuals        go to state 147
+    Constant       go to state 105
 
 
 State 119
 
-   60 PrintStmt: _println '(' . ExprPlusComma ')'
-
-    _null             shift, and go to state 80
-    _intconstant      shift, and go to state 84
-    _doubleconstant   shift, and go to state 85
-    _stringconstant   shift, and go to state 86
-    _booleanconstant  shift, and go to state 87
-    _id               shift, and go to state 88
-    '('               shift, and go to state 89
-    '!'               shift, and go to state 90
-    '-'               shift, and go to state 91
-
-    ExprPlusComma  go to state 147
-    Expr           go to state 148
-    ExprA          go to state 103
-    ExprB          go to state 104
-    ExprC          go to state 105
-    ExprD          go to state 106
-    ExprE          go to state 107
-    ExprF          go to state 108
-    ExprG          go to state 109
-    ExprH          go to state 110
-    ExprI          go to state 111
-    Lvalue         go to state 112
-    Call           go to state 113
-    Constant       go to state 114
-
-
-State 120
-
-   59 ReturnStmt: _return ExprOptional .
-
-    $default  reduce using rule 59 (ReturnStmt)
-
-
-State 121
-
-   56 WhileStmt: _while '(' . Expr ')' Stmt
-
-    _null             shift, and go to state 80
-    _intconstant      shift, and go to state 84
-    _doubleconstant   shift, and go to state 85
-    _stringconstant   shift, and go to state 86
-    _booleanconstant  shift, and go to state 87
-    _id               shift, and go to state 88
-    '('               shift, and go to state 89
-    '!'               shift, and go to state 90
-    '-'               shift, and go to state 91
-
-    Expr      go to state 149
-    ExprA     go to state 103
-    ExprB     go to state 104
-    ExprC     go to state 105
-    ExprD     go to state 106
-    ExprE     go to state 107
-    ExprF     go to state 108
-    ExprG     go to state 109
-    ExprH     go to state 110
-    ExprI     go to state 111
-    Lvalue    go to state 112
-    Call      go to state 113
-    Constant  go to state 114
-
-
-State 122
-
-   95 Call: _id '(' . Actuals ')'
-
-    _null             shift, and go to state 80
-    _intconstant      shift, and go to state 84
-    _doubleconstant   shift, and go to state 85
-    _stringconstant   shift, and go to state 86
-    _booleanconstant  shift, and go to state 87
-    _id               shift, and go to state 88
-    '('               shift, and go to state 89
-    '!'               shift, and go to state 90
-    '-'               shift, and go to state 91
-
-    $default  reduce using rule 98 (Actuals)
-
-    ExprPlusComma  go to state 150
-    Expr           go to state 148
-    ExprA          go to state 103
-    ExprB          go to state 104
-    ExprC          go to state 105
-    ExprD          go to state 106
-    ExprE          go to state 107
-    ExprF          go to state 108
-    ExprG          go to state 109
-    ExprH          go to state 110
-    ExprI          go to state 111
-    Lvalue         go to state 112
-    Call           go to state 113
-    Actuals        go to state 151
-    Constant       go to state 114
-
-
-State 123
-
-   96 Call: _id '.' . _id '(' Actuals ')'
-
-    _id  shift, and go to state 152
-
-
-State 124
-
-   91 ExprI: '(' Expr . ')'
-
-    ')'  shift, and go to state 153
-
-
-State 125
-
-   86 ExprH: '!' ExprH .
-
-    $default  reduce using rule 86 (ExprH)
-
-
-State 126
-
-   88 ExprI: Lvalue .
-   93 Lvalue: Lvalue . '[' Expr ']'
-   94       | Lvalue . '.' _id
-
-    '['  shift, and go to state 142
-    '.'  shift, and go to state 144
-
-    $default  reduce using rule 88 (ExprI)
-
-
-State 127
-
-   87 ExprH: '-' ExprH .
-
-    $default  reduce using rule 87 (ExprH)
-
-
-State 128
-
-   38 StmtBlock: '{' VariableDeclStar StmtStar '}' .
+   38 StmtBlock: _leftbrace VariableDeclStar StmtStar _rightbrace .
 
     $default  reduce using rule 38 (StmtBlock)
 
 
-State 129
+State 120
 
    41 StmtStar: Stmt StmtStar .
 
     $default  reduce using rule 41 (StmtStar)
 
 
-State 130
+State 121
 
-   43 Stmt: ExprOptional ';' .
+   43 Stmt: ExprOptional _semicolon .
 
     $default  reduce using rule 43 (Stmt)
 
 
+State 122
+
+   68 Expr: Expr _plus . Expr
+
+    _null             shift, and go to state 80
+    _minus            shift, and go to state 84
+    _not              shift, and go to state 85
+    _leftparen        shift, and go to state 86
+    _intconstant      shift, and go to state 87
+    _doubleconstant   shift, and go to state 88
+    _stringconstant   shift, and go to state 89
+    _booleanconstant  shift, and go to state 90
+    _id               shift, and go to state 91
+
+    Expr      go to state 148
+    Lvalue    go to state 103
+    Call      go to state 104
+    Constant  go to state 105
+
+
+State 123
+
+   69 Expr: Expr _minus . Expr
+
+    _null             shift, and go to state 80
+    _minus            shift, and go to state 84
+    _not              shift, and go to state 85
+    _leftparen        shift, and go to state 86
+    _intconstant      shift, and go to state 87
+    _doubleconstant   shift, and go to state 88
+    _stringconstant   shift, and go to state 89
+    _booleanconstant  shift, and go to state 90
+    _id               shift, and go to state 91
+
+    Expr      go to state 149
+    Lvalue    go to state 103
+    Call      go to state 104
+    Constant  go to state 105
+
+
+State 124
+
+   70 Expr: Expr _multiplication . Expr
+
+    _null             shift, and go to state 80
+    _minus            shift, and go to state 84
+    _not              shift, and go to state 85
+    _leftparen        shift, and go to state 86
+    _intconstant      shift, and go to state 87
+    _doubleconstant   shift, and go to state 88
+    _stringconstant   shift, and go to state 89
+    _booleanconstant  shift, and go to state 90
+    _id               shift, and go to state 91
+
+    Expr      go to state 150
+    Lvalue    go to state 103
+    Call      go to state 104
+    Constant  go to state 105
+
+
+State 125
+
+   71 Expr: Expr _division . Expr
+
+    _null             shift, and go to state 80
+    _minus            shift, and go to state 84
+    _not              shift, and go to state 85
+    _leftparen        shift, and go to state 86
+    _intconstant      shift, and go to state 87
+    _doubleconstant   shift, and go to state 88
+    _stringconstant   shift, and go to state 89
+    _booleanconstant  shift, and go to state 90
+    _id               shift, and go to state 91
+
+    Expr      go to state 151
+    Lvalue    go to state 103
+    Call      go to state 104
+    Constant  go to state 105
+
+
+State 126
+
+   72 Expr: Expr _mod . Expr
+
+    _null             shift, and go to state 80
+    _minus            shift, and go to state 84
+    _not              shift, and go to state 85
+    _leftparen        shift, and go to state 86
+    _intconstant      shift, and go to state 87
+    _doubleconstant   shift, and go to state 88
+    _stringconstant   shift, and go to state 89
+    _booleanconstant  shift, and go to state 90
+    _id               shift, and go to state 91
+
+    Expr      go to state 152
+    Lvalue    go to state 103
+    Call      go to state 104
+    Constant  go to state 105
+
+
+State 127
+
+   74 Expr: Expr _less . Expr
+
+    _null             shift, and go to state 80
+    _minus            shift, and go to state 84
+    _not              shift, and go to state 85
+    _leftparen        shift, and go to state 86
+    _intconstant      shift, and go to state 87
+    _doubleconstant   shift, and go to state 88
+    _stringconstant   shift, and go to state 89
+    _booleanconstant  shift, and go to state 90
+    _id               shift, and go to state 91
+
+    Expr      go to state 153
+    Lvalue    go to state 103
+    Call      go to state 104
+    Constant  go to state 105
+
+
+State 128
+
+   75 Expr: Expr _lessequal . Expr
+
+    _null             shift, and go to state 80
+    _minus            shift, and go to state 84
+    _not              shift, and go to state 85
+    _leftparen        shift, and go to state 86
+    _intconstant      shift, and go to state 87
+    _doubleconstant   shift, and go to state 88
+    _stringconstant   shift, and go to state 89
+    _booleanconstant  shift, and go to state 90
+    _id               shift, and go to state 91
+
+    Expr      go to state 154
+    Lvalue    go to state 103
+    Call      go to state 104
+    Constant  go to state 105
+
+
+State 129
+
+   76 Expr: Expr _greater . Expr
+
+    _null             shift, and go to state 80
+    _minus            shift, and go to state 84
+    _not              shift, and go to state 85
+    _leftparen        shift, and go to state 86
+    _intconstant      shift, and go to state 87
+    _doubleconstant   shift, and go to state 88
+    _stringconstant   shift, and go to state 89
+    _booleanconstant  shift, and go to state 90
+    _id               shift, and go to state 91
+
+    Expr      go to state 155
+    Lvalue    go to state 103
+    Call      go to state 104
+    Constant  go to state 105
+
+
+State 130
+
+   77 Expr: Expr _greaterequal . Expr
+
+    _null             shift, and go to state 80
+    _minus            shift, and go to state 84
+    _not              shift, and go to state 85
+    _leftparen        shift, and go to state 86
+    _intconstant      shift, and go to state 87
+    _doubleconstant   shift, and go to state 88
+    _stringconstant   shift, and go to state 89
+    _booleanconstant  shift, and go to state 90
+    _id               shift, and go to state 91
+
+    Expr      go to state 156
+    Lvalue    go to state 103
+    Call      go to state 104
+    Constant  go to state 105
+
+
 State 131
 
-   67 ExprB: ExprB '|' . '|' ExprC
+   78 Expr: Expr _equal . Expr
 
-    '|'  shift, and go to state 154
+    _null             shift, and go to state 80
+    _minus            shift, and go to state 84
+    _not              shift, and go to state 85
+    _leftparen        shift, and go to state 86
+    _intconstant      shift, and go to state 87
+    _doubleconstant   shift, and go to state 88
+    _stringconstant   shift, and go to state 89
+    _booleanconstant  shift, and go to state 90
+    _id               shift, and go to state 91
+
+    Expr      go to state 157
+    Lvalue    go to state 103
+    Call      go to state 104
+    Constant  go to state 105
 
 
 State 132
 
-   69 ExprC: ExprC '&' . '&' ExprD
+   79 Expr: Expr _notequal . Expr
 
-    '&'  shift, and go to state 155
+    _null             shift, and go to state 80
+    _minus            shift, and go to state 84
+    _not              shift, and go to state 85
+    _leftparen        shift, and go to state 86
+    _intconstant      shift, and go to state 87
+    _doubleconstant   shift, and go to state 88
+    _stringconstant   shift, and go to state 89
+    _booleanconstant  shift, and go to state 90
+    _id               shift, and go to state 91
+
+    Expr      go to state 158
+    Lvalue    go to state 103
+    Call      go to state 104
+    Constant  go to state 105
 
 
 State 133
 
-   71 ExprD: ExprD '=' . '=' ExprE
+   80 Expr: Expr _and . Expr
 
-    '='  shift, and go to state 156
+    _null             shift, and go to state 80
+    _minus            shift, and go to state 84
+    _not              shift, and go to state 85
+    _leftparen        shift, and go to state 86
+    _intconstant      shift, and go to state 87
+    _doubleconstant   shift, and go to state 88
+    _stringconstant   shift, and go to state 89
+    _booleanconstant  shift, and go to state 90
+    _id               shift, and go to state 91
+
+    Expr      go to state 159
+    Lvalue    go to state 103
+    Call      go to state 104
+    Constant  go to state 105
 
 
 State 134
 
-   72 ExprD: ExprD '!' . '=' ExprE
+   81 Expr: Expr _or . Expr
 
-    '='  shift, and go to state 157
+    _null             shift, and go to state 80
+    _minus            shift, and go to state 84
+    _not              shift, and go to state 85
+    _leftparen        shift, and go to state 86
+    _intconstant      shift, and go to state 87
+    _doubleconstant   shift, and go to state 88
+    _stringconstant   shift, and go to state 89
+    _booleanconstant  shift, and go to state 90
+    _id               shift, and go to state 91
+
+    Expr      go to state 160
+    Lvalue    go to state 103
+    Call      go to state 104
+    Constant  go to state 105
 
 
 State 135
 
-   74 ExprE: ExprE '<' . ExprF
-   75      | ExprE '<' . '=' ExprF
+   63 Expr: Lvalue _assignop . Expr
 
     _null             shift, and go to state 80
-    _intconstant      shift, and go to state 84
-    _doubleconstant   shift, and go to state 85
-    _stringconstant   shift, and go to state 86
-    _booleanconstant  shift, and go to state 87
-    _id               shift, and go to state 88
-    '('               shift, and go to state 89
-    '='               shift, and go to state 158
-    '!'               shift, and go to state 90
-    '-'               shift, and go to state 91
+    _minus            shift, and go to state 84
+    _not              shift, and go to state 85
+    _leftparen        shift, and go to state 86
+    _intconstant      shift, and go to state 87
+    _doubleconstant   shift, and go to state 88
+    _stringconstant   shift, and go to state 89
+    _booleanconstant  shift, and go to state 90
+    _id               shift, and go to state 91
 
-    ExprF     go to state 159
-    ExprG     go to state 109
-    ExprH     go to state 110
-    ExprI     go to state 111
-    Lvalue    go to state 126
-    Call      go to state 113
-    Constant  go to state 114
+    Expr      go to state 161
+    Lvalue    go to state 103
+    Call      go to state 104
+    Constant  go to state 105
 
 
 State 136
 
-   76 ExprE: ExprE '>' . ExprF
-   77      | ExprE '>' . '=' ExprF
+   85 Lvalue: Lvalue _period . _id
 
-    _null             shift, and go to state 80
-    _intconstant      shift, and go to state 84
-    _doubleconstant   shift, and go to state 85
-    _stringconstant   shift, and go to state 86
-    _booleanconstant  shift, and go to state 87
-    _id               shift, and go to state 88
-    '('               shift, and go to state 89
-    '='               shift, and go to state 160
-    '!'               shift, and go to state 90
-    '-'               shift, and go to state 91
-
-    ExprF     go to state 161
-    ExprG     go to state 109
-    ExprH     go to state 110
-    ExprI     go to state 111
-    Lvalue    go to state 126
-    Call      go to state 113
-    Constant  go to state 114
+    _id  shift, and go to state 162
 
 
 State 137
 
-   79 ExprF: ExprF '+' . ExprG
+   84 Lvalue: Lvalue _leftbracket . Expr _rightbracket
 
     _null             shift, and go to state 80
-    _intconstant      shift, and go to state 84
-    _doubleconstant   shift, and go to state 85
-    _stringconstant   shift, and go to state 86
-    _booleanconstant  shift, and go to state 87
-    _id               shift, and go to state 88
-    '('               shift, and go to state 89
-    '!'               shift, and go to state 90
-    '-'               shift, and go to state 91
+    _minus            shift, and go to state 84
+    _not              shift, and go to state 85
+    _leftparen        shift, and go to state 86
+    _intconstant      shift, and go to state 87
+    _doubleconstant   shift, and go to state 88
+    _stringconstant   shift, and go to state 89
+    _booleanconstant  shift, and go to state 90
+    _id               shift, and go to state 91
 
-    ExprF     go to state 162
-    ExprG     go to state 163
-    ExprH     go to state 110
-    ExprI     go to state 111
-    Lvalue    go to state 126
-    Call      go to state 113
-    Constant  go to state 114
+    Expr      go to state 163
+    Lvalue    go to state 103
+    Call      go to state 104
+    Constant  go to state 105
 
 
 State 138
 
-   80 ExprF: ExprF '-' . ExprG
+   57 ForStmt: _for _leftparen ExprOptional . _semicolon Expr _semicolon ExprOptional _rightparen Stmt
 
-    _null             shift, and go to state 80
-    _intconstant      shift, and go to state 84
-    _doubleconstant   shift, and go to state 85
-    _stringconstant   shift, and go to state 86
-    _booleanconstant  shift, and go to state 87
-    _id               shift, and go to state 88
-    '('               shift, and go to state 89
-    '!'               shift, and go to state 90
-    '-'               shift, and go to state 91
-
-    ExprF     go to state 162
-    ExprG     go to state 164
-    ExprH     go to state 110
-    ExprI     go to state 111
-    Lvalue    go to state 126
-    Call      go to state 113
-    Constant  go to state 114
+    _semicolon  shift, and go to state 164
 
 
 State 139
 
-   82 ExprG: ExprF '*' . ExprG
+   53 IfStmt: _if _leftparen Expr . _rightparen Stmt IfStmtOptional
+   68 Expr: Expr . _plus Expr
+   69     | Expr . _minus Expr
+   70     | Expr . _multiplication Expr
+   71     | Expr . _division Expr
+   72     | Expr . _mod Expr
+   74     | Expr . _less Expr
+   75     | Expr . _lessequal Expr
+   76     | Expr . _greater Expr
+   77     | Expr . _greaterequal Expr
+   78     | Expr . _equal Expr
+   79     | Expr . _notequal Expr
+   80     | Expr . _and Expr
+   81     | Expr . _or Expr
 
-    _null             shift, and go to state 80
-    _intconstant      shift, and go to state 84
-    _doubleconstant   shift, and go to state 85
-    _stringconstant   shift, and go to state 86
-    _booleanconstant  shift, and go to state 87
-    _id               shift, and go to state 88
-    '('               shift, and go to state 89
-    '!'               shift, and go to state 90
-    '-'               shift, and go to state 91
-
-    ExprF     go to state 162
-    ExprG     go to state 165
-    ExprH     go to state 110
-    ExprI     go to state 111
-    Lvalue    go to state 126
-    Call      go to state 113
-    Constant  go to state 114
+    _plus            shift, and go to state 122
+    _minus           shift, and go to state 123
+    _multiplication  shift, and go to state 124
+    _division        shift, and go to state 125
+    _mod             shift, and go to state 126
+    _less            shift, and go to state 127
+    _lessequal       shift, and go to state 128
+    _greater         shift, and go to state 129
+    _greaterequal    shift, and go to state 130
+    _equal           shift, and go to state 131
+    _notequal        shift, and go to state 132
+    _and             shift, and go to state 133
+    _or              shift, and go to state 134
+    _rightparen      shift, and go to state 165
 
 
 State 140
 
-   83 ExprG: ExprF '/' . ExprG
+   60 PrintStmt: _println _leftparen ExprPlusComma . _rightparen
 
-    _null             shift, and go to state 80
-    _intconstant      shift, and go to state 84
-    _doubleconstant   shift, and go to state 85
-    _stringconstant   shift, and go to state 86
-    _booleanconstant  shift, and go to state 87
-    _id               shift, and go to state 88
-    '('               shift, and go to state 89
-    '!'               shift, and go to state 90
-    '-'               shift, and go to state 91
-
-    ExprF     go to state 162
-    ExprG     go to state 166
-    ExprH     go to state 110
-    ExprI     go to state 111
-    Lvalue    go to state 126
-    Call      go to state 113
-    Constant  go to state 114
+    _rightparen  shift, and go to state 166
 
 
 State 141
 
-   84 ExprG: ExprF '%' . ExprG
-
-    _null             shift, and go to state 80
-    _intconstant      shift, and go to state 84
-    _doubleconstant   shift, and go to state 85
-    _stringconstant   shift, and go to state 86
-    _booleanconstant  shift, and go to state 87
-    _id               shift, and go to state 88
-    '('               shift, and go to state 89
-    '!'               shift, and go to state 90
-    '-'               shift, and go to state 91
-
-    ExprF     go to state 162
-    ExprG     go to state 167
-    ExprH     go to state 110
-    ExprI     go to state 111
-    Lvalue    go to state 126
-    Call      go to state 113
-    Constant  go to state 114
-
-
-State 142
-
-   93 Lvalue: Lvalue '[' . Expr ']'
-
-    _null             shift, and go to state 80
-    _intconstant      shift, and go to state 84
-    _doubleconstant   shift, and go to state 85
-    _stringconstant   shift, and go to state 86
-    _booleanconstant  shift, and go to state 87
-    _id               shift, and go to state 88
-    '('               shift, and go to state 89
-    '!'               shift, and go to state 90
-    '-'               shift, and go to state 91
-
-    Expr      go to state 168
-    ExprA     go to state 103
-    ExprB     go to state 104
-    ExprC     go to state 105
-    ExprD     go to state 106
-    ExprE     go to state 107
-    ExprF     go to state 108
-    ExprG     go to state 109
-    ExprH     go to state 110
-    ExprI     go to state 111
-    Lvalue    go to state 112
-    Call      go to state 113
-    Constant  go to state 114
-
-
-State 143
-
-   65 ExprA: Lvalue '=' . ExprB
-
-    _null             shift, and go to state 80
-    _intconstant      shift, and go to state 84
-    _doubleconstant   shift, and go to state 85
-    _stringconstant   shift, and go to state 86
-    _booleanconstant  shift, and go to state 87
-    _id               shift, and go to state 88
-    '('               shift, and go to state 89
-    '!'               shift, and go to state 90
-    '-'               shift, and go to state 91
-
-    ExprB     go to state 169
-    ExprC     go to state 105
-    ExprD     go to state 106
-    ExprE     go to state 107
-    ExprF     go to state 108
-    ExprG     go to state 109
-    ExprH     go to state 110
-    ExprI     go to state 111
-    Lvalue    go to state 126
-    Call      go to state 113
-    Constant  go to state 114
-
-
-State 144
-
-   94 Lvalue: Lvalue '.' . _id
-
-    _id  shift, and go to state 170
-
-
-State 145
-
-   57 ForStmt: _for '(' ExprOptional . ';' Expr ';' ExprOptional ')' Stmt
-
-    ';'  shift, and go to state 171
-
-
-State 146
-
-   53 IfStmt: _if '(' Expr . ')' Stmt IfStmtOptional
-
-    ')'  shift, and go to state 172
-
-
-State 147
-
-   60 PrintStmt: _println '(' ExprPlusComma . ')'
-
-    ')'  shift, and go to state 173
-
-
-State 148
-
-   61 ExprPlusComma: Expr . ',' ExprPlusComma
+   61 ExprPlusComma: Expr . _comma ExprPlusComma
    62              | Expr .
+   68 Expr: Expr . _plus Expr
+   69     | Expr . _minus Expr
+   70     | Expr . _multiplication Expr
+   71     | Expr . _division Expr
+   72     | Expr . _mod Expr
+   74     | Expr . _less Expr
+   75     | Expr . _lessequal Expr
+   76     | Expr . _greater Expr
+   77     | Expr . _greaterequal Expr
+   78     | Expr . _equal Expr
+   79     | Expr . _notequal Expr
+   80     | Expr . _and Expr
+   81     | Expr . _or Expr
 
-    ','  shift, and go to state 174
+    _plus            shift, and go to state 122
+    _minus           shift, and go to state 123
+    _multiplication  shift, and go to state 124
+    _division        shift, and go to state 125
+    _mod             shift, and go to state 126
+    _less            shift, and go to state 127
+    _lessequal       shift, and go to state 128
+    _greater         shift, and go to state 129
+    _greaterequal    shift, and go to state 130
+    _equal           shift, and go to state 131
+    _notequal        shift, and go to state 132
+    _and             shift, and go to state 133
+    _or              shift, and go to state 134
+    _comma           shift, and go to state 167
 
     $default  reduce using rule 62 (ExprPlusComma)
 
 
+State 142
+
+   59 ReturnStmt: _return ExprOptional _semicolon .
+
+    $default  reduce using rule 59 (ReturnStmt)
+
+
+State 143
+
+   56 WhileStmt: _while _leftparen Expr . _rightparen Stmt
+   68 Expr: Expr . _plus Expr
+   69     | Expr . _minus Expr
+   70     | Expr . _multiplication Expr
+   71     | Expr . _division Expr
+   72     | Expr . _mod Expr
+   74     | Expr . _less Expr
+   75     | Expr . _lessequal Expr
+   76     | Expr . _greater Expr
+   77     | Expr . _greaterequal Expr
+   78     | Expr . _equal Expr
+   79     | Expr . _notequal Expr
+   80     | Expr . _and Expr
+   81     | Expr . _or Expr
+
+    _plus            shift, and go to state 122
+    _minus           shift, and go to state 123
+    _multiplication  shift, and go to state 124
+    _division        shift, and go to state 125
+    _mod             shift, and go to state 126
+    _less            shift, and go to state 127
+    _lessequal       shift, and go to state 128
+    _greater         shift, and go to state 129
+    _greaterequal    shift, and go to state 130
+    _equal           shift, and go to state 131
+    _notequal        shift, and go to state 132
+    _and             shift, and go to state 133
+    _or              shift, and go to state 134
+    _rightparen      shift, and go to state 168
+
+
+State 144
+
+   67 Expr: _leftparen Expr _rightparen .
+
+    $default  reduce using rule 67 (Expr)
+
+
+State 145
+
+   87 Call: _id _period _id . _leftparen Actuals _rightparen
+
+    _leftparen  shift, and go to state 169
+
+
+State 146
+
+   88 Actuals: ExprPlusComma .
+
+    $default  reduce using rule 88 (Actuals)
+
+
+State 147
+
+   86 Call: _id _leftparen Actuals . _rightparen
+
+    _rightparen  shift, and go to state 170
+
+
+State 148
+
+   68 Expr: Expr . _plus Expr
+   68     | Expr _plus Expr .
+   69     | Expr . _minus Expr
+   70     | Expr . _multiplication Expr
+   71     | Expr . _division Expr
+   72     | Expr . _mod Expr
+   74     | Expr . _less Expr
+   75     | Expr . _lessequal Expr
+   76     | Expr . _greater Expr
+   77     | Expr . _greaterequal Expr
+   78     | Expr . _equal Expr
+   79     | Expr . _notequal Expr
+   80     | Expr . _and Expr
+   81     | Expr . _or Expr
+
+    _multiplication  shift, and go to state 124
+    _division        shift, and go to state 125
+    _mod             shift, and go to state 126
+
+    $default  reduce using rule 68 (Expr)
+
+
 State 149
 
-   56 WhileStmt: _while '(' Expr . ')' Stmt
+   68 Expr: Expr . _plus Expr
+   69     | Expr . _minus Expr
+   69     | Expr _minus Expr .
+   70     | Expr . _multiplication Expr
+   71     | Expr . _division Expr
+   72     | Expr . _mod Expr
+   74     | Expr . _less Expr
+   75     | Expr . _lessequal Expr
+   76     | Expr . _greater Expr
+   77     | Expr . _greaterequal Expr
+   78     | Expr . _equal Expr
+   79     | Expr . _notequal Expr
+   80     | Expr . _and Expr
+   81     | Expr . _or Expr
 
-    ')'  shift, and go to state 175
+    _multiplication  shift, and go to state 124
+    _division        shift, and go to state 125
+    _mod             shift, and go to state 126
+
+    $default  reduce using rule 69 (Expr)
 
 
 State 150
 
-   97 Actuals: ExprPlusComma .
+   68 Expr: Expr . _plus Expr
+   69     | Expr . _minus Expr
+   70     | Expr . _multiplication Expr
+   70     | Expr _multiplication Expr .
+   71     | Expr . _division Expr
+   72     | Expr . _mod Expr
+   74     | Expr . _less Expr
+   75     | Expr . _lessequal Expr
+   76     | Expr . _greater Expr
+   77     | Expr . _greaterequal Expr
+   78     | Expr . _equal Expr
+   79     | Expr . _notequal Expr
+   80     | Expr . _and Expr
+   81     | Expr . _or Expr
 
-    $default  reduce using rule 97 (Actuals)
+    $default  reduce using rule 70 (Expr)
 
 
 State 151
 
-   95 Call: _id '(' Actuals . ')'
+   68 Expr: Expr . _plus Expr
+   69     | Expr . _minus Expr
+   70     | Expr . _multiplication Expr
+   71     | Expr . _division Expr
+   71     | Expr _division Expr .
+   72     | Expr . _mod Expr
+   74     | Expr . _less Expr
+   75     | Expr . _lessequal Expr
+   76     | Expr . _greater Expr
+   77     | Expr . _greaterequal Expr
+   78     | Expr . _equal Expr
+   79     | Expr . _notequal Expr
+   80     | Expr . _and Expr
+   81     | Expr . _or Expr
 
-    ')'  shift, and go to state 176
+    $default  reduce using rule 71 (Expr)
 
 
 State 152
 
-   96 Call: _id '.' _id . '(' Actuals ')'
+   68 Expr: Expr . _plus Expr
+   69     | Expr . _minus Expr
+   70     | Expr . _multiplication Expr
+   71     | Expr . _division Expr
+   72     | Expr . _mod Expr
+   72     | Expr _mod Expr .
+   74     | Expr . _less Expr
+   75     | Expr . _lessequal Expr
+   76     | Expr . _greater Expr
+   77     | Expr . _greaterequal Expr
+   78     | Expr . _equal Expr
+   79     | Expr . _notequal Expr
+   80     | Expr . _and Expr
+   81     | Expr . _or Expr
 
-    '('  shift, and go to state 177
+    $default  reduce using rule 72 (Expr)
 
 
 State 153
 
-   91 ExprI: '(' Expr ')' .
+   68 Expr: Expr . _plus Expr
+   69     | Expr . _minus Expr
+   70     | Expr . _multiplication Expr
+   71     | Expr . _division Expr
+   72     | Expr . _mod Expr
+   74     | Expr . _less Expr
+   74     | Expr _less Expr .
+   75     | Expr . _lessequal Expr
+   76     | Expr . _greater Expr
+   77     | Expr . _greaterequal Expr
+   78     | Expr . _equal Expr
+   79     | Expr . _notequal Expr
+   80     | Expr . _and Expr
+   81     | Expr . _or Expr
 
-    $default  reduce using rule 91 (ExprI)
+    _plus            shift, and go to state 122
+    _minus           shift, and go to state 123
+    _multiplication  shift, and go to state 124
+    _division        shift, and go to state 125
+    _mod             shift, and go to state 126
+
+    $default  reduce using rule 74 (Expr)
 
 
 State 154
 
-   67 ExprB: ExprB '|' '|' . ExprC
+   68 Expr: Expr . _plus Expr
+   69     | Expr . _minus Expr
+   70     | Expr . _multiplication Expr
+   71     | Expr . _division Expr
+   72     | Expr . _mod Expr
+   74     | Expr . _less Expr
+   75     | Expr . _lessequal Expr
+   75     | Expr _lessequal Expr .
+   76     | Expr . _greater Expr
+   77     | Expr . _greaterequal Expr
+   78     | Expr . _equal Expr
+   79     | Expr . _notequal Expr
+   80     | Expr . _and Expr
+   81     | Expr . _or Expr
 
-    _null             shift, and go to state 80
-    _intconstant      shift, and go to state 84
-    _doubleconstant   shift, and go to state 85
-    _stringconstant   shift, and go to state 86
-    _booleanconstant  shift, and go to state 87
-    _id               shift, and go to state 88
-    '('               shift, and go to state 89
-    '!'               shift, and go to state 90
-    '-'               shift, and go to state 91
+    _plus            shift, and go to state 122
+    _minus           shift, and go to state 123
+    _multiplication  shift, and go to state 124
+    _division        shift, and go to state 125
+    _mod             shift, and go to state 126
 
-    ExprC     go to state 178
-    ExprD     go to state 106
-    ExprE     go to state 107
-    ExprF     go to state 108
-    ExprG     go to state 109
-    ExprH     go to state 110
-    ExprI     go to state 111
-    Lvalue    go to state 126
-    Call      go to state 113
-    Constant  go to state 114
+    $default  reduce using rule 75 (Expr)
 
 
 State 155
 
-   69 ExprC: ExprC '&' '&' . ExprD
+   68 Expr: Expr . _plus Expr
+   69     | Expr . _minus Expr
+   70     | Expr . _multiplication Expr
+   71     | Expr . _division Expr
+   72     | Expr . _mod Expr
+   74     | Expr . _less Expr
+   75     | Expr . _lessequal Expr
+   76     | Expr . _greater Expr
+   76     | Expr _greater Expr .
+   77     | Expr . _greaterequal Expr
+   78     | Expr . _equal Expr
+   79     | Expr . _notequal Expr
+   80     | Expr . _and Expr
+   81     | Expr . _or Expr
 
-    _null             shift, and go to state 80
-    _intconstant      shift, and go to state 84
-    _doubleconstant   shift, and go to state 85
-    _stringconstant   shift, and go to state 86
-    _booleanconstant  shift, and go to state 87
-    _id               shift, and go to state 88
-    '('               shift, and go to state 89
-    '!'               shift, and go to state 90
-    '-'               shift, and go to state 91
+    _plus            shift, and go to state 122
+    _minus           shift, and go to state 123
+    _multiplication  shift, and go to state 124
+    _division        shift, and go to state 125
+    _mod             shift, and go to state 126
 
-    ExprD     go to state 179
-    ExprE     go to state 107
-    ExprF     go to state 108
-    ExprG     go to state 109
-    ExprH     go to state 110
-    ExprI     go to state 111
-    Lvalue    go to state 126
-    Call      go to state 113
-    Constant  go to state 114
+    $default  reduce using rule 76 (Expr)
 
 
 State 156
 
-   71 ExprD: ExprD '=' '=' . ExprE
+   68 Expr: Expr . _plus Expr
+   69     | Expr . _minus Expr
+   70     | Expr . _multiplication Expr
+   71     | Expr . _division Expr
+   72     | Expr . _mod Expr
+   74     | Expr . _less Expr
+   75     | Expr . _lessequal Expr
+   76     | Expr . _greater Expr
+   77     | Expr . _greaterequal Expr
+   77     | Expr _greaterequal Expr .
+   78     | Expr . _equal Expr
+   79     | Expr . _notequal Expr
+   80     | Expr . _and Expr
+   81     | Expr . _or Expr
 
-    _null             shift, and go to state 80
-    _intconstant      shift, and go to state 84
-    _doubleconstant   shift, and go to state 85
-    _stringconstant   shift, and go to state 86
-    _booleanconstant  shift, and go to state 87
-    _id               shift, and go to state 88
-    '('               shift, and go to state 89
-    '!'               shift, and go to state 90
-    '-'               shift, and go to state 91
+    _plus            shift, and go to state 122
+    _minus           shift, and go to state 123
+    _multiplication  shift, and go to state 124
+    _division        shift, and go to state 125
+    _mod             shift, and go to state 126
 
-    ExprE     go to state 180
-    ExprF     go to state 108
-    ExprG     go to state 109
-    ExprH     go to state 110
-    ExprI     go to state 111
-    Lvalue    go to state 126
-    Call      go to state 113
-    Constant  go to state 114
+    $default  reduce using rule 77 (Expr)
 
 
 State 157
 
-   72 ExprD: ExprD '!' '=' . ExprE
+   68 Expr: Expr . _plus Expr
+   69     | Expr . _minus Expr
+   70     | Expr . _multiplication Expr
+   71     | Expr . _division Expr
+   72     | Expr . _mod Expr
+   74     | Expr . _less Expr
+   75     | Expr . _lessequal Expr
+   76     | Expr . _greater Expr
+   77     | Expr . _greaterequal Expr
+   78     | Expr . _equal Expr
+   78     | Expr _equal Expr .
+   79     | Expr . _notequal Expr
+   80     | Expr . _and Expr
+   81     | Expr . _or Expr
 
-    _null             shift, and go to state 80
-    _intconstant      shift, and go to state 84
-    _doubleconstant   shift, and go to state 85
-    _stringconstant   shift, and go to state 86
-    _booleanconstant  shift, and go to state 87
-    _id               shift, and go to state 88
-    '('               shift, and go to state 89
-    '!'               shift, and go to state 90
-    '-'               shift, and go to state 91
+    _plus            shift, and go to state 122
+    _minus           shift, and go to state 123
+    _multiplication  shift, and go to state 124
+    _division        shift, and go to state 125
+    _mod             shift, and go to state 126
+    _less            shift, and go to state 127
+    _lessequal       shift, and go to state 128
+    _greater         shift, and go to state 129
+    _greaterequal    shift, and go to state 130
 
-    ExprE     go to state 181
-    ExprF     go to state 108
-    ExprG     go to state 109
-    ExprH     go to state 110
-    ExprI     go to state 111
-    Lvalue    go to state 126
-    Call      go to state 113
-    Constant  go to state 114
+    $default  reduce using rule 78 (Expr)
 
 
 State 158
 
-   75 ExprE: ExprE '<' '=' . ExprF
+   68 Expr: Expr . _plus Expr
+   69     | Expr . _minus Expr
+   70     | Expr . _multiplication Expr
+   71     | Expr . _division Expr
+   72     | Expr . _mod Expr
+   74     | Expr . _less Expr
+   75     | Expr . _lessequal Expr
+   76     | Expr . _greater Expr
+   77     | Expr . _greaterequal Expr
+   78     | Expr . _equal Expr
+   79     | Expr . _notequal Expr
+   79     | Expr _notequal Expr .
+   80     | Expr . _and Expr
+   81     | Expr . _or Expr
 
-    _null             shift, and go to state 80
-    _intconstant      shift, and go to state 84
-    _doubleconstant   shift, and go to state 85
-    _stringconstant   shift, and go to state 86
-    _booleanconstant  shift, and go to state 87
-    _id               shift, and go to state 88
-    '('               shift, and go to state 89
-    '!'               shift, and go to state 90
-    '-'               shift, and go to state 91
+    _plus            shift, and go to state 122
+    _minus           shift, and go to state 123
+    _multiplication  shift, and go to state 124
+    _division        shift, and go to state 125
+    _mod             shift, and go to state 126
+    _less            shift, and go to state 127
+    _lessequal       shift, and go to state 128
+    _greater         shift, and go to state 129
+    _greaterequal    shift, and go to state 130
 
-    ExprF     go to state 182
-    ExprG     go to state 109
-    ExprH     go to state 110
-    ExprI     go to state 111
-    Lvalue    go to state 126
-    Call      go to state 113
-    Constant  go to state 114
+    $default  reduce using rule 79 (Expr)
 
 
 State 159
 
-   74 ExprE: ExprE '<' ExprF .
-   79 ExprF: ExprF . '+' ExprG
-   80      | ExprF . '-' ExprG
-   82 ExprG: ExprF . '*' ExprG
-   83      | ExprF . '/' ExprG
-   84      | ExprF . '%' ExprG
+   68 Expr: Expr . _plus Expr
+   69     | Expr . _minus Expr
+   70     | Expr . _multiplication Expr
+   71     | Expr . _division Expr
+   72     | Expr . _mod Expr
+   74     | Expr . _less Expr
+   75     | Expr . _lessequal Expr
+   76     | Expr . _greater Expr
+   77     | Expr . _greaterequal Expr
+   78     | Expr . _equal Expr
+   79     | Expr . _notequal Expr
+   80     | Expr . _and Expr
+   80     | Expr _and Expr .
+   81     | Expr . _or Expr
 
-    '+'  shift, and go to state 137
-    '-'  shift, and go to state 138
-    '*'  shift, and go to state 139
-    '/'  shift, and go to state 140
-    '%'  shift, and go to state 141
+    _plus            shift, and go to state 122
+    _minus           shift, and go to state 123
+    _multiplication  shift, and go to state 124
+    _division        shift, and go to state 125
+    _mod             shift, and go to state 126
+    _less            shift, and go to state 127
+    _lessequal       shift, and go to state 128
+    _greater         shift, and go to state 129
+    _greaterequal    shift, and go to state 130
+    _equal           shift, and go to state 131
+    _notequal        shift, and go to state 132
 
-    '-'       [reduce using rule 74 (ExprE)]
-    $default  reduce using rule 74 (ExprE)
+    $default  reduce using rule 80 (Expr)
 
 
 State 160
 
-   77 ExprE: ExprE '>' '=' . ExprF
+   68 Expr: Expr . _plus Expr
+   69     | Expr . _minus Expr
+   70     | Expr . _multiplication Expr
+   71     | Expr . _division Expr
+   72     | Expr . _mod Expr
+   74     | Expr . _less Expr
+   75     | Expr . _lessequal Expr
+   76     | Expr . _greater Expr
+   77     | Expr . _greaterequal Expr
+   78     | Expr . _equal Expr
+   79     | Expr . _notequal Expr
+   80     | Expr . _and Expr
+   81     | Expr . _or Expr
+   81     | Expr _or Expr .
 
-    _null             shift, and go to state 80
-    _intconstant      shift, and go to state 84
-    _doubleconstant   shift, and go to state 85
-    _stringconstant   shift, and go to state 86
-    _booleanconstant  shift, and go to state 87
-    _id               shift, and go to state 88
-    '('               shift, and go to state 89
-    '!'               shift, and go to state 90
-    '-'               shift, and go to state 91
+    _plus            shift, and go to state 122
+    _minus           shift, and go to state 123
+    _multiplication  shift, and go to state 124
+    _division        shift, and go to state 125
+    _mod             shift, and go to state 126
+    _less            shift, and go to state 127
+    _lessequal       shift, and go to state 128
+    _greater         shift, and go to state 129
+    _greaterequal    shift, and go to state 130
+    _equal           shift, and go to state 131
+    _notequal        shift, and go to state 132
+    _and             shift, and go to state 133
 
-    ExprF     go to state 183
-    ExprG     go to state 109
-    ExprH     go to state 110
-    ExprI     go to state 111
-    Lvalue    go to state 126
-    Call      go to state 113
-    Constant  go to state 114
+    $default  reduce using rule 81 (Expr)
 
 
 State 161
 
-   76 ExprE: ExprE '>' ExprF .
-   79 ExprF: ExprF . '+' ExprG
-   80      | ExprF . '-' ExprG
-   82 ExprG: ExprF . '*' ExprG
-   83      | ExprF . '/' ExprG
-   84      | ExprF . '%' ExprG
+   63 Expr: Lvalue _assignop Expr .
+   68     | Expr . _plus Expr
+   69     | Expr . _minus Expr
+   70     | Expr . _multiplication Expr
+   71     | Expr . _division Expr
+   72     | Expr . _mod Expr
+   74     | Expr . _less Expr
+   75     | Expr . _lessequal Expr
+   76     | Expr . _greater Expr
+   77     | Expr . _greaterequal Expr
+   78     | Expr . _equal Expr
+   79     | Expr . _notequal Expr
+   80     | Expr . _and Expr
+   81     | Expr . _or Expr
 
-    '+'  shift, and go to state 137
-    '-'  shift, and go to state 138
-    '*'  shift, and go to state 139
-    '/'  shift, and go to state 140
-    '%'  shift, and go to state 141
+    _plus            shift, and go to state 122
+    _minus           shift, and go to state 123
+    _multiplication  shift, and go to state 124
+    _division        shift, and go to state 125
+    _mod             shift, and go to state 126
+    _less            shift, and go to state 127
+    _lessequal       shift, and go to state 128
+    _greater         shift, and go to state 129
+    _greaterequal    shift, and go to state 130
+    _equal           shift, and go to state 131
+    _notequal        shift, and go to state 132
+    _and             shift, and go to state 133
+    _or              shift, and go to state 134
 
-    '-'       [reduce using rule 76 (ExprE)]
-    $default  reduce using rule 76 (ExprE)
+    $default  reduce using rule 63 (Expr)
 
 
 State 162
 
-   79 ExprF: ExprF . '+' ExprG
-   80      | ExprF . '-' ExprG
-   82 ExprG: ExprF . '*' ExprG
-   83      | ExprF . '/' ExprG
-   84      | ExprF . '%' ExprG
+   85 Lvalue: Lvalue _period _id .
 
-    '+'  shift, and go to state 137
-    '-'  shift, and go to state 138
-    '*'  shift, and go to state 139
-    '/'  shift, and go to state 140
-    '%'  shift, and go to state 141
+    $default  reduce using rule 85 (Lvalue)
 
 
 State 163
 
-   78 ExprF: ExprG .
-   79      | ExprF '+' ExprG .
+   68 Expr: Expr . _plus Expr
+   69     | Expr . _minus Expr
+   70     | Expr . _multiplication Expr
+   71     | Expr . _division Expr
+   72     | Expr . _mod Expr
+   74     | Expr . _less Expr
+   75     | Expr . _lessequal Expr
+   76     | Expr . _greater Expr
+   77     | Expr . _greaterequal Expr
+   78     | Expr . _equal Expr
+   79     | Expr . _notequal Expr
+   80     | Expr . _and Expr
+   81     | Expr . _or Expr
+   84 Lvalue: Lvalue _leftbracket Expr . _rightbracket
 
-    '+'       reduce using rule 78 (ExprF)
-    '+'       [reduce using rule 79 (ExprF)]
-    '-'       reduce using rule 78 (ExprF)
-    '-'       [reduce using rule 79 (ExprF)]
-    '*'       reduce using rule 78 (ExprF)
-    '*'       [reduce using rule 79 (ExprF)]
-    '/'       reduce using rule 78 (ExprF)
-    '/'       [reduce using rule 79 (ExprF)]
-    '%'       reduce using rule 78 (ExprF)
-    '%'       [reduce using rule 79 (ExprF)]
-    $default  reduce using rule 79 (ExprF)
+    _plus            shift, and go to state 122
+    _minus           shift, and go to state 123
+    _multiplication  shift, and go to state 124
+    _division        shift, and go to state 125
+    _mod             shift, and go to state 126
+    _less            shift, and go to state 127
+    _lessequal       shift, and go to state 128
+    _greater         shift, and go to state 129
+    _greaterequal    shift, and go to state 130
+    _equal           shift, and go to state 131
+    _notequal        shift, and go to state 132
+    _and             shift, and go to state 133
+    _or              shift, and go to state 134
+    _rightbracket    shift, and go to state 171
 
 
 State 164
 
-   78 ExprF: ExprG .
-   80      | ExprF '-' ExprG .
+   57 ForStmt: _for _leftparen ExprOptional _semicolon . Expr _semicolon ExprOptional _rightparen Stmt
 
-    '+'       reduce using rule 78 (ExprF)
-    '+'       [reduce using rule 80 (ExprF)]
-    '-'       reduce using rule 78 (ExprF)
-    '-'       [reduce using rule 80 (ExprF)]
-    '*'       reduce using rule 78 (ExprF)
-    '*'       [reduce using rule 80 (ExprF)]
-    '/'       reduce using rule 78 (ExprF)
-    '/'       [reduce using rule 80 (ExprF)]
-    '%'       reduce using rule 78 (ExprF)
-    '%'       [reduce using rule 80 (ExprF)]
-    $default  reduce using rule 80 (ExprF)
+    _null             shift, and go to state 80
+    _minus            shift, and go to state 84
+    _not              shift, and go to state 85
+    _leftparen        shift, and go to state 86
+    _intconstant      shift, and go to state 87
+    _doubleconstant   shift, and go to state 88
+    _stringconstant   shift, and go to state 89
+    _booleanconstant  shift, and go to state 90
+    _id               shift, and go to state 91
+
+    Expr      go to state 172
+    Lvalue    go to state 103
+    Call      go to state 104
+    Constant  go to state 105
 
 
 State 165
 
-   78 ExprF: ExprG .
-   82 ExprG: ExprF '*' ExprG .
+   53 IfStmt: _if _leftparen Expr _rightparen . Stmt IfStmtOptional
 
-    '+'       reduce using rule 78 (ExprF)
-    '+'       [reduce using rule 82 (ExprG)]
-    '-'       reduce using rule 78 (ExprF)
-    '-'       [reduce using rule 82 (ExprG)]
-    '*'       reduce using rule 78 (ExprF)
-    '*'       [reduce using rule 82 (ExprG)]
-    '/'       reduce using rule 78 (ExprF)
-    '/'       [reduce using rule 82 (ExprG)]
-    '%'       reduce using rule 78 (ExprF)
-    '%'       [reduce using rule 82 (ExprG)]
-    $default  reduce using rule 82 (ExprG)
+    _break            shift, and go to state 77
+    _for              shift, and go to state 78
+    _if               shift, and go to state 79
+    _null             shift, and go to state 80
+    _println          shift, and go to state 81
+    _return           shift, and go to state 82
+    _while            shift, and go to state 83
+    _minus            shift, and go to state 84
+    _not              shift, and go to state 85
+    _leftparen        shift, and go to state 86
+    _leftbrace        shift, and go to state 67
+    _intconstant      shift, and go to state 87
+    _doubleconstant   shift, and go to state 88
+    _stringconstant   shift, and go to state 89
+    _booleanconstant  shift, and go to state 90
+    _id               shift, and go to state 91
+
+    $default  reduce using rule 52 (ExprOptional)
+
+    StmtBlock     go to state 92
+    Stmt          go to state 173
+    ExprOptional  go to state 95
+    IfStmt        go to state 96
+    WhileStmt     go to state 97
+    ForStmt       go to state 98
+    BreakStmt     go to state 99
+    ReturnStmt    go to state 100
+    PrintStmt     go to state 101
+    Expr          go to state 102
+    Lvalue        go to state 103
+    Call          go to state 104
+    Constant      go to state 105
 
 
 State 166
 
-   78 ExprF: ExprG .
-   83 ExprG: ExprF '/' ExprG .
-
-    '+'       reduce using rule 78 (ExprF)
-    '+'       [reduce using rule 83 (ExprG)]
-    '-'       reduce using rule 78 (ExprF)
-    '-'       [reduce using rule 83 (ExprG)]
-    '*'       reduce using rule 78 (ExprF)
-    '*'       [reduce using rule 83 (ExprG)]
-    '/'       reduce using rule 78 (ExprF)
-    '/'       [reduce using rule 83 (ExprG)]
-    '%'       reduce using rule 78 (ExprF)
-    '%'       [reduce using rule 83 (ExprG)]
-    $default  reduce using rule 83 (ExprG)
-
-
-State 167
-
-   78 ExprF: ExprG .
-   84 ExprG: ExprF '%' ExprG .
-
-    '+'       reduce using rule 78 (ExprF)
-    '+'       [reduce using rule 84 (ExprG)]
-    '-'       reduce using rule 78 (ExprF)
-    '-'       [reduce using rule 84 (ExprG)]
-    '*'       reduce using rule 78 (ExprF)
-    '*'       [reduce using rule 84 (ExprG)]
-    '/'       reduce using rule 78 (ExprF)
-    '/'       [reduce using rule 84 (ExprG)]
-    '%'       reduce using rule 78 (ExprF)
-    '%'       [reduce using rule 84 (ExprG)]
-    $default  reduce using rule 84 (ExprG)
-
-
-State 168
-
-   93 Lvalue: Lvalue '[' Expr . ']'
-
-    ']'  shift, and go to state 184
-
-
-State 169
-
-   65 ExprA: Lvalue '=' ExprB .
-   67 ExprB: ExprB . '|' '|' ExprC
-
-    '|'  shift, and go to state 131
-
-    $default  reduce using rule 65 (ExprA)
-
-
-State 170
-
-   94 Lvalue: Lvalue '.' _id .
-
-    $default  reduce using rule 94 (Lvalue)
-
-
-State 171
-
-   57 ForStmt: _for '(' ExprOptional ';' . Expr ';' ExprOptional ')' Stmt
-
-    _null             shift, and go to state 80
-    _intconstant      shift, and go to state 84
-    _doubleconstant   shift, and go to state 85
-    _stringconstant   shift, and go to state 86
-    _booleanconstant  shift, and go to state 87
-    _id               shift, and go to state 88
-    '('               shift, and go to state 89
-    '!'               shift, and go to state 90
-    '-'               shift, and go to state 91
-
-    Expr      go to state 185
-    ExprA     go to state 103
-    ExprB     go to state 104
-    ExprC     go to state 105
-    ExprD     go to state 106
-    ExprE     go to state 107
-    ExprF     go to state 108
-    ExprG     go to state 109
-    ExprH     go to state 110
-    ExprI     go to state 111
-    Lvalue    go to state 112
-    Call      go to state 113
-    Constant  go to state 114
-
-
-State 172
-
-   53 IfStmt: _if '(' Expr ')' . Stmt IfStmtOptional
-
-    _break            shift, and go to state 77
-    _for              shift, and go to state 78
-    _if               shift, and go to state 79
-    _null             shift, and go to state 80
-    _println          shift, and go to state 81
-    _return           shift, and go to state 82
-    _while            shift, and go to state 83
-    _intconstant      shift, and go to state 84
-    _doubleconstant   shift, and go to state 85
-    _stringconstant   shift, and go to state 86
-    _booleanconstant  shift, and go to state 87
-    _id               shift, and go to state 88
-    '('               shift, and go to state 89
-    '{'               shift, and go to state 67
-    '!'               shift, and go to state 90
-    '-'               shift, and go to state 91
-
-    $default  reduce using rule 52 (ExprOptional)
-
-    StmtBlock     go to state 92
-    Stmt          go to state 186
-    ExprOptional  go to state 95
-    IfStmt        go to state 96
-    WhileStmt     go to state 97
-    ForStmt       go to state 98
-    BreakStmt     go to state 99
-    ReturnStmt    go to state 100
-    PrintStmt     go to state 101
-    Expr          go to state 102
-    ExprA         go to state 103
-    ExprB         go to state 104
-    ExprC         go to state 105
-    ExprD         go to state 106
-    ExprE         go to state 107
-    ExprF         go to state 108
-    ExprG         go to state 109
-    ExprH         go to state 110
-    ExprI         go to state 111
-    Lvalue        go to state 112
-    Call          go to state 113
-    Constant      go to state 114
-
-
-State 173
-
-   60 PrintStmt: _println '(' ExprPlusComma ')' .
+   60 PrintStmt: _println _leftparen ExprPlusComma _rightparen .
 
     $default  reduce using rule 60 (PrintStmt)
 
 
-State 174
+State 167
 
-   61 ExprPlusComma: Expr ',' . ExprPlusComma
+   61 ExprPlusComma: Expr _comma . ExprPlusComma
 
     _null             shift, and go to state 80
-    _intconstant      shift, and go to state 84
-    _doubleconstant   shift, and go to state 85
-    _stringconstant   shift, and go to state 86
-    _booleanconstant  shift, and go to state 87
-    _id               shift, and go to state 88
-    '('               shift, and go to state 89
-    '!'               shift, and go to state 90
-    '-'               shift, and go to state 91
+    _minus            shift, and go to state 84
+    _not              shift, and go to state 85
+    _leftparen        shift, and go to state 86
+    _intconstant      shift, and go to state 87
+    _doubleconstant   shift, and go to state 88
+    _stringconstant   shift, and go to state 89
+    _booleanconstant  shift, and go to state 90
+    _id               shift, and go to state 91
 
-    ExprPlusComma  go to state 187
-    Expr           go to state 148
-    ExprA          go to state 103
-    ExprB          go to state 104
-    ExprC          go to state 105
-    ExprD          go to state 106
-    ExprE          go to state 107
-    ExprF          go to state 108
-    ExprG          go to state 109
-    ExprH          go to state 110
-    ExprI          go to state 111
-    Lvalue         go to state 112
-    Call           go to state 113
-    Constant       go to state 114
+    ExprPlusComma  go to state 174
+    Expr           go to state 141
+    Lvalue         go to state 103
+    Call           go to state 104
+    Constant       go to state 105
 
 
-State 175
+State 168
 
-   56 WhileStmt: _while '(' Expr ')' . Stmt
+   56 WhileStmt: _while _leftparen Expr _rightparen . Stmt
 
     _break            shift, and go to state 77
     _for              shift, and go to state 78
@@ -2579,20 +2582,20 @@ State 175
     _println          shift, and go to state 81
     _return           shift, and go to state 82
     _while            shift, and go to state 83
-    _intconstant      shift, and go to state 84
-    _doubleconstant   shift, and go to state 85
-    _stringconstant   shift, and go to state 86
-    _booleanconstant  shift, and go to state 87
-    _id               shift, and go to state 88
-    '('               shift, and go to state 89
-    '{'               shift, and go to state 67
-    '!'               shift, and go to state 90
-    '-'               shift, and go to state 91
+    _minus            shift, and go to state 84
+    _not              shift, and go to state 85
+    _leftparen        shift, and go to state 86
+    _leftbrace        shift, and go to state 67
+    _intconstant      shift, and go to state 87
+    _doubleconstant   shift, and go to state 88
+    _stringconstant   shift, and go to state 89
+    _booleanconstant  shift, and go to state 90
+    _id               shift, and go to state 91
 
     $default  reduce using rule 52 (ExprOptional)
 
     StmtBlock     go to state 92
-    Stmt          go to state 188
+    Stmt          go to state 175
     ExprOptional  go to state 95
     IfStmt        go to state 96
     WhileStmt     go to state 97
@@ -2601,229 +2604,139 @@ State 175
     ReturnStmt    go to state 100
     PrintStmt     go to state 101
     Expr          go to state 102
-    ExprA         go to state 103
-    ExprB         go to state 104
-    ExprC         go to state 105
-    ExprD         go to state 106
-    ExprE         go to state 107
-    ExprF         go to state 108
-    ExprG         go to state 109
-    ExprH         go to state 110
-    ExprI         go to state 111
-    Lvalue        go to state 112
-    Call          go to state 113
-    Constant      go to state 114
+    Lvalue        go to state 103
+    Call          go to state 104
+    Constant      go to state 105
 
 
-State 176
+State 169
 
-   95 Call: _id '(' Actuals ')' .
-
-    $default  reduce using rule 95 (Call)
-
-
-State 177
-
-   96 Call: _id '.' _id '(' . Actuals ')'
+   87 Call: _id _period _id _leftparen . Actuals _rightparen
 
     _null             shift, and go to state 80
-    _intconstant      shift, and go to state 84
-    _doubleconstant   shift, and go to state 85
-    _stringconstant   shift, and go to state 86
-    _booleanconstant  shift, and go to state 87
-    _id               shift, and go to state 88
-    '('               shift, and go to state 89
-    '!'               shift, and go to state 90
-    '-'               shift, and go to state 91
+    _minus            shift, and go to state 84
+    _not              shift, and go to state 85
+    _leftparen        shift, and go to state 86
+    _intconstant      shift, and go to state 87
+    _doubleconstant   shift, and go to state 88
+    _stringconstant   shift, and go to state 89
+    _booleanconstant  shift, and go to state 90
+    _id               shift, and go to state 91
 
-    $default  reduce using rule 98 (Actuals)
+    $default  reduce using rule 89 (Actuals)
 
-    ExprPlusComma  go to state 150
-    Expr           go to state 148
-    ExprA          go to state 103
-    ExprB          go to state 104
-    ExprC          go to state 105
-    ExprD          go to state 106
-    ExprE          go to state 107
-    ExprF          go to state 108
-    ExprG          go to state 109
-    ExprH          go to state 110
-    ExprI          go to state 111
-    Lvalue         go to state 112
-    Call           go to state 113
-    Actuals        go to state 189
-    Constant       go to state 114
+    ExprPlusComma  go to state 146
+    Expr           go to state 141
+    Lvalue         go to state 103
+    Call           go to state 104
+    Actuals        go to state 176
+    Constant       go to state 105
 
 
-State 178
+State 170
 
-   67 ExprB: ExprB '|' '|' ExprC .
-   69 ExprC: ExprC . '&' '&' ExprD
+   86 Call: _id _leftparen Actuals _rightparen .
 
-    '&'  shift, and go to state 132
-
-    $default  reduce using rule 67 (ExprB)
+    $default  reduce using rule 86 (Call)
 
 
-State 179
+State 171
 
-   69 ExprC: ExprC '&' '&' ExprD .
-   71 ExprD: ExprD . '=' '=' ExprE
-   72      | ExprD . '!' '=' ExprE
+   84 Lvalue: Lvalue _leftbracket Expr _rightbracket .
 
-    '='  shift, and go to state 133
-    '!'  shift, and go to state 134
-
-    '!'       [reduce using rule 69 (ExprC)]
-    $default  reduce using rule 69 (ExprC)
+    $default  reduce using rule 84 (Lvalue)
 
 
-State 180
+State 172
 
-   71 ExprD: ExprD '=' '=' ExprE .
-   74 ExprE: ExprE . '<' ExprF
-   75      | ExprE . '<' '=' ExprF
-   76      | ExprE . '>' ExprF
-   77      | ExprE . '>' '=' ExprF
+   57 ForStmt: _for _leftparen ExprOptional _semicolon Expr . _semicolon ExprOptional _rightparen Stmt
+   68 Expr: Expr . _plus Expr
+   69     | Expr . _minus Expr
+   70     | Expr . _multiplication Expr
+   71     | Expr . _division Expr
+   72     | Expr . _mod Expr
+   74     | Expr . _less Expr
+   75     | Expr . _lessequal Expr
+   76     | Expr . _greater Expr
+   77     | Expr . _greaterequal Expr
+   78     | Expr . _equal Expr
+   79     | Expr . _notequal Expr
+   80     | Expr . _and Expr
+   81     | Expr . _or Expr
 
-    '<'  shift, and go to state 135
-    '>'  shift, and go to state 136
-
-    $default  reduce using rule 71 (ExprD)
-
-
-State 181
-
-   72 ExprD: ExprD '!' '=' ExprE .
-   74 ExprE: ExprE . '<' ExprF
-   75      | ExprE . '<' '=' ExprF
-   76      | ExprE . '>' ExprF
-   77      | ExprE . '>' '=' ExprF
-
-    '<'  shift, and go to state 135
-    '>'  shift, and go to state 136
-
-    $default  reduce using rule 72 (ExprD)
-
-
-State 182
-
-   75 ExprE: ExprE '<' '=' ExprF .
-   79 ExprF: ExprF . '+' ExprG
-   80      | ExprF . '-' ExprG
-   82 ExprG: ExprF . '*' ExprG
-   83      | ExprF . '/' ExprG
-   84      | ExprF . '%' ExprG
-
-    '+'  shift, and go to state 137
-    '-'  shift, and go to state 138
-    '*'  shift, and go to state 139
-    '/'  shift, and go to state 140
-    '%'  shift, and go to state 141
-
-    '-'       [reduce using rule 75 (ExprE)]
-    $default  reduce using rule 75 (ExprE)
+    _plus            shift, and go to state 122
+    _minus           shift, and go to state 123
+    _multiplication  shift, and go to state 124
+    _division        shift, and go to state 125
+    _mod             shift, and go to state 126
+    _less            shift, and go to state 127
+    _lessequal       shift, and go to state 128
+    _greater         shift, and go to state 129
+    _greaterequal    shift, and go to state 130
+    _equal           shift, and go to state 131
+    _notequal        shift, and go to state 132
+    _and             shift, and go to state 133
+    _or              shift, and go to state 134
+    _semicolon       shift, and go to state 177
 
 
-State 183
+State 173
 
-   77 ExprE: ExprE '>' '=' ExprF .
-   79 ExprF: ExprF . '+' ExprG
-   80      | ExprF . '-' ExprG
-   82 ExprG: ExprF . '*' ExprG
-   83      | ExprF . '/' ExprG
-   84      | ExprF . '%' ExprG
+   53 IfStmt: _if _leftparen Expr _rightparen Stmt . IfStmtOptional
 
-    '+'  shift, and go to state 137
-    '-'  shift, and go to state 138
-    '*'  shift, and go to state 139
-    '/'  shift, and go to state 140
-    '%'  shift, and go to state 141
-
-    '-'       [reduce using rule 77 (ExprE)]
-    $default  reduce using rule 77 (ExprE)
-
-
-State 184
-
-   93 Lvalue: Lvalue '[' Expr ']' .
-
-    $default  reduce using rule 93 (Lvalue)
-
-
-State 185
-
-   57 ForStmt: _for '(' ExprOptional ';' Expr . ';' ExprOptional ')' Stmt
-
-    ';'  shift, and go to state 190
-
-
-State 186
-
-   53 IfStmt: _if '(' Expr ')' Stmt . IfStmtOptional
-
-    _else  shift, and go to state 191
+    _else  shift, and go to state 178
 
     _else     [reduce using rule 55 (IfStmtOptional)]
     $default  reduce using rule 55 (IfStmtOptional)
 
-    IfStmtOptional  go to state 192
+    IfStmtOptional  go to state 179
 
 
-State 187
+State 174
 
-   61 ExprPlusComma: Expr ',' ExprPlusComma .
+   61 ExprPlusComma: Expr _comma ExprPlusComma .
 
     $default  reduce using rule 61 (ExprPlusComma)
 
 
-State 188
+State 175
 
-   56 WhileStmt: _while '(' Expr ')' Stmt .
+   56 WhileStmt: _while _leftparen Expr _rightparen Stmt .
 
     $default  reduce using rule 56 (WhileStmt)
 
 
-State 189
+State 176
 
-   96 Call: _id '.' _id '(' Actuals . ')'
+   87 Call: _id _period _id _leftparen Actuals . _rightparen
 
-    ')'  shift, and go to state 193
+    _rightparen  shift, and go to state 180
 
 
-State 190
+State 177
 
-   57 ForStmt: _for '(' ExprOptional ';' Expr ';' . ExprOptional ')' Stmt
+   57 ForStmt: _for _leftparen ExprOptional _semicolon Expr _semicolon . ExprOptional _rightparen Stmt
 
     _null             shift, and go to state 80
-    _intconstant      shift, and go to state 84
-    _doubleconstant   shift, and go to state 85
-    _stringconstant   shift, and go to state 86
-    _booleanconstant  shift, and go to state 87
-    _id               shift, and go to state 88
-    '('               shift, and go to state 89
-    '!'               shift, and go to state 90
-    '-'               shift, and go to state 91
+    _minus            shift, and go to state 84
+    _not              shift, and go to state 85
+    _leftparen        shift, and go to state 86
+    _intconstant      shift, and go to state 87
+    _doubleconstant   shift, and go to state 88
+    _stringconstant   shift, and go to state 89
+    _booleanconstant  shift, and go to state 90
+    _id               shift, and go to state 91
 
     $default  reduce using rule 52 (ExprOptional)
 
-    ExprOptional  go to state 194
+    ExprOptional  go to state 181
     Expr          go to state 102
-    ExprA         go to state 103
-    ExprB         go to state 104
-    ExprC         go to state 105
-    ExprD         go to state 106
-    ExprE         go to state 107
-    ExprF         go to state 108
-    ExprG         go to state 109
-    ExprH         go to state 110
-    ExprI         go to state 111
-    Lvalue        go to state 112
-    Call          go to state 113
-    Constant      go to state 114
+    Lvalue        go to state 103
+    Call          go to state 104
+    Constant      go to state 105
 
 
-State 191
+State 178
 
    54 IfStmtOptional: _else . Stmt
 
@@ -2834,20 +2747,20 @@ State 191
     _println          shift, and go to state 81
     _return           shift, and go to state 82
     _while            shift, and go to state 83
-    _intconstant      shift, and go to state 84
-    _doubleconstant   shift, and go to state 85
-    _stringconstant   shift, and go to state 86
-    _booleanconstant  shift, and go to state 87
-    _id               shift, and go to state 88
-    '('               shift, and go to state 89
-    '{'               shift, and go to state 67
-    '!'               shift, and go to state 90
-    '-'               shift, and go to state 91
+    _minus            shift, and go to state 84
+    _not              shift, and go to state 85
+    _leftparen        shift, and go to state 86
+    _leftbrace        shift, and go to state 67
+    _intconstant      shift, and go to state 87
+    _doubleconstant   shift, and go to state 88
+    _stringconstant   shift, and go to state 89
+    _booleanconstant  shift, and go to state 90
+    _id               shift, and go to state 91
 
     $default  reduce using rule 52 (ExprOptional)
 
     StmtBlock     go to state 92
-    Stmt          go to state 195
+    Stmt          go to state 182
     ExprOptional  go to state 95
     IfStmt        go to state 96
     WhileStmt     go to state 97
@@ -2856,51 +2769,42 @@ State 191
     ReturnStmt    go to state 100
     PrintStmt     go to state 101
     Expr          go to state 102
-    ExprA         go to state 103
-    ExprB         go to state 104
-    ExprC         go to state 105
-    ExprD         go to state 106
-    ExprE         go to state 107
-    ExprF         go to state 108
-    ExprG         go to state 109
-    ExprH         go to state 110
-    ExprI         go to state 111
-    Lvalue        go to state 112
-    Call          go to state 113
-    Constant      go to state 114
+    Lvalue        go to state 103
+    Call          go to state 104
+    Constant      go to state 105
 
 
-State 192
+State 179
 
-   53 IfStmt: _if '(' Expr ')' Stmt IfStmtOptional .
+   53 IfStmt: _if _leftparen Expr _rightparen Stmt IfStmtOptional .
 
     $default  reduce using rule 53 (IfStmt)
 
 
-State 193
+State 180
 
-   96 Call: _id '.' _id '(' Actuals ')' .
+   87 Call: _id _period _id _leftparen Actuals _rightparen .
 
-    $default  reduce using rule 96 (Call)
-
-
-State 194
-
-   57 ForStmt: _for '(' ExprOptional ';' Expr ';' ExprOptional . ')' Stmt
-
-    ')'  shift, and go to state 196
+    $default  reduce using rule 87 (Call)
 
 
-State 195
+State 181
+
+   57 ForStmt: _for _leftparen ExprOptional _semicolon Expr _semicolon ExprOptional . _rightparen Stmt
+
+    _rightparen  shift, and go to state 183
+
+
+State 182
 
    54 IfStmtOptional: _else Stmt .
 
     $default  reduce using rule 54 (IfStmtOptional)
 
 
-State 196
+State 183
 
-   57 ForStmt: _for '(' ExprOptional ';' Expr ';' ExprOptional ')' . Stmt
+   57 ForStmt: _for _leftparen ExprOptional _semicolon Expr _semicolon ExprOptional _rightparen . Stmt
 
     _break            shift, and go to state 77
     _for              shift, and go to state 78
@@ -2909,20 +2813,20 @@ State 196
     _println          shift, and go to state 81
     _return           shift, and go to state 82
     _while            shift, and go to state 83
-    _intconstant      shift, and go to state 84
-    _doubleconstant   shift, and go to state 85
-    _stringconstant   shift, and go to state 86
-    _booleanconstant  shift, and go to state 87
-    _id               shift, and go to state 88
-    '('               shift, and go to state 89
-    '{'               shift, and go to state 67
-    '!'               shift, and go to state 90
-    '-'               shift, and go to state 91
+    _minus            shift, and go to state 84
+    _not              shift, and go to state 85
+    _leftparen        shift, and go to state 86
+    _leftbrace        shift, and go to state 67
+    _intconstant      shift, and go to state 87
+    _doubleconstant   shift, and go to state 88
+    _stringconstant   shift, and go to state 89
+    _booleanconstant  shift, and go to state 90
+    _id               shift, and go to state 91
 
     $default  reduce using rule 52 (ExprOptional)
 
     StmtBlock     go to state 92
-    Stmt          go to state 197
+    Stmt          go to state 184
     ExprOptional  go to state 95
     IfStmt        go to state 96
     WhileStmt     go to state 97
@@ -2931,22 +2835,13 @@ State 196
     ReturnStmt    go to state 100
     PrintStmt     go to state 101
     Expr          go to state 102
-    ExprA         go to state 103
-    ExprB         go to state 104
-    ExprC         go to state 105
-    ExprD         go to state 106
-    ExprE         go to state 107
-    ExprF         go to state 108
-    ExprG         go to state 109
-    ExprH         go to state 110
-    ExprI         go to state 111
-    Lvalue        go to state 112
-    Call          go to state 113
-    Constant      go to state 114
+    Lvalue        go to state 103
+    Call          go to state 104
+    Constant      go to state 105
 
 
-State 197
+State 184
 
-   57 ForStmt: _for '(' ExprOptional ';' Expr ';' ExprOptional ')' Stmt .
+   57 ForStmt: _for _leftparen ExprOptional _semicolon Expr _semicolon ExprOptional _rightparen Stmt .
 
     $default  reduce using rule 57 (ForStmt)
