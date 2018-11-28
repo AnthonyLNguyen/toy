@@ -4,11 +4,11 @@ int yylex(void);
 void yyerror(char *);
 %}
 %token _boolean _break _class _double _else _extends _for _if _implements _int _interface _new _newarray _null _println _readln _return _string _void _while _plus _minus _multiplication _division _mod _less _lessequal _greater _greaterequal _equal _notequal _and _or _not _assignop _semicolon _comma _period _leftparen _rightparen _leftbracket _rightbracket _leftbrace _rightbrace _intconstant _doubleconstant _stringconstant _booleanconstant _id
-%right _assignop
+%nonassoc _assignop
 %left _or
 %left _and
 %left _equal _notequal
-%left _less _lessequal _greater _greaterequal
+%nonassoc _less _lessequal _greater _greaterequal
 %left _plus _minus
 %left _multiplication _division _mod
 %right _not _uminus
@@ -94,7 +94,10 @@ Expr              : Lvalue _assignop Expr
                   | Expr _notequal Expr
                   | Expr _and Expr
                   | Expr _or Expr
-                  | _not Expr ;
+                  | _not Expr
+                  | _readln _leftparen _rightparen
+                  | _new _leftparen _id _rightparen
+                  | _newarray _leftparen _intconstant _comma Type _rightparen
 Lvalue            : _id
                   | Lvalue _leftbracket Expr _rightbracket
                   | Lvalue _period _id ;
