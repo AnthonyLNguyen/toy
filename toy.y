@@ -2,7 +2,15 @@
 #include <stdio.h>
 int yylex();
 %}
-%token _boolean _break _class _double _else _extends _for _if _implements _int _interface _new _newarray _null _println _readln _return _string _void _while _plus _minus _multiplication _division _mod _less _lessequal _greater _greaterequal _equal _notequal _and _or _not _assignop _semicolon _comma _period _leftparen _rightparen _leftbracket _rightbracket _leftbrace _rightbrace _intconstant _doubleconstant _stringconstant _booleanconstant _id
+%token _boolean _break _class _double _else _extends _for _if _implements _int _interface _new _newarray _null _println _readln _return _string _void _while _plus _minus _uminus _multiplication _division _mod _less _lessequal _greater _greaterequal _equal _notequal _and _or _not _assignop _semicolon _comma _period _leftparen _rightparen _leftbracket _rightbracket _leftbrace _rightbrace _intconstant _doubleconstant _stringconstant _booleanconstant _id
+%right _assignop
+%left _or
+%left _and
+%left _equal _notequal
+%left _less _lessequal _greater _greaterequal
+%left _plus _minus
+%left _multiplication _division _mod
+%right _not _uminus
 %%
 Program : DeclPlus ;
 DeclPlus : Decl DeclPlus ;
@@ -66,35 +74,26 @@ ReturnStmt : _return ExprOptional ; ;
 PrintStmt : _println _leftparen ExprPlusComma _rightparen ;
 ExprPlusComma : Expr _comma ExprPlusComma ;
 ExprPlusComma : Expr ;
-Expr : ExprA ;
-ExprA : ExprB ;
-ExprA : Lvalue _equal ExprB ;
-ExprB : ExprC ;
-ExprB : ExprB _or ExprC ;
-ExprC : ExprD ;
-ExprC : ExprC _and ExprD ;
-ExprD : ExprE ;
-ExprD : ExprD _equal _equal ExprE ;
-ExprD : ExprD _notequal ExprE ;
-ExprE : ExprF ;
-ExprE : ExprE _less ExprF ;
-ExprE : ExprE _lessequal ExprF ;
-ExprE : ExprE _greater ExprF ;
-ExprE : ExprE _greaterequal ExprF ;
-ExprF : ExprG ;
-ExprF : ExprF _plus ExprG ;
-ExprF : ExprF _minus ExprG ;
-ExprG : ExprH ;
-ExprG : ExprF _multiplication ExprG ;
-ExprG : ExprF _division ExprG ;
-ExprG : ExprF _mod ExprG ;
-ExprH : ExprI ;
-ExprH : _not ExprH ;
-ExprH : _minus ExprH ;
-ExprI : Lvalue ;
-ExprI : Constant ;
-ExprI : Call ;
-ExprI : _leftparen Expr _rightparen ;
+Expr : Lvalue _assignop Expr
+| Constant
+| Lvalue
+| Call
+| _leftparen Expr _rightparen
+| Expr _plus Expr
+| Expr _minus Expr
+| Expr _multiplication Expr
+| Expr _division Expr
+| Expr _mod Expr
+| _uminus Expr
+| Expr _less Expr
+| Expr _lessequal Expr
+| Expr _greater Expr
+| Expr _greaterequal Expr
+| Expr _equal Expr
+| Expr _notequal Expr
+| Expr _and Expr
+| Expr _or Expr
+| _not Expr ;
 Lvalue : _id ;
 Lvalue : Lvalue _leftbrace Expr _rightbracket ;
 Lvalue : Lvalue _period _id ;
