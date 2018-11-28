@@ -1,9 +1,10 @@
 %{
-#include <stdlib.h>
 #include "y.tab.h"
+#include <stdlib.h>
 extern int yylval;
 %}
-
+digit [0-9]
+number {digit}+
 %%
 "boolean"	return _boolean;
 "break"		return _break;
@@ -27,7 +28,8 @@ extern int yylval;
 "while"		return _while;
 "true"		return _booleanconstant;
 "false"		return _booleanconstant;
-(0[Xx][A-Fa-f0-9]+|[0-9]+)			return _intconstant;
+{number}  {  return _intconstant;}
+0[Xx][A-Fa-f0-9] return _intconstant;
 [0-9]+\.[0-9]*(E[\+-][0-9])?			return _doubleconstant;
 [\"\“][^\n\"\“\”]*[\"\”]			return _stringconstant;
 [A-Za-z][A-Za-z0-9_]*				return _id;
@@ -56,12 +58,13 @@ extern int yylval;
 \{	return _leftbrace;
 \}	return _rightbrace;
 
-\n			printf("\n");
+\n			;
 [ \t]			;
 \/\/.*\n		;
 \/\*[^*]*\*\/\n 	;
-.	printf("\nUNEXPECTED CHAR\n");
+. printf("\nUNEXPECTED CHAR\n");
 %%
+
 int yywrap(void)
 {
  return 1;
