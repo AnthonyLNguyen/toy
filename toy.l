@@ -28,20 +28,21 @@ number {digit}+
 "while"		return _while;
 "true"		return _booleanconstant;
 "false"		return _booleanconstant;
-{number}  {  return _intconstant;}
+{number}  {/*yytext[yyleng]='\0'; yylval=atoi(yytext);*/
+  return _intconstant;}
 0[Xx][A-Fa-f0-9] return _intconstant;
 [0-9]+\.[0-9]*(E[\+-][0-9])?			return _doubleconstant;
-[\"\“][^\n\"\“\”]*[\"\”]			return _stringconstant;
+\"([^\\\"]|\\.)*\"    return _stringconstant;
 [A-Za-z][A-Za-z0-9_]*				return _id;
 \+	return _plus;
 \-	return _minus;
 \*	return _multiplication;
 \/	return _division;
 \%	return _mod;
-\<	return _less;
 \<\=	return _lessequal;
-\>	return _greater;
+\<	return _less;
 \>\=	return _greaterequal;
+\>	return _greater;
 \=\=	return _equal;
 \!\=	return _notequal;
 \&\&	return _and;
