@@ -6,6 +6,8 @@ void yyerror(char *);
 #define YYDEBUG 1
 %}
 %token _boolean _break _class _double _else _extends _for _if _implements _int _interface _new _newarray _null _println _readln _return _string _void _while _plus _minus _multiplication _division _mod _less _lessequal _greater _greaterequal _equal _notequal _and _or _not _assignop _semicolon _comma _period _leftparen _rightparen _leftbracket _rightbracket _leftbrace _rightbrace _intconstant _doubleconstant _stringconstant _booleanconstant _id
+%nonassoc IFX
+%nonassoc _else
 %right _assignop
 %left _or
 %left _and
@@ -59,8 +61,8 @@ StmtBlock         : _leftbrace _rightbrace
                   | _leftbrace VariableDeclStar _rightbrace
                   | _leftbrace StmtStar _rightbrace
                   | _leftbrace VariableDeclStar StmtStar _rightbrace ;
-VariableDeclStar  : VariableDecl VariableDeclStar
-                  | VariableDecl;
+VariableDeclStar  : VariableDecl 
+                  | VariableDeclStar VariableDecl;
 StmtStar          : Stmt StmtStar
                   | Stmt;
 Stmt              : ExprOptional _semicolon
@@ -73,9 +75,8 @@ Stmt              : ExprOptional _semicolon
                   | StmtBlock ;
 ExprOptional      : Expr
                   | ;
-IfStmt            : _if _leftparen Expr _rightparen Stmt IfStmtOptional ;
-IfStmtOptional    : _else Stmt
-                  | ;
+IfStmt            : _if _leftparen Expr _rightparen Stmt %prec IFX ;
+				  | _if _leftparen Expr _rightparen Stmt _else Stmt ;
 WhileStmt         : _while _leftparen Expr _rightparen Stmt ;
 ForStmt           : _for _leftparen ExprOptional _semicolon Expr _semicolon ExprOptional _rightparen Stmt ;
 BreakStmt         : _break _semicolon ;
@@ -87,6 +88,7 @@ Expr              : Lvalue _assignop Expr
                   | _id _assignop Expr
                   | Constant
                   | Lvalue
+				  | _id
                   | Call
                   | _leftparen Expr _rightparen
                   | Expr _plus Expr
