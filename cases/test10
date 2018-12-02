@@ -1,0 +1,6 @@
+class cs4110 {
+boolean b;
+userDefinedClassType f(){}
+double d;
+string g(){}
+}

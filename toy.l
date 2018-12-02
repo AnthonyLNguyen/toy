@@ -59,8 +59,7 @@ number {digit}+
 \{	return _leftbrace;
 \}	return _rightbrace;
 
-\n			;
-[ \t]			;
+[ \t\v\n\f\r]			;
 \/\/.*\n		;
 \/\*[^*]*\*\/\n 	;
 . printf("\nUNEXPECTED CHAR\n");

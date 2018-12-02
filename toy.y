@@ -63,8 +63,8 @@ StmtBlock         : _leftbrace _rightbrace
                   | _leftbrace VariableDeclStar StmtStar _rightbrace ;
 VariableDeclStar  : VariableDecl 
                   | VariableDeclStar VariableDecl;
-StmtStar          : Stmt StmtStar
-                  | Stmt;
+StmtStar          : Stmt
+                  | StmtStar Stmt;
 Stmt              : ExprOptional _semicolon
                   | IfStmt
                   | WhileStmt
