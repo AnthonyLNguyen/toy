@@ -1436,6 +1436,19 @@ yyparse (void)
 | yybackup.  |
 `-----------*/
 int test = 0; //EDIT
+static const char *const names[] =
+{
+  "$end", "error", "$undefined", "boolean", "break", "class",
+  "double", "else", "extends", "for", "if", "implements", "int",
+  "interface", "new", "newarray", "null", "println", "readln",
+  "return", "string", "void", "while", "plus", "minus",
+  "multiplication", "division", "mod", "less", "lessequal",
+  "greater", "greaterequal", "equal", "notequal", "and", "or",
+  "not", "assignop", "semicolon", "comma", "period", "leftparen",
+  "rightparen", "leftbracket", "rightbracket", "leftbrace",
+  "rightbrace", "intconstant", "doubleconstant", "stringconstant",
+  "booleanconstant", "id"
+};
 yybackup:
 
 /* Do appropriate processing given the current state.  Read a
@@ -1465,7 +1478,7 @@ else
   {
     yytoken = YYTRANSLATE (yychar);
   if (test)
-        printf("\n%s ",yytname[yytoken]); //EDIT
+        printf("\n%s ",names[yytoken]); //EDIT
     test = 0;
     YY_SYMBOL_PRINT ("Next token is", yytoken, &yylval, &yylloc);
   }
@@ -1511,9 +1524,15 @@ else
 `-----------------------------------------------------------*/
 yydefault:
   yyn = yydefact[yystate];
-  if (yyn == 0)
+  if (yyn == 0){
+    printf("%s\n","\n[reject]" );
     goto yyerrlab;
+  }
+  printf("[reduce %d]",yyn-1); //EDIT
   goto yyreduce;
+
+
+
 
 
 /*-----------------------------.
@@ -1532,7 +1551,6 @@ yyreduce:
      unconditionally makes the parser a bit smaller, and it avoids a
      GCC warning that YYVAL may be used uninitialized.  */
   yyval = yyvsp[1-yylen];
-  printf("[reduce %d]",yyn-1); //EDIT
 
 
   YY_REDUCE_PRINT (yyn);

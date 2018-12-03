@@ -58,11 +58,11 @@ number {digit}+
 \]	return _rightbracket;
 \{	return _leftbrace;
 \}	return _rightbrace;
-
-[ \t\v\n\f\r]			;
+[\n\r] ;
+[ \t\v\f]			;
 \/\/.*\n		;
 \/\*[^*]*\*\/\n 	;
-. printf("\nUNEXPECTED CHAR\n");
+. ;
 %%
 
 int yywrap(void)

@@ -1,0 +1,97 @@
+int test = 0; //EDIT
+static const char *const names[] =
+{
+  "$end", "error", "$undefined", "boolean", "break", "class",
+  "double", "else", "extends", "for", "if", "implements", "int",
+  "interface", "new", "newarray", "null", "println", "readln",
+  "return", "string", "void", "while", "plus", "minus",
+  "multiplication", "division", "mod", "less", "lessequal",
+  "greater", "greaterequal", "equal", "notequal", "and", "or",
+  "not", "assignop", "semicolon", "comma", "period", "leftparen",
+  "rightparen", "leftbracket", "rightbracket", "leftbrace",
+  "rightbrace", "intconstant", "doubleconstant", "stringconstant",
+  "booleanconstant", "id"
+};
+yybackup:
+
+/* Do appropriate processing given the current state.  Read a
+   lookahead token if we need one and don't already have one.  */
+
+/* First try to decide what to do without reference to lookahead token.  */
+yyn = yypact[yystate];
+if (yypact_value_is_default (yyn))
+  goto yydefault;
+
+/* Not known => get a lookahead token if don't already have one.  */
+
+/* YYCHAR is either YYEMPTY or YYEOF or a valid lookahead symbol.  */
+if (yychar == YYEMPTY)
+  {
+    YYDPRINTF ((stderr, "Reading a token: "));
+    yychar = yylex ();
+  test = 1; //EDIT
+  }
+
+if (yychar <= YYEOF)
+  {
+    yychar = yytoken = YYEOF;
+    YYDPRINTF ((stderr, "Now at end of input.\n"));
+  }
+else
+  {
+    yytoken = YYTRANSLATE (yychar);
+  if (test)
+        printf("\n%s ",names[yytoken]); //EDIT
+    test = 0;
+    YY_SYMBOL_PRINT ("Next token is", yytoken, &yylval, &yylloc);
+  }
+
+  /* If the proper action on seeing token YYTOKEN is to reduce or to
+     detect an error, take that action.  */
+  yyn += yytoken;
+  if (yyn < 0 || YYLAST < yyn || yycheck[yyn] != yytoken)
+    goto yydefault;
+  yyn = yytable[yyn];
+  if (yyn <= 0)
+    {
+      if (yytable_value_is_error (yyn))
+        goto yyerrlab;
+      yyn = -yyn;
+      goto yyreduce;
+    }
+
+  /* Count tokens shifted since error; after three, turn off error
+     status.  */
+  if (yyerrstatus)
+    yyerrstatus--;
+
+  /* Shift the lookahead token.  */
+  YY_SYMBOL_PRINT ("Shifting", yytoken, &yylval, &yylloc);
+  if (yytoken == 0) //EDIT
+	  printf("\n[accept]\n");
+  else
+  	printf("[shift]");
+  /* Discard the shifted token.  */
+  yychar = YYEMPTY;
+
+  yystate = yyn;
+  YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
+  *++yyvsp = yylval;
+  YY_IGNORE_MAYBE_UNINITIALIZED_END
+
+  goto yynewstate;
+
+
+/*-----------------------------------------------------------.
+| yydefault -- do the default action for the current state.  |
+`-----------------------------------------------------------*/
+yydefault:
+  yyn = yydefact[yystate];
+  if (yyn == 0){
+    printf("%s\n","\n[reject]" );
+    goto yyerrlab;
+  }
+  printf("[reduce %d]",yyn-1); //EDIT
+  goto yyreduce;
+
+
