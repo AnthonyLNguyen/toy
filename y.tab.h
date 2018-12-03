@@ -93,7 +93,9 @@ extern int yydebug;
     _doubleconstant = 303,
     _stringconstant = 304,
     _booleanconstant = 305,
-    _id = 306
+    _id = 306,
+    IFX = 307,
+    _uminus = 308
   };
 #endif
 /* Tokens.  */
@@ -146,6 +148,8 @@ extern int yydebug;
 #define _stringconstant 304
 #define _booleanconstant 305
 #define _id 306
+#define IFX 307
+#define _uminus 308
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED

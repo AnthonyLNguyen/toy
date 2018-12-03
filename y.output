@@ -67,8 +67,8 @@ Grammar
    45 VariableDeclStar: VariableDecl
    46                 | VariableDeclStar VariableDecl
 
-   47 StmtStar: Stmt StmtStar
-   48         | Stmt
+   47 StmtStar: Stmt
+   48         | StmtStar Stmt
 
    49 Stmt: ExprOptional _semicolon
    50     | IfStmt
@@ -246,7 +246,7 @@ StmtBlock (72)
 VariableDeclStar (73)
     on left: 45 46, on right: 42 44 46
 StmtStar (74)
-    on left: 47 48, on right: 43 44 47
+    on left: 47 48, on right: 43 44 48
 Stmt (75)
     on left: 49 50 51 52 53 54 55 56, on right: 47 48 59 60 61 62
 ExprOptional (76)
@@ -1412,14 +1412,7 @@ State 106
 State 107
 
    43 StmtBlock: _leftbrace StmtStar . _rightbrace
-
-    _rightbrace  shift, and go to state 143
-
-
-State 108
-
-   47 StmtStar: Stmt . StmtStar
-   48         | Stmt .
+   48 StmtStar: StmtStar . Stmt
 
     _break            shift, and go to state 85
     _for              shift, and go to state 86
@@ -1435,18 +1428,17 @@ State 108
     _not              shift, and go to state 96
     _leftparen        shift, and go to state 97
     _leftbrace        shift, and go to state 78
+    _rightbrace       shift, and go to state 143
     _intconstant      shift, and go to state 99
     _doubleconstant   shift, and go to state 100
     _stringconstant   shift, and go to state 101
     _booleanconstant  shift, and go to state 102
     _id               shift, and go to state 130
 
-    _semicolon  reduce using rule 58 (ExprOptional)
-    $default    reduce using rule 48 (StmtStar)
+    $default  reduce using rule 58 (ExprOptional)
 
     StmtBlock     go to state 105
-    StmtStar      go to state 144
-    Stmt          go to state 108
+    Stmt          go to state 144
     ExprOptional  go to state 109
     IfStmt        go to state 110
     WhileStmt     go to state 111
@@ -1458,6 +1450,13 @@ State 108
     Lvalue        go to state 117
     Call          go to state 118
     Constant      go to state 119
+
+
+State 108
+
+   47 StmtStar: Stmt .
+
+    $default  reduce using rule 47 (StmtStar)
 
 
 State 109
@@ -1915,8 +1914,44 @@ State 141
 State 142
 
    44 StmtBlock: _leftbrace VariableDeclStar StmtStar . _rightbrace
+   48 StmtStar: StmtStar . Stmt
 
-    _rightbrace  shift, and go to state 181
+    _break            shift, and go to state 85
+    _for              shift, and go to state 86
+    _if               shift, and go to state 87
+    _new              shift, and go to state 88
+    _newarray         shift, and go to state 89
+    _null             shift, and go to state 90
+    _println          shift, and go to state 91
+    _readln           shift, and go to state 92
+    _return           shift, and go to state 93
+    _while            shift, and go to state 94
+    _minus            shift, and go to state 95
+    _not              shift, and go to state 96
+    _leftparen        shift, and go to state 97
+    _leftbrace        shift, and go to state 78
+    _rightbrace       shift, and go to state 181
+    _intconstant      shift, and go to state 99
+    _doubleconstant   shift, and go to state 100
+    _stringconstant   shift, and go to state 101
+    _booleanconstant  shift, and go to state 102
+    _id               shift, and go to state 130
+
+    $default  reduce using rule 58 (ExprOptional)
+
+    StmtBlock     go to state 105
+    Stmt          go to state 144
+    ExprOptional  go to state 109
+    IfStmt        go to state 110
+    WhileStmt     go to state 111
+    ForStmt       go to state 112
+    BreakStmt     go to state 113
+    ReturnStmt    go to state 114
+    PrintStmt     go to state 115
+    Expr          go to state 116
+    Lvalue        go to state 117
+    Call          go to state 118
+    Constant      go to state 119
 
 
 State 143
@@ -1928,9 +1963,9 @@ State 143
 
 State 144
 
-   47 StmtStar: Stmt StmtStar .
+   48 StmtStar: StmtStar Stmt .
 
-    $default  reduce using rule 47 (StmtStar)
+    $default  reduce using rule 48 (StmtStar)
 
 
 State 145
