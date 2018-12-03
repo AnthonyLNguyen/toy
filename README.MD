@@ -8,7 +8,7 @@ It also requires lex and yacc.
 ## Compilation instructions
 ```bash
 lex toy.l
-yacc toy -dv
+yacc toy.y -dv
 perl -i -p0e 's/yybackup:.*goto yyreduce;/`cat changes`/sge' y.tab.c
 gcc y.tab.c lex.yy.c -lfl
 ./a.out < inputfile.txt
