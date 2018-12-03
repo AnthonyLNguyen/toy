@@ -1,4 +1,7 @@
 
+
+CASE 1
+void f (double x, double y) { }
 void [shift]
 id [shift]
 leftparen [shift]
@@ -12,11 +15,19 @@ leftbrace [shift]
 rightbrace [shift][reduce 41][reduce 18][reduce 5][reduce 3][reduce 1]
 [accept]
 
+
+CASE 2
+int i = 1;
 int [shift][reduce 11]
 id [shift]
 assignop [reduce 9]
 [reject]
 
+
+CASE 3
+int test3 () {
+result = 5.times(4);
+}
 int [shift][reduce 11]
 id [shift]
 leftparen [shift]
@@ -28,6 +39,11 @@ doubleconstant [shift][reduce 103][reduce 70]
 id [reduce 69][reduce 57]
 [reject]
 
+
+CASE 4
+int test4 () {
+front = in.nextLine();
+}
 int [shift][reduce 11]
 id [shift]
 leftparen [shift]
@@ -44,6 +60,11 @@ semicolon [reduce 69][reduce 57][shift][reduce 49][reduce 47]
 rightbrace [shift][reduce 43][reduce 17][reduce 5][reduce 3][reduce 1]
 [accept]
 
+
+CASE 5
+int test5 () {
+front = in.nextLine;
+}
 int [shift][reduce 11]
 id [shift]
 leftparen [shift]
@@ -58,6 +79,9 @@ semicolon [reduce 95][reduce 71][reduce 69][reduce 57][shift][reduce 49][reduce 
 rightbrace [shift][reduce 43][reduce 17][reduce 5][reduce 3][reduce 1]
 [accept]
 
+
+CASE 6
+int[][][] super;
 int [shift][reduce 11]
 leftbracket [shift]
 rightbracket [shift][reduce 15]
@@ -69,11 +93,19 @@ id [shift]
 semicolon [reduce 9][shift][reduce 8][reduce 4][reduce 3][reduce 1]
 [accept]
 
+
+CASE 7
+a[3][4.5][b] = result = x + y + z;
 id [shift]
 leftbracket [shift]
 intconstant 
 [reject]
 
+
+CASE 8
+int test8 () {
+for ( ; ; ) x = 1;
+}
 int [shift][reduce 11]
 id [shift]
 leftparen [shift]
@@ -85,6 +117,13 @@ semicolon [reduce 58][shift]
 semicolon 
 [reject]
 
+
+CASE 9
+int test9 () {
+if (h>w) g=h;
+else h=g;
+double a;
+}
 int [shift][reduce 11]
 id [shift]
 leftparen [shift]
@@ -108,6 +147,14 @@ semicolon [reduce 72][reduce 69][reduce 57][shift][reduce 49][reduce 60][reduce 
 double [reduce 58]
 [reject]
 
+
+CASE 10
+class cs4110 {
+boolean b;
+userDefinedClassType f(){}
+double d;
+string g(){}
+}
 class [shift]
 id [shift]
 leftbrace [reduce 28][shift]
@@ -131,6 +178,37 @@ leftbrace [shift]
 rightbrace [shift][reduce 41][reduce 17][reduce 34]
 rightbrace [reduce 32][reduce 31][reduce 31][reduce 31][reduce 31][shift][reduce 24][reduce 6][reduce 3][reduce 1]
 [accept]
+
+
+CASE 11
+int fact (int x) {
+// recursive factorial function
+ if (x>1) return x * fact(x-1);
+ else return 1;
+}
+void main () {
+/* Fall Semester 2018
+CS 4110 project #1
+A lexical analyzer */
+ int x;
+ int total;
+ println ("factorial of 10 is ", fact (10), " from the recursive function");
+ total = 1; x = 1;
+ for ( ; x<=10; ) { total = total * x; x = x + 1; }
+ println ("iterative result of 10! is ", total);
+}
+class cs4110 {
+ int Funny;
+ double funny;
+ boolean flag;
+ string s;
+ int [] a;
+ flag = true;
+ Funny = 0X89aB; funny = 123456E+7;
+ s = "hello world";
+ while (x = (Funny/10) <0) println (s, " have fun !");
+ a = newarray (20, int);
+}
 
 int [shift][reduce 11]
 id [shift]
@@ -245,6 +323,11 @@ id [shift]
 assignop 
 [reject]
 
+
+CASE 12
+userDefinedClassType f(){}
+for ( ; 1 ; ) x = f();
+
 id [shift]
 id [shift]
 leftparen [shift]
@@ -253,6 +336,16 @@ leftbrace [shift]
 rightbrace [shift][reduce 41][reduce 19][reduce 5]
 for [reduce 3][reduce 1]
 [reject]
+
+
+CASE 13
+string g(double a,double b){ 
+     string result;
+     result = "";
+     if (a < b) result = "B";
+     else result = "C";
+     return result; 
+ }
 
 string [shift][reduce 14]
 id [shift]
@@ -292,6 +385,10 @@ semicolon [reduce 72][reduce 57][shift][reduce 64][reduce 54][reduce 48]
 rightbrace [shift][reduce 44][reduce 17][reduce 5][reduce 3][reduce 1]
 [accept]
 
+
+CASE 14
+userDefinedClassType f(){ string g() { double a, b; }}
+
 id [shift]
 id [shift]
 leftparen [shift]
@@ -301,6 +398,28 @@ string [shift][reduce 14]
 id [shift][reduce 9]
 leftparen 
 [reject]
+
+
+CASE 15
+userDefinedClassType f() { 
+     int i; int x; int y; int z;
+     x = 1;
+     for ( i = 1; i < 5 ; i = i + 1 ) 
+           x = x + 1; 
+           y = x * i;
+           for(z = 1; z < i; z = z + 1)
+                println (i, x, "Hi");
+}
+
+interface testingInterface {
+      void t ( );
+}
+
+class testClass implements testingInterface {
+     void t ( ) {
+           println ("Test Success");
+     }
+}
 
 id [shift]
 id [shift]
