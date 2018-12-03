@@ -76,7 +76,7 @@ Stmt              : ExprOptional _semicolon
 ExprOptional      : Expr
                   | ;
 IfStmt            : _if _leftparen Expr _rightparen Stmt %prec IFX ;
-				          | _if _leftparen Expr _rightparen Stmt _else Stmt ;
+                  | _if _leftparen Expr _rightparen Stmt _else Stmt ;
 WhileStmt         : _while _leftparen Expr _rightparen Stmt ;
 ForStmt           : _for _leftparen ExprOptional _semicolon Expr _semicolon ExprOptional _rightparen Stmt ;
 BreakStmt         : _break _semicolon ;
@@ -88,7 +88,7 @@ Expr              : Lvalue _assignop Expr
                   | _id _assignop Expr
                   | Constant
                   | Lvalue
-				          | _id
+                  | _id
                   | Call
                   | _leftparen Expr _rightparen
                   | Expr _plus Expr
