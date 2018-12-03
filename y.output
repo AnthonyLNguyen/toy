@@ -93,7 +93,7 @@ Grammar
 
    64 ReturnStmt: _return ExprOptional _semicolon
 
-   65 PrintStmt: _println _leftparen ExprPlusComma _rightparen
+   65 PrintStmt: _println _leftparen ExprPlusComma _rightparen _semicolon
 
    66 ExprPlusComma: Expr _comma ExprPlusComma
    67              | Expr
@@ -182,7 +182,7 @@ _and (289) 87
 _or (290) 88
 _not (291) 89
 _assignop (292) 68 69
-_semicolon (293) 8 38 39 40 49 62 63 64
+_semicolon (293) 8 38 39 40 49 62 63 64 65
 _comma (294) 22 29 66 92 93
 _period (295) 95 97 99
 _leftparen (296) 17 18 19 38 39 40 59 60 61 62 65 74 90 91 92 93 98
@@ -1174,7 +1174,7 @@ State 90
 
 State 91
 
-   65 PrintStmt: _println . _leftparen ExprPlusComma _rightparen
+   65 PrintStmt: _println . _leftparen ExprPlusComma _rightparen _semicolon
 
     _leftparen  shift, and go to state 128
 
@@ -1665,7 +1665,7 @@ State 127
 
 State 128
 
-   65 PrintStmt: _println _leftparen . ExprPlusComma _rightparen
+   65 PrintStmt: _println _leftparen . ExprPlusComma _rightparen _semicolon
 
     _new              shift, and go to state 88
     _newarray         shift, and go to state 89
@@ -2406,7 +2406,7 @@ State 168
 
 State 169
 
-   65 PrintStmt: _println _leftparen ExprPlusComma . _rightparen
+   65 PrintStmt: _println _leftparen ExprPlusComma . _rightparen _semicolon
 
     _rightparen  shift, and go to state 202
 
@@ -3141,9 +3141,9 @@ State 201
 
 State 202
 
-   65 PrintStmt: _println _leftparen ExprPlusComma _rightparen .
+   65 PrintStmt: _println _leftparen ExprPlusComma _rightparen . _semicolon
 
-    $default  reduce using rule 65 (PrintStmt)
+    _semicolon  shift, and go to state 213
 
 
 State 203
@@ -3163,7 +3163,7 @@ State 203
     _booleanconstant  shift, and go to state 102
     _id               shift, and go to state 130
 
-    ExprPlusComma  go to state 213
+    ExprPlusComma  go to state 214
     Expr           go to state 170
     Lvalue         go to state 117
     Call           go to state 118
@@ -3197,7 +3197,7 @@ State 204
     $default  reduce using rule 58 (ExprOptional)
 
     StmtBlock     go to state 105
-    Stmt          go to state 214
+    Stmt          go to state 215
     ExprOptional  go to state 109
     IfStmt        go to state 110
     WhileStmt     go to state 111
@@ -3234,7 +3234,7 @@ State 205
     Expr           go to state 170
     Lvalue         go to state 117
     Call           go to state 118
-    Actuals        go to state 215
+    Actuals        go to state 216
     Constant       go to state 119
 
 
@@ -3289,7 +3289,7 @@ State 209
     _notequal        shift, and go to state 156
     _and             shift, and go to state 157
     _or              shift, and go to state 158
-    _semicolon       shift, and go to state 216
+    _semicolon       shift, and go to state 217
 
 
 State 210
@@ -3297,7 +3297,7 @@ State 210
    59 IfStmt: _if _leftparen Expr _rightparen Stmt .
    60       | _if _leftparen Expr _rightparen Stmt . _else Stmt
 
-    _else  shift, and go to state 217
+    _else  shift, and go to state 218
 
     $default  reduce using rule 59 (IfStmt)
 
@@ -3307,7 +3307,7 @@ State 211
    16 Type: _id . _leftbracket _rightbracket
    93 Expr: _newarray _leftparen _intconstant _comma _id . _rightparen
 
-    _rightparen   shift, and go to state 218
+    _rightparen   shift, and go to state 219
     _leftbracket  shift, and go to state 21
 
 
@@ -3316,32 +3316,39 @@ State 212
    15 Type: Type . _leftbracket _rightbracket
    92 Expr: _newarray _leftparen _intconstant _comma Type . _rightparen
 
-    _rightparen   shift, and go to state 219
+    _rightparen   shift, and go to state 220
     _leftbracket  shift, and go to state 26
 
 
 State 213
+
+   65 PrintStmt: _println _leftparen ExprPlusComma _rightparen _semicolon .
+
+    $default  reduce using rule 65 (PrintStmt)
+
+
+State 214
 
    66 ExprPlusComma: Expr _comma ExprPlusComma .
 
     $default  reduce using rule 66 (ExprPlusComma)
 
 
-State 214
+State 215
 
    61 WhileStmt: _while _leftparen Expr _rightparen Stmt .
 
     $default  reduce using rule 61 (WhileStmt)
 
 
-State 215
+State 216
 
    99 Call: _id _period _id _leftparen Actuals . _rightparen
 
-    _rightparen  shift, and go to state 220
+    _rightparen  shift, and go to state 221
 
 
-State 216
+State 217
 
    62 ForStmt: _for _leftparen ExprOptional _semicolon Expr _semicolon . ExprOptional _rightparen Stmt
 
@@ -3360,14 +3367,14 @@ State 216
 
     $default  reduce using rule 58 (ExprOptional)
 
-    ExprOptional  go to state 221
+    ExprOptional  go to state 222
     Expr          go to state 116
     Lvalue        go to state 117
     Call          go to state 118
     Constant      go to state 119
 
 
-State 217
+State 218
 
    60 IfStmt: _if _leftparen Expr _rightparen Stmt _else . Stmt
 
@@ -3394,7 +3401,7 @@ State 217
     $default  reduce using rule 58 (ExprOptional)
 
     StmtBlock     go to state 105
-    Stmt          go to state 222
+    Stmt          go to state 223
     ExprOptional  go to state 109
     IfStmt        go to state 110
     WhileStmt     go to state 111
@@ -3408,42 +3415,42 @@ State 217
     Constant      go to state 119
 
 
-State 218
+State 219
 
    93 Expr: _newarray _leftparen _intconstant _comma _id _rightparen .
 
     $default  reduce using rule 93 (Expr)
 
 
-State 219
+State 220
 
    92 Expr: _newarray _leftparen _intconstant _comma Type _rightparen .
 
     $default  reduce using rule 92 (Expr)
 
 
-State 220
+State 221
 
    99 Call: _id _period _id _leftparen Actuals _rightparen .
 
     $default  reduce using rule 99 (Call)
 
 
-State 221
+State 222
 
    62 ForStmt: _for _leftparen ExprOptional _semicolon Expr _semicolon ExprOptional . _rightparen Stmt
 
-    _rightparen  shift, and go to state 223
+    _rightparen  shift, and go to state 224
 
 
-State 222
+State 223
 
    60 IfStmt: _if _leftparen Expr _rightparen Stmt _else Stmt .
 
     $default  reduce using rule 60 (IfStmt)
 
 
-State 223
+State 224
 
    62 ForStmt: _for _leftparen ExprOptional _semicolon Expr _semicolon ExprOptional _rightparen . Stmt
 
@@ -3470,7 +3477,7 @@ State 223
     $default  reduce using rule 58 (ExprOptional)
 
     StmtBlock     go to state 105
-    Stmt          go to state 224
+    Stmt          go to state 225
     ExprOptional  go to state 109
     IfStmt        go to state 110
     WhileStmt     go to state 111
@@ -3484,7 +3491,7 @@ State 223
     Constant      go to state 119
 
 
-State 224
+State 225
 
    62 ForStmt: _for _leftparen ExprOptional _semicolon Expr _semicolon ExprOptional _rightparen Stmt .
 

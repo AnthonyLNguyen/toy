@@ -61,7 +61,7 @@ StmtBlock         : _leftbrace _rightbrace
                   | _leftbrace VariableDeclStar _rightbrace
                   | _leftbrace StmtStar _rightbrace
                   | _leftbrace VariableDeclStar StmtStar _rightbrace ;
-VariableDeclStar  : VariableDecl 
+VariableDeclStar  : VariableDecl
                   | VariableDeclStar VariableDecl;
 StmtStar          : Stmt
                   | StmtStar Stmt;
@@ -81,7 +81,7 @@ WhileStmt         : _while _leftparen Expr _rightparen Stmt ;
 ForStmt           : _for _leftparen ExprOptional _semicolon Expr _semicolon ExprOptional _rightparen Stmt ;
 BreakStmt         : _break _semicolon ;
 ReturnStmt        : _return ExprOptional _semicolon ;
-PrintStmt         : _println _leftparen ExprPlusComma _rightparen
+PrintStmt         : _println _leftparen ExprPlusComma _rightparen _semicolon ;
 ExprPlusComma     : Expr _comma ExprPlusComma
                   | Expr ;
 Expr              : Lvalue _assignop Expr
