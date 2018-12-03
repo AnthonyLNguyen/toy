@@ -1,4 +1,5 @@
-int test = 0; //EDIT
+//Changes made to y.tab.c file
+int test = 0;
 static const char *const names[] =
 {
   "$end", "error", "$undefined", "boolean", "break", "class",
